@@ -8,7 +8,7 @@
 ### setup
 - clone project
 ```
-> git clone https://anhht83@bitbucket.org/avalanchaerp/ssilva-backend.git
+> git clone https://gitlab.com/avalanchastudio/ssilva/ssilva-backend.git
 ```
 - access root directory
 - create virtual environment
