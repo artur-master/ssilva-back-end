@@ -1,0 +1,14 @@
+[
+{
+    "model": "ventas.paytype",
+    "fields": {
+        "Name": "Contado"
+    }
+},
+{
+    "model": "ventas.paytype",
+    "fields": {
+        "Name": "Credito"
+    }
+}
+]

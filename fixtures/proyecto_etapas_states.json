@@ -1,0 +1,26 @@
+[
+{
+    "model": "empresas_and_proyectos.etapastate",
+    "fields": {
+        "Name": "En blanco"
+    }
+},
+{
+    "model": "empresas_and_proyectos.etapastate",
+    "fields": {
+        "Name": "En verde"
+    }
+},
+{
+    "model": "empresas_and_proyectos.etapastate",
+    "fields": {
+        "Name": "En escrituraci\u00f3n"
+    }
+},
+{
+    "model": "empresas_and_proyectos.etapastate",
+    "fields": {
+        "Name": "Vendido"
+    }
+}
+]

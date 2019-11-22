@@ -1,0 +1,98 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+        html,body{height: 100%;}
+        body{
+            font-weight: 300;
+            color: #262B34;
+            height: 40px;
+        }
+        .bold{
+            font-weight: 300;
+        }
+        .highlight{
+          background-color: #FFFF00;
+        }
+    </style>
+</head>
+<body>
+  {% language 'es' %}
+  <h2 align="center"> Proyecto: {{ proyecto.Name }} </align> </h2>
+  <br>
+  <div style="text-align:center">
+        <span> <strong>Información del Proyecto</strong></span>
+  </div>
+
+  <p> <strong>Abreviación: </strong> {{ proyecto.Symbol }}</p> 
+  <p> <strong>Institución Financiera Alzante: </strong>  {{ proyecto.InstitucionFinancieraID.Name }}</p>
+  <p> <strong>Dirección: </strong>  {{ proyecto.Address }}</p>
+  <p> <strong>Comuna: </strong>     {{ proyecto.ComunaID.Name }}</p>
+  <p> <strong>Inmobiliaria: </strong>  {{ proyecto.InmobiliariaID.RazonSocial }}</p>
+  <p> <strong>Constructora: </strong>    {{ proyecto.ConstructoraID.RazonSocial }}</p>
+
+  <p><strong>Contacto(s): </strong></p>
+  {% for contacto in contactos %}
+    {% if contacto.ContactInfoTypeID.Name == 'Email' %}
+      <li> Email: {{ contacto.Value }}</li>
+    {% else %}
+      <li> Teléfono: {{ contacto.Value }}</li>
+    {% endif %}
+  {% endfor %}
+
+  <p> <strong>Duración de las Cotizaciones: </strong>  {{ proyecto.CotizacionDuration }} dia(s) </p>
+  <p> <strong>Monto Garantía: </strong>  $ {{ proyecto.GuaranteeAmount | numberformat }} pesos </p>
+  <p> <strong>Estado Aprobación: </strong>  {{ proyecto.ProyectoApprovalState.Name }}</p>  
+  <p> <strong>Fecha Creación: </strong> {{ date |date:"d/F/Y" }} </p>
+  <p> <strong>Hora Creación: </strong> {{ date |time:"H:i" }}</p> 
+  
+  {% if proyecto.ProyectoAseguradoraID.Amount and proyecto.ProyectoAseguradoraID.ExpirationDate  %}
+    <p><strong>Aseguradora</strong></p>
+    <table style="width: 100%;">
+      <thead>
+        <tr style="border: 1px solid #000000;">
+          <th style="font-size: 80%; width: 15%">Nombre</th>
+          <th style="font-size: 80%; width: 15%">Monto</th>
+          <th style="font-size: 80%; width: 15%">Fecha de Vencimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border: 1px solid #000000;">
+          <td style="font-size: 80%; text-align: center">{{ proyecto.ProyectoAseguradoraID.AseguradoraID.Name }} </td>
+          <td style="font-size: 80%; text-align: center">{{ proyecto.ProyectoAseguradoraID.Amount | floatformat }} UF</td>
+          <td style="font-size: 80%; text-align: center">{{ proyecto.ProyectoAseguradoraID.ExpirationDate | date:"d/F/Y" }}</td>
+        </tr>
+      </tbody>
+    </table>
+  {% else %}
+    <p><strong>Aseguradora: </strong> {{ proyecto.ProyectoAseguradoraID.AseguradoraID.Name }} </p>
+  {% endif %}
+
+  <p><strong>Usuarios</strong></p>
+  <table style="width: 100%;">
+    <thead>
+      <tr style="border: 1px solid #000000;">
+        <th style="font-size: 80%; width: 15%">Nombre</th>
+        <th style="font-size: 80%; width: 15%">Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr style="border: 1px solid #000000;">
+            <td style="font-size: 80%; text-align: center">{{ usuario.UserID }} </td>
+            <td style="font-size: 80%; text-align: center">{{ usuario.UserProyectoTypeID.Name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  {% endlanguage %}
+  </body>
+</html>

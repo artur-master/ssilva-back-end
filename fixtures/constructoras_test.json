@@ -1,0 +1,47 @@
+[
+{
+    "model": "empresas_and_proyectos.constructora",
+    "fields": {
+        "RazonSocial": "Pendiente",
+        "IsInmobiliaria": false,
+        "IsConstructora": true,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.constructora",
+    "fields": {
+        "RazonSocial": "INMOBILIARIA FORTALEZA PLACILLA SPA",
+        "IsInmobiliaria": true,
+        "IsConstructora": true,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.constructora",
+    "fields": {
+        "RazonSocial": "HELVECIA S.A.",
+        "IsInmobiliaria": false,
+        "IsConstructora": true,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.constructora",
+    "fields": {
+        "RazonSocial": "CONSTRUCTORA INGEVEC S.A",
+        "IsInmobiliaria": false,
+        "IsConstructora": true,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.constructora",
+    "fields": {
+        "RazonSocial": "CONSTRUCTORA ALTIUS S.A",
+        "IsInmobiliaria": false,
+        "IsConstructora": true,
+        "State": true
+    }
+}
+]

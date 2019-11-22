@@ -1,0 +1,141 @@
+[
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra roles"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra usuarios"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra inmobiliarias"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Es representante inmobiliario"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta roles"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta usuarios"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta inmobiliarias"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Es jefe de proyectos"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Es vendedor"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Es asistente comercial"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta par\u00e1metros"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra par\u00e1metros"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra proyectos"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Aprueba proyectos"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Monitorea proyectos"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Es aprobador inmobiliario"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta proyectos"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Administra clientes"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Consulta clientes"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Aprueba inmuebles"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Recepciona garantias"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Aprueba confeccion promesa"
+        }
+    },
+    {
+        "model": "users.permission",
+        "fields": {
+            "Name": "Confecciona maquetas"
+        }
+    }
+]
+

@@ -1,0 +1,9 @@
+[
+{
+    "model": "common.constantnumeric",
+    "fields": {
+        "Name": "Tasa",
+        "Value": "3.20"
+    }
+}
+]

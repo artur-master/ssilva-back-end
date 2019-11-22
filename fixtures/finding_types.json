@@ -1,0 +1,8 @@
+[
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "No aplica"
+    }
+}
+]

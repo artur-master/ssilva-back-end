@@ -1,0 +1,15 @@
+[
+    {
+        "model": "empresas_and_proyectos.ingresocomisionesstate",
+        "fields": {
+            "Name": "Pendiente"
+        }
+    },
+    {
+        "model": "empresas_and_proyectos.ingresocomisionesstate",
+        "fields": {
+            "Name": "Agregado"
+        }
+    }
+]
+    

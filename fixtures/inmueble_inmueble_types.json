@@ -1,0 +1,14 @@
+[
+{
+    "model": "empresas_and_proyectos.inmuebleinmuebletype",
+    "fields": {
+        "Name": "Required"
+    }
+},
+{
+    "model": "empresas_and_proyectos.inmuebleinmuebletype",
+    "fields": {
+        "Name": "Forbidden"
+    }
+}
+]

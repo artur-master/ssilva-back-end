@@ -1,0 +1,87 @@
+[
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Creaci\u00f3n",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Aprobaci\u00f3n legal",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Modificaci\u00f3n",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Modificaci\u00f3n restricciones",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Cancelaci\u00f3n",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Rechazo legal",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Confecci\u00f3n Plan De Medios",
+        "MaximunDays": 14
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Confecci\u00f3n Borrador Promesa",
+        "MaximunDays": 5
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Ingreso Comisiones",
+        "MaximunDays": 4
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Aprobaci\u00f3n gerencia",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Rechazo gerencia",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectologtype",
+    "fields": {
+        "Name": "Inicio de Ventas",
+        "MaximunDays": 0
+    }
+}
+
+]

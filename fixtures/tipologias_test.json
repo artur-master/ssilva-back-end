@@ -1,0 +1,142 @@
+[
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "CAM",
+      "Description": "C.Americana /Mariposa"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "E",
+      "Description": "Estudio"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "L",
+      "Description": "Loft"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "A",
+      "Description": "C.Americana"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "C",
+      "Description": "C.Cerrada"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "S",
+      "Description": "Servicio"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "U",
+      "Description": "Uso y Goce"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "P",
+      "Description": "Penthouse"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "R",
+      "Description": "Escritorio"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "T",
+      "Description": "Estar"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "D",
+      "Description": "Tandem"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "3C",
+      "Description": "3 C"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "4C",
+      "Description": "4 C"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "MA",
+      "Description": "Mariposa"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "DOM",
+      "Description": "Dominio"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "MINU",
+      "Description": "Minusvalido"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "M",
+      "Description": "Menor Valor"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "N",
+      "Description": "Uso y Goce - Menor Valor"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "I",
+      "Description": "Piloto"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.tipologia",
+    "fields": {
+      "Name": "DUP",
+      "Description": "Duplex"
+    }
+  }
+]

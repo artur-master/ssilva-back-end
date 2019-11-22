@@ -1,0 +1,26 @@
+[
+{
+    "model": "ventas.contactmethodtype",
+    "fields": {
+        "Name": "Portal inmobiliario"
+    }
+},
+{
+    "model": "ventas.contactmethodtype",
+    "fields": {
+        "Name": "Mail"
+    }
+},
+{
+    "model": "ventas.contactmethodtype",
+    "fields": {
+        "Name": "Tel\u00e9fono"
+    }
+},
+{
+    "model": "ventas.contactmethodtype",
+    "fields": {
+        "Name": "Presencial"
+    }
+}
+]

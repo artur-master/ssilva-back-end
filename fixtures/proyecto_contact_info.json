@@ -1,0 +1,62 @@
+[
+{
+    "model": "empresas_and_proyectos.proyectocontactinfo",
+    "fields": {
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "ContactInfoTypeID": [
+            "Email"
+        ],
+        "Value": "nuevafranklin@ssilva.cl"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectocontactinfo",
+    "fields": {
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "ContactInfoTypeID": [
+            "Phone"
+        ],
+        "Value": "+56 9 3254 8789"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectocontactinfo",
+    "fields": {
+        "ProyectoID": [
+            "Nilontraro"
+        ],
+        "ContactInfoTypeID": [
+            "Email"
+        ],
+        "Value": "edificionilontraro@ssilva.cl"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectocontactinfo",
+    "fields": {
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "ContactInfoTypeID": [
+            "Phone"
+        ],
+        "Value": "+56 9 5699 0024"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectocontactinfo",
+    "fields": {
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "ContactInfoTypeID": [
+            "Phone"
+        ],
+        "Value": "+56 2 2764 9667"
+    }
+}
+]

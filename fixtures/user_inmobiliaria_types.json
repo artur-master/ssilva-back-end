@@ -1,0 +1,14 @@
+[
+{
+    "model": "empresas_and_proyectos.userinmobiliariatype",
+    "fields": {
+        "Name": "Representante"
+    }
+},
+{
+    "model": "empresas_and_proyectos.userinmobiliariatype",
+    "fields": {
+        "Name": "Aprobador"
+    }
+}
+]

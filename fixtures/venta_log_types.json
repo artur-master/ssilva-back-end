@@ -1,0 +1,191 @@
+[
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Creacion reserva",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Reserva a control",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Aprobacion reserva",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Rechazo reserva",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Cancelacion reserva",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Modificacion reserva",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Creacion oferta",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Envio aprobacion inmobiliaria",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Aprobacion oferta",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Rechazo oferta",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Recepcion garantia",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Envio oferta a confeccion promesa",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Aprobacion confeccion promesa",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Rechazo confeccion promesa",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Cancelacion oferta",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Modificacion oferta",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Creacion cotizacion",
+        "MaximunDays": 0
+    }
+},
+{
+    "model": "ventas.ventalogtype",
+    "fields": {
+        "Name": "Creacion promesa",
+        "MaximunDays": 0
+    }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Aprobacion maqueta",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Rechazo maqueta",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Aprobacion promesa",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Rechazo promesa",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Registro envio promesa a inmobiliaria",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Registro firma de inmobiliaria",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Envio copias",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Modificacion promesa(Antes de firma comprador)",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Modificacion promesa(Despues de firma comprador)",
+         "MaximunDays": 0
+     }
+}
+]

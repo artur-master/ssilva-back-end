@@ -1,0 +1,93 @@
+[
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Casa",
+      "Description": "Casa"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Departamento",
+      "Description": "Departamento"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Oficina",
+      "Description": "Oficina"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Local Comercial",
+      "Description": "Local Comercial"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Bodega",
+      "Description": "Bodega"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Estacionamiento",
+      "Description": "Estacionamiento"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Terreno",
+      "Description": "Terreno"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Parcela Sola",
+      "Description": "Parcela Sola"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Parcela Edificada",
+      "Description": "Parcela Edificada"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Adicionales",
+      "Description": "Adicionales"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Urbanización",
+      "Description": "Urbanización"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Talleres",
+      "Description": "Talleres"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.inmuebletype",
+    "fields": {
+      "Name": "Poligono",
+      "Description": "Poligono"
+    }
+  }
+]

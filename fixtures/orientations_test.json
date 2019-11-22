@@ -1,0 +1,100 @@
+[
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "N",
+      "Description": "Norte"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NN",
+      "Description": "No definida"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NO",
+      "Description": "Nor-Oriente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NP",
+      "Description": "Nor-Poniente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NS",
+      "Description": "Norte-Sur"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "O",
+      "Description": "Oriente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "OP",
+      "Description": "Oriente-Poniente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "P",
+      "Description": "Poniente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "S",
+      "Description": "Sur"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "SO",
+      "Description": "Sur-Oriente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "SP",
+      "Description": "Sur-Poniente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "ONP",
+      "Description": "Oriente Nor Poniente"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NOS",
+      "Description": "Norte Oriente Sur"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.orientation",
+    "fields": {
+      "Name": "NPS",
+      "Description": "Norte Poniente Sur"
+    }
+  }
+]

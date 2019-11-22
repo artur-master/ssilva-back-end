@@ -1,0 +1,32 @@
+[
+{
+    "model": "ventas.reservastate",
+    "fields": {
+        "Name": "Pendiente informaci\u00f3n"
+    }
+},
+{
+    "model": "ventas.reservastate",
+    "fields": {
+        "Name": "Pendiente control"
+    }
+},
+{
+    "model": "ventas.reservastate",
+    "fields": {
+        "Name": "Oferta"
+    }
+},
+{
+    "model": "ventas.reservastate",
+    "fields": {
+        "Name": "Rechazada"
+    }
+},
+{
+    "model": "ventas.reservastate",
+    "fields": {
+        "Name": "Cancelada"
+    }
+}
+]

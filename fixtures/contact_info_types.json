@@ -1,0 +1,14 @@
+[
+{
+    "model": "common.contactinfotype",
+    "fields": {
+        "Name": "Phone"
+    }
+},
+{
+    "model": "common.contactinfotype",
+    "fields": {
+        "Name": "Email"
+    }
+}
+]

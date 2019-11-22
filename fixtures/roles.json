@@ -1,0 +1,202 @@
+[
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Gerente Comercial",
+      "PermissionID": [
+        [
+          "Consulta roles"
+        ],
+        [
+          "Consulta usuarios"
+        ],
+        [
+          "Consulta inmobiliarias"
+        ],
+        [
+          "Consulta par\u00e1metros"
+        ],
+        [
+          "Monitorea proyectos"
+        ],
+        [
+          "Aprueba proyectos"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Jefe de Proyecto",
+      "PermissionID": [
+        [
+          "Es jefe de proyectos"
+        ],
+        [
+          "Administra proyectos"
+        ],
+        [
+          "Consulta par\u00e1metros"
+        ],
+        [
+          "Es vendedor"
+        ],
+        [
+          "Es asistente comercial"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Asistente Comercial",
+      "PermissionID": [
+        [
+          "Es asistente comercial"
+        ],
+        [
+          "Consulta proyectos"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Vendedor",
+      "PermissionID": [
+        [
+          "Es vendedor"
+        ],
+        [
+          "Consulta proyectos"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Inmobiliario",
+      "PermissionID": [
+        [
+          "Es representante inmobiliario"
+        ],
+        [
+          "Es aprobador inmobiliario"
+        ],
+        [
+          "Consulta proyectos"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Administrador",
+      "PermissionID": [
+        [
+          "Administra roles"
+        ],
+        [
+          "Administra usuarios"
+        ],
+        [
+          "Administra inmobiliarias"
+        ],
+        [
+          "Consulta roles"
+        ],
+        [
+          "Consulta usuarios"
+        ],
+        [
+          "Consulta inmobiliarias"
+        ],
+        [
+          "Consulta par\u00e1metros"
+        ],
+        [
+          "Administra par\u00e1metros"
+        ],
+        [
+          "Administra proyectos"
+        ],
+        [
+          "Aprueba proyectos"
+        ],
+        [
+          "Monitorea proyectos"
+        ],
+        [
+          "Consulta proyectos"
+        ],
+        [
+          "Administra clientes"
+        ],
+        [
+          "Consulta clientes"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Legal",
+      "PermissionID": [
+        [
+          "Aprueba inmuebles"
+        ],
+        [
+          "Aprueba confeccion promesa"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Arquitecto",
+      "PermissionID": [
+        [
+          "Aprueba inmuebles"
+        ],
+        [
+          "Aprueba confeccion promesa"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Finanzas",
+      "PermissionID": [
+        [
+          "Aprueba inmuebles"
+        ],
+        [
+          "Aprueba confeccion promesa"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "users.role",
+    "fields": {
+      "Name": "Marketing",
+      "PermissionID": [
+        [
+          "Aprueba inmuebles"
+        ],
+        [
+          "Aprueba confeccion promesa"
+        ]
+      ]
+    }
+  }
+]

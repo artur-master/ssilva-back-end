@@ -1,0 +1,20 @@
+[
+{
+    "model": "ventas.cotizacionstate",
+    "fields": {
+        "Name": "Vigente"
+    }
+},
+{
+    "model": "ventas.cotizacionstate",
+    "fields": {
+        "Name": "Vencida"
+    }
+},
+{
+    "model": "ventas.cotizacionstate",
+    "fields": {
+        "Name": "Reserva"
+    }
+}
+]

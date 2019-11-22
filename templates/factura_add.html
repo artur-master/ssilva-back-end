@@ -1,0 +1,93 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            height: 30px;
+
+        }
+        .logo {
+            width: 120px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+{% language 'es' %}
+    <table>
+        <tr style="height:50px;">
+            <th><img class="logo" align="left" src="{% static 'logo.png' %}"/></th>
+            <th style="font-size: {{ tamaño_letra }}%;line-height: 80%">
+                <h6 style="text-align: right"> FACTURA {{ factura.Number }} </h6>
+                {% now "d" as day %}
+                {% now "F" as month %}
+                {% now "Y" as year %}
+                <p style="text-align: right;font-weight: lighter;">
+                    {{ day }} de {{ month }} de {{ year }}
+                </p>
+            </th>
+        </tr>
+    </table>
+    </br>
+    <h2 style="font-size: {{ tamaño_letra }}%"><strong>DETALLE</strong></h2>
+    <p> <strong>Proyecto: </strong>  {{ factura.ProyectoID.Name }}</p>
+    <p> <strong>Inmobiliaria: </strong> {{ factura.InmobiliariaID.RazonSocial }}</p>
+    <p> <strong>Estado: </strong>  {{ factura.FacturaState }}</p>
+    <p> <strong>Valor: </strong> UF{{ factura.Value }}</p>
+    <br>
+    <h2 style="font-size: {{ tamaño_letra }}%"><strong>INMUEBLES</strong></h2>
+    <table style="height: 20px">
+        <thead>
+        <tr style="border: 0.8px solid #000000">
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Tipo</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Edificio</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> N°</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Piso</th>
+            <th style="font-size: {{ tamaño_letra |subtract:5 }}%;width: 90px"> Orientación (es)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for inmueble in inmuebles %}
+            <tr style="font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000;">
+                <td style="text-align: center;"> {{ inmueble.InmuebleID.InmuebleTypeID.Name }} </td>
+                {% if inmueble.InmuebleID.EdificioID %}
+                    <td style="text-align: center;"> {{ inmueble.InmuebleID.EdificioID.Name }} </td>
+                {% else %}
+                    <td style="text-align: center;"> -</td>
+                {% endif %}
+                <td style="text-align: center;"> {{ inmueble.InmuebleID.Number }} </td>
+                <td style="text-align: center;">
+                    {% if inmueble.InmuebleID.Floor %}
+                        {{ inmueble.InmuebleID.Floor }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% for orientacion in inmueble.InmuebleID.OrientationID.all %}
+                        {{ orientacion.Name }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endlanguage %}
+</body>
+</html>

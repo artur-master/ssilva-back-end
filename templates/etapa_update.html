@@ -1,0 +1,629 @@
+{% load static %}
+{% load i18n %}
+{% load index %}
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+        html,body{height: 100%;}
+        body{
+            font-weight: 300;
+            color: #262B34;
+            height: 40px;
+        }
+        .bold{
+            font-weight: 300;
+        }
+        .highlight{
+          background-color:#ffffb1;
+        }
+        .highlight-add{
+          background-color:#cfffd1;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:right">
+      <table>
+        <thead>
+          <tr style="border: 1px solid #000000;">
+            <th style="font-size: 80%; width: 7%; height: 20px;">Simbologia</th>
+          </tr>     
+        </thead>
+        <tbody>
+            <tr style="border: 1px solid #000000;">
+                <td style="font-size: 80%; height: 20px; text-align: center; background-color:#cfffd1;">
+                  Creación
+                </td>
+            </tr>
+            <tr style="border: 1px solid #000000;">
+                <td style="font-size: 80%; height: 20px; text-align: center; background-color:#ffffb1;">
+                  Modificación
+                </td>
+            </tr>
+        </tbody>
+        </table>
+      </div>    
+    {% language 'es' %}
+    {% if not etapa.Name == datos_modificados.Name %}
+        <h2 align="center"> Etapa:<span class="highlight"> {{ datos_modificados.Name }} </span> </align> </h2>
+    {% else %}
+        <h2 align="center"> Etapa: {{ etapa.Name }} </align> </h2>
+    {% endif %}    
+
+    <br>
+    <div style="text-align:center">
+      <strong>Información de la Etapa</strong>
+    </div>    
+
+    <p><strong>Proyecto: </strong> {{ etapa.ProyectoID.Name }}</p>
+
+    {% if not etapa.EtapaStateID == estado_etapa %}
+        <p> <strong>Estado: </strong> <span class="highlight"> {{ estado_etapa.Name }} </span> </p>
+    {% else %}
+        <p> <strong>Estado: </strong>  {{ etapa.EtapaStateID.Name }}</p>
+    {% endif %}    
+
+    {% if etapa.SalesStartDate %}
+      {% if not etapa.SalesStartDate == datos_modificados.SalesStartDate %}
+        <p> <strong>Inicio de Ventas: </strong> <span class="highlight"> {{ datos_modificados.SalesStartDate |date:"d/F/Y" }} </span>  </p>
+      {% else %}
+        <p> <strong>Inicio de Ventas: </strong>  {{ etapa.SalesStartDate |date:"d/F/Y" }}</p>
+      {% endif %}
+    {% else %}
+      <p> <strong>Inicio de Ventas: </strong>Sin definir</p>
+    {% endif %}
+    <br>
+    <div style="text-align:center">
+      <strong>Inmuebles</strong>
+    </div>
+    <br>
+    <table>
+        <thead>
+          <tr style="border: 1px solid #000000;">
+            <th style ="font-size: 70%;">Tipo</th>
+            <th style ="font-size: 70%;">Tipología</th>
+            <th style ="font-size: 70%;">Edificio</th>
+            <th style ="font-size: 65%;">Orientación(es)</th>
+            <th style ="font-size: 70%;">Número</th>
+            <th style ="font-size: 70%;">Piso</th>
+            <th style ="font-size: 70%;">Cantidad de Baños</th>
+            <th style ="font-size: 70%;">Cantidad de Habitaciones</th>
+            <th style ="font-size: 70%;">Metros Cuadrados Útiles</th>
+            <th style ="font-size: 70%;">Metros Cuadrados Totales</th>
+            <th style ="font-size: 70%;">Uso y Goce</th>
+            <th style ="font-size: 70%;">Precio</th>
+            <th style ="font-size: 70%;">Descuento Máximo</th>
+            <th style ="font-size: 70%;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nuevo in inmuebles_nuevos %}
+          <tr style="border: 1px solid #000000;">
+            {% with inmuebles|index:forloop.counter0 as antiguo %}
+              {% if nuevo.InmuebleID == antiguo.InmuebleID %}
+                  <td style="text-align: center; font-size: 65%;">{{ nuevo.InmuebleTypeID.Name }} </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.TipologiaID == antiguo.TipologiaID %}
+                        {% if nuevo.TipologiaID %}
+                          <span class = "highlight"> {{ nuevo.TipologiaID.Name }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}  
+                      {% else %}
+                        {% if antiguo.TipologiaID %}
+                          {{ antiguo.TipologiaID.Name }}
+                        {% else %}
+                          -
+                        {% endif %}
+                      {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% with edificios|index:forloop.counter0 as edificio_antiguo %}
+                        {% if not edificio_antiguo.Name == nuevo.EdificioID.Name %}
+                          {% if nuevo.EdificioID %}
+                            <span class = "highlight"> {{ nuevo.EdificioID.Name }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}  
+                        {% else %}
+                          {% if edificio_antiguo %}
+                            {{ edificio_antiguo.Name }}
+                          {% else %}
+                              -
+                          {% endif %} 
+                        {% endif %}
+                      {% endwith %}        
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">    
+                      {% for orientacion in nuevo.OrientationID.all %}
+                          {{ orientacion.Name }}
+                      {% endfor %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.Number == antiguo.Number %}
+                        {% if nuevo.Number %}
+                          <span class = "highlight"> {{ nuevo.Number }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}
+                      {% else %}
+                        {% if antiguo.Number %}
+                          {{ antiguo.Number }}
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %}   
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.Floor == antiguo.Floor %}
+                        {% if nuevo.Floor %}
+                          <span class = "highlight"> {{ nuevo.Floor }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}
+                      {% else %}
+                        {% if antiguo.Floor %}
+                          {{ antiguo.Floor }}
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %}       
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.BathroomQuantity == antiguo.BathroomQuantity %}
+                        {% if nuevo.BathroomQuantity %}
+                          <span class = "highlight"> {{ nuevo.BathroomQuantity }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}                   
+                      {% else %}
+                        {% if antiguo.BathroomQuantity %}
+                          {{ antiguo.BathroomQuantity }}  
+                        {% else %}
+                            -
+                        {% endif %}   
+                      {% endif %}   
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.BedroomsQuantity == antiguo.BedroomsQuantity %}
+                        {% if nuevo.BedroomsQuantity %}
+                          <span class = "highlight"> {{ nuevo.BedroomsQuantity }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}                   
+                      {% else %}
+                        {% if antiguo.BedroomsQuantity %}
+                          {{ antiguo.BedroomsQuantity }}
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %}   
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.UtilSquareMeters == antiguo.UtilSquareMeters %}
+                        {% if nuevo.UtilSquareMeters %}
+                          <span class = "highlight"> {{ nuevo.UtilSquareMeters | floatformat }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %} 
+                      {% else %}
+                        {% if antiguo.UtilSquareMeters %}
+                          {{ antiguo.UtilSquareMeters | floatformat }}
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %} 
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.TotalSquareMeters == antiguo.TotalSquareMeters %}
+                        {% if nuevo.TotalSquareMeters %}
+                          <span class = "highlight"> {{ nuevo.TotalSquareMeters | floatformat }}</span>
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}  
+                      {% else %}
+                        {% if antiguo.TotalSquareMeters %}
+                          {{ antiguo.TotalSquareMeters | floatformat }}
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">    
+                      {% if not nuevo.IsNotUsoyGoce == antiguo.IsNotUsoyGoce %}
+                        {% if nuevo.IsNotUsoyGoce %}
+                          <span class="highlight"> Sí </span>
+                        {% else %}
+                          <span class="highlight"> No </span>
+                        {% endif %}
+                      {% else %}
+                        {% if antiguo.IsNotUsoyGoce %}
+                            Sí
+                        {% else %}
+                            No
+                        {% endif %}
+                      {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.Price == antiguo.Price %}
+                        {% if nuevo.Price %}
+                          <span class = "highlight"> {{ nuevo.Price | floatformat }} UF </span>  
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}
+                      {% else %}
+                        {% if antiguo.Price %}
+                          {{ antiguo.Price | floatformat }} UF 
+                        {% else %}
+                          -
+                        {% endif %}
+                      {% endif %} 
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.MaximunDiscount == antiguo.MaximunDiscount %}
+                        {% if nuevo.MaximunDiscount %}
+                          <span class = "highlight"> {{ nuevo.MaximunDiscount | floatformat }} % </span>  
+                        {% else %}
+                          <span class = "highlight"> - </span>
+                        {% endif %}
+                      {% else %}
+                        {% if antiguo.MaximunDiscount %}
+                          {{ antiguo.MaximunDiscount | floatformat }} %
+                        {% else %}
+                            -
+                        {% endif %}
+                      {% endif %} 
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                      {% if not nuevo.InmuebleStateID == antiguo.InmuebleStateID %}
+                          <span class = "highlight"> {{ nuevo.InmuebleStateID.Name }}</span>
+                      {% else %}
+                          {{ antiguo.InmuebleStateID.Name }}
+                      {% endif %}  
+                  </td>
+              {% else %}
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleTypeID.Name }}</span></td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.TipologiaID %}
+                      <span class="highlight-add">{{ nuevo.TipologiaID.Name }}</span>  
+                  {% else %}
+                      <span class="highlight-add"> - </span>
+                {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.EdificioID.Name }}</span></td>
+                <td style="text-align: center; font-size: 70%;">    
+                  {% for orientacion in nuevo.OrientationID.all %}
+                      <span class="highlight-add">{{ orientacion.Name }}</span>
+                  {% endfor %}
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.Number %}
+                    <span class="highlight-add"> {{ nuevo.Number }}</span>
+                  {% else %}
+                    <span class="highlight-add"> - </span>
+                  {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.Floor %}
+                    <span class = "highlight-add"> {{ nuevo.Floor }}</span>
+                  {% else %}
+                    <span class = "highlight-add"> - </span>
+                  {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.BathroomQuantity %}
+                    <span class = "highlight-add"> {{ nuevo.BathroomQuantity }}</span>
+                  {% else %}
+                    <span class = "highlight-add"> - </span>
+                  {% endif %}     
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.BedroomsQuantity %}
+                    <span class = "highlight-add"> {{ nuevo.BedroomsQuantity }}</span>
+                  {% else %}
+                    <span class = "highlight-add"> - </span>
+                  {% endif %}                    
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.UtilSquareMeters %}
+                    <span class = "highlight-add"> {{ nuevo.UtilSquareMeters | floatformat }}</span>
+                  {% else %}
+                    <span class = "highlight-add"> - </span>
+                  {% endif %}                 
+                </td>
+                <td style="text-align: center; font-size: 70%;">
+                  {% if nuevo.TotalSquareMeters %}
+                    <span class = "highlight-add"> {{ nuevo.TotalSquareMeters | floatformat }}</span>
+                  {% else %}
+                    <span class = "highlight-add"> - </span>
+                  {% endif %}  
+                </td>
+                <td style="text-align: center; font-size: 70%;">    
+                  {% if nuevo.IsNotUsoyGoce %}
+                      <span class="highlight-add">Sí</span>
+                  {% else %}
+                      <span class="highlight-add">No</span>
+                  {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.Price | floatformat }} UF </span></td>
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximunDiscount | floatformat }} %</span></td>
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleStateID.Name }}</span></td>                  
+              {% endif %}
+            {% endwith %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if inmuebles_sin_edificios_nuevos %}
+        <br>
+        <div style="text-align:center">
+          <strong>Inmuebles sin Edificio</strong>
+        </div>     
+        <table>
+          <thead>
+            <tr style="border: 1px solid #000000;">
+              <th style ="font-size: 70%;">Tipo</th>
+              <th style ="font-size: 70%;">Tipología</th>
+              <th style ="font-size: 70%;">Orientación(es)</th>
+              <th style ="font-size: 70%;">Número</th>
+              <th style ="font-size: 70%;">Piso</th>
+              <th style ="font-size: 70%;">Cantidad de Baños</th>
+              <th style ="font-size: 70%;">Cantidad de Habitaciones</th>
+              <th style ="font-size: 70%;">Metros Cuadrados Útiles</th>
+              <th style ="font-size: 70%;">Metros Cuadrados Totales</th>
+              <th style ="font-size: 70%;">Uso y Goce</th>
+              <th style ="font-size: 70%;">Precio</th>
+              <th style ="font-size: 70%;">Descuento Máximo</th>
+              <th style ="font-size: 70%;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nuevo in inmuebles_sin_edificios_nuevos %}
+              <tr style="border: 1px solid #000000;">
+              {% with inmuebles_sin_edificios|index:forloop.counter0 as antiguo %}
+                {% if nuevo.InmuebleID == antiguo.InmuebleID %}
+                    <td style="text-align: center; font-size: 65%;">{{ nuevo.InmuebleTypeID.Name }} </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.TipologiaID == antiguo.TipologiaID %}
+                          {% if nuevo.TipologiaID %}
+                            <span class = "highlight"> {{ nuevo.TipologiaID.Name }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}  
+                        {% else %}
+                          {% if antiguo.TipologiaID %}
+                            {{ antiguo.TipologiaID.Name }}
+                          {% else %}
+                            -
+                          {% endif %}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">    
+                        {% for orientacion in nuevo.OrientationID.all %}
+                            {{ orientacion.Name }}
+                        {% endfor %}
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.Number == antiguo.Number %}
+                          {% if nuevo.Number %}
+                            <span class = "highlight"> {{ nuevo.Number }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}
+                        {% else %}
+                          {% if antiguo.Number %}
+                            {{ antiguo.Number }}
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %}   
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.Floor == antiguo.Floor %}
+                          {% if nuevo.Floor %}
+                            <span class = "highlight"> {{ nuevo.Floor }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}
+                        {% else %}
+                          {% if antiguo.Floor %}
+                            {{ antiguo.Floor }}
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %}       
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.BathroomQuantity == antiguo.BathroomQuantity %}
+                          {% if nuevo.BathroomQuantity %}
+                            <span class = "highlight"> {{ nuevo.BathroomQuantity }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}                   
+                        {% else %}
+                          {% if antiguo.BathroomQuantity %}
+                            {{ antiguo.BathroomQuantity }}  
+                          {% else %}
+                              -
+                          {% endif %}   
+                        {% endif %}   
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.BedroomsQuantity == antiguo.BedroomsQuantity %}
+                          {% if nuevo.BedroomsQuantity %}
+                            <span class = "highlight"> {{ nuevo.BedroomsQuantity }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}                   
+                        {% else %}
+                          {% if antiguo.BedroomsQuantity %}
+                            {{ antiguo.BedroomsQuantity }}
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %}   
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.UtilSquareMeters == antiguo.UtilSquareMeters %}
+                          {% if nuevo.UtilSquareMeters %}
+                            <span class = "highlight"> {{ nuevo.UtilSquareMeters | floatformat }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %} 
+                        {% else %}
+                          {% if antiguo.UtilSquareMeters %}
+                            {{ antiguo.UtilSquareMeters | floatformat }}
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %} 
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.TotalSquareMeters == antiguo.TotalSquareMeters %}
+                          {% if nuevo.TotalSquareMeters %}
+                            <span class = "highlight"> {{ nuevo.TotalSquareMeters | floatformat }}</span>
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}  
+                        {% else %}
+                          {% if antiguo.TotalSquareMeters %}
+                            {{ antiguo.TotalSquareMeters | floatformat }}
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">    
+                        {% if not nuevo.IsNotUsoyGoce == antiguo.IsNotUsoyGoce %}
+                          {% if nuevo.IsNotUsoyGoce %}
+                            <span class="highlight"> Sí </span>
+                          {% else %}
+                            <span class="highlight"> No </span>
+                          {% endif %}
+                        {% else %}
+                          {% if antiguo.IsNotUsoyGoce %}
+                              Sí
+                          {% else %}
+                              No
+                          {% endif %}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.Price == antiguo.Price %}
+                          {% if nuevo.Price %}
+                            <span class = "highlight"> {{ nuevo.Price | floatformat }} UF </span>  
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}
+                        {% else %}
+                          {% if antiguo.Price %}
+                            {{ antiguo.Price | floatformat }} UF 
+                          {% else %}
+                            -
+                          {% endif %}
+                        {% endif %} 
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.MaximunDiscount == antiguo.MaximunDiscount %}
+                          {% if nuevo.MaximunDiscount %}
+                            <span class = "highlight"> {{ nuevo.MaximunDiscount | floatformat }} % </span>  
+                          {% else %}
+                            <span class = "highlight"> - </span>
+                          {% endif %}
+                        {% else %}
+                          {% if antiguo.MaximunDiscount %}
+                            {{ antiguo.MaximunDiscount | floatformat }} %
+                          {% else %}
+                              -
+                          {% endif %}
+                        {% endif %} 
+                    </td>
+                    <td style="text-align: center; font-size: 70%;">
+                        {% if not nuevo.InmuebleStateID == antiguo.InmuebleStateID %}
+                            <span class = "highlight"> {{ nuevo.InmuebleStateID.Name }}</span>
+                        {% else %}
+                            {{ antiguo.InmuebleStateID.Name }}
+                        {% endif %}  
+                    </td>
+                {% else %}
+                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleTypeID.Name }}</span></td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.TipologiaID %}
+                        <span class="highlight-add">{{ nuevo.TipologiaID.Name }}</span>  
+                    {% else %}
+                        <span class="highlight-add"> - </span>
+                  {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">    
+                    {% for orientacion in nuevo.OrientationID.all %}
+                        <span class="highlight-add">{{ orientacion.Name }}</span>
+                    {% endfor %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.Number %}
+                      <span class="highlight-add"> {{ nuevo.Number }}</span>
+                    {% else %}
+                      <span class="highlight-add"> - </span>
+                    {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.Floor %}
+                      <span class = "highlight-add"> {{ nuevo.Floor }}</span>
+                    {% else %}
+                      <span class = "highlight-add"> - </span>
+                    {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.BathroomQuantity %}
+                      <span class = "highlight-add"> {{ nuevo.BathroomQuantity }}</span>
+                    {% else %}
+                      <span class = "highlight-add"> - </span>
+                    {% endif %}     
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.BedroomsQuantity %}
+                      <span class = "highlight-add"> {{ nuevo.BedroomsQuantity }}</span>
+                    {% else %}
+                      <span class = "highlight-add"> - </span>
+                    {% endif %}                    
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.UtilSquareMeters %}
+                      <span class = "highlight-add"> {{ nuevo.UtilSquareMeters | floatformat }}</span>
+                    {% else %}
+                      <span class = "highlight-add"> - </span>
+                    {% endif %}                 
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">
+                    {% if nuevo.TotalSquareMeters %}
+                      <span class = "highlight-add"> {{ nuevo.TotalSquareMeters | floatformat }}</span>
+                    {% else %}
+                      <span class = "highlight-add"> - </span>
+                    {% endif %}  
+                  </td>
+                  <td style="text-align: center; font-size: 70%;">    
+                    {% if nuevo.IsNotUsoyGoce %}
+                        <span class="highlight-add">Sí</span>
+                    {% else %}
+                        <span class="highlight-add">No</span>
+                    {% endif %}
+                  </td>
+                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.Price | floatformat }} UF </span></td>
+                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximunDiscount | floatformat }} %</span></td>
+                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleStateID.Name }}</span></td>                            
+                {% endif %}              
+              {% endwith %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}  
+    {% endlanguage %}
+  </body>
+</html>

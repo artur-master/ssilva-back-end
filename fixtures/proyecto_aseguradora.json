@@ -1,0 +1,46 @@
+[
+{
+    "model": "empresas_and_proyectos.proyectoaseguradora",
+    "fields": {
+        "ProyectoAseguradoraID": "986c0f7b-b465-4990-9640-dd36aecc07a1",
+        "AseguradoraID": [
+            "Pendiente"
+        ],
+        "Amount": null,
+        "ExpirationDate": null
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoaseguradora",
+    "fields": {
+        "ProyectoAseguradoraID": "e47dbfdd-fe66-4078-ae9c-16519a631603",
+        "AseguradoraID": [
+            "Metlife"
+        ],
+        "Amount": "85.30",
+        "ExpirationDate": "2018-12-12T21:53:50Z"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoaseguradora",
+    "fields": {
+        "ProyectoAseguradoraID": "9ac9ea9b-79e5-42c8-8a3b-20bda9df629c",
+        "AseguradoraID": [
+            "HDI Seguros"
+        ],
+        "Amount": "456.40",
+        "ExpirationDate": "2018-12-12T21:54:03Z"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoaseguradora",
+    "fields": {
+        "ProyectoAseguradoraID": "a4f5b64b-7e27-41ba-b510-f773ed53185c",
+        "AseguradoraID": [
+            "Pendiente"
+        ],
+        "Amount": null,
+        "ExpirationDate": null
+    }
+}
+]

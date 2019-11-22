@@ -1,0 +1,116 @@
+[
+{
+    "model": "empresas_and_proyectos.proyecto",
+    "fields": {
+        "InstitucionFinancieraID": [
+            "Pendiente"
+        ],
+        "Name": "Nueva Franklin",
+        "Symbol": "NF",
+        "Address": "Arturo Prat 1942",
+        "ComunaID": [
+            "Santiago Centro"
+        ],
+        "InmobiliariaID": [
+            "INMOBILIARIA NUEVA FRANKLIN SPA"
+        ],
+        "ConstructoraID": [
+            "CONSTRUCTORA INGEVEC S.A"
+        ],
+        "ProyectoAseguradoraID": [
+            "986c0f7b-b465-4990-9640-dd36aecc07a1"
+        ],
+        "ProyectoApprovalState": [
+            "Pendiente, falta informaci\u00f3n"
+        ],
+        "CotizacionDuration": 4,
+        "GuaranteeAmount": 500000,
+        "MoreThanOneEtapa": false,
+        "PlanMediosState": [
+            "Pendiente"
+        ],
+        "BorradorPromesaState": [
+            "Agregado"
+        ],
+        "IngresoComisionesState": [
+            "Agregado"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyecto",
+    "fields": {
+        "InstitucionFinancieraID": [
+            "Banco Santander"
+        ],
+        "Name": "Nilontraro",
+        "Symbol": "NL",
+        "Address": "General Flores 238",
+        "ComunaID": [
+            "Providencia"
+        ],
+        "InmobiliariaID": [
+            "SOCIEDAD DE INVERSIONES NILONTRARO Y COMPA\u00d1IA LIMITADA"
+        ],
+        "ConstructoraID": [
+            "HELVECIA S.A."
+        ],
+        "ProyectoAseguradoraID": [
+            "e47dbfdd-fe66-4078-ae9c-16519a631603"
+        ],
+        "ProyectoApprovalState": [
+            "Pendiente, falta informaci\u00f3n"
+        ],
+        "CotizacionDuration": 2,
+        "GuaranteeAmount": 300000,
+        "MoreThanOneEtapa": false,
+        "PlanMediosState": [
+            "Pendiente"
+        ],
+        "BorradorPromesaState": [
+            "Pendiente"
+        ],
+        "IngresoComisionesState": [
+            "Pendiente"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyecto",
+    "fields": {
+        "InstitucionFinancieraID": [
+            "Banco Estado"
+        ],
+        "Name": "Alameda Connect",
+        "Symbol": "AC",
+        "Address": "Alameda Bernando OHiggins c/n Placilla",
+        "ComunaID": [
+            "Estaci\u00f3n Central"
+        ],
+        "InmobiliariaID": [
+            "INMOBILIARIA FORTALEZA PLACILLA SPA"
+        ],
+        "ConstructoraID": [
+            "INMOBILIARIA FORTALEZA PLACILLA SPA"
+        ],
+        "ProyectoAseguradoraID": [
+            "9ac9ea9b-79e5-42c8-8a3b-20bda9df629c"
+        ],
+        "ProyectoApprovalState": [
+            "Pendiente, falta informaci\u00f3n"
+        ],
+        "CotizacionDuration": 1,
+        "GuaranteeAmount": 100000,
+        "MoreThanOneEtapa": false,
+        "PlanMediosState": [
+            "Pendiente"
+        ],
+        "BorradorPromesaState": [
+            "Pendiente"
+        ],
+        "IngresoComisionesState": [
+            "Pendiente"
+        ]
+    }
+}
+]

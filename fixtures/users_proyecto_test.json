@@ -1,0 +1,184 @@
+[
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "122652246"
+        ],
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "UserProyectoTypeID": [
+            "Jefe de Proyecto"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "124730767"
+        ],
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "UserProyectoTypeID": [
+            "Asistente Comercial"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "144680057"
+        ],
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "UserProyectoTypeID": [
+            "Vendedor"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "120750682"
+        ],
+        "ProyectoID": [
+            "Nilontraro"
+        ],
+        "UserProyectoTypeID": [
+            "Jefe de Proyecto"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "137131641"
+        ],
+        "ProyectoID": [
+            "Nilontraro"
+        ],
+        "UserProyectoTypeID": [
+            "Asistente Comercial"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "172507654"
+        ],
+        "ProyectoID": [
+            "Nilontraro"
+        ],
+        "UserProyectoTypeID": [
+            "Vendedor"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "7667227k"
+        ],
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "UserProyectoTypeID": [
+            "Aprobador"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "77421912"
+        ],
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "UserProyectoTypeID": [
+            "Representante"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "122652246"
+        ],
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "UserProyectoTypeID": [
+            "Jefe de Proyecto"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "124730767"
+        ],
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "UserProyectoTypeID": [
+            "Asistente Comercial"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "144680057"
+        ],
+        "ProyectoID": [
+            "Alameda Connect"
+        ],
+        "UserProyectoTypeID": [
+            "Vendedor"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "174032203"
+        ],
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "UserProyectoTypeID": [
+            "Representante"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userproyecto",
+    "fields": {
+        "UserID": [
+            "95771394"
+        ],
+        "ProyectoID": [
+            "Nueva Franklin"
+        ],
+        "UserProyectoTypeID": [
+            "Aprobador"
+        ]
+    }
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+    "model": "history.counterhistory",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Nueva Franklin"
+        ]
+    }
+},
+{
+    "model": "history.counterhistory",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Nilontraro"
+        ]
+    }
+},
+{
+    "model": "history.counterhistory",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Alameda Connect"
+        ]
+    }
+}
+]

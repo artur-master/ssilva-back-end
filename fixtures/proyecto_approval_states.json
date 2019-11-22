@@ -1,0 +1,26 @@
+[
+{
+    "model": "empresas_and_proyectos.proyectoapprovalstate",
+    "fields": {
+        "Name": "Pendiente, falta informaci\u00f3n"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoapprovalstate",
+    "fields": {
+        "Name": "Pendiente, falta aprobaci\u00f3n legal"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoapprovalstate",
+    "fields": {
+        "Name": "Pendiente, falta aprobaci\u00f3n gerencia"
+    }
+},
+{
+    "model": "empresas_and_proyectos.proyectoapprovalstate",
+    "fields": {
+        "Name": "Aprobado"
+    }
+}
+]

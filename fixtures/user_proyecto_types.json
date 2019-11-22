@@ -1,0 +1,62 @@
+[
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Jefe de Proyecto"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Vendedor"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Asistente Comercial"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Marketing"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Legal"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Finanza"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Aprobador"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Representante"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Autorizador"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Arquitecto"
+    }
+  }
+]

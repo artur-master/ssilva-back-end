@@ -1,0 +1,99 @@
+[
+{
+    "model": "common.region",
+    "pk": null,
+    "fields": {
+        "Name": "Arica y Parinacota"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Tarapac\u00e1"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Antofagasta"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Atacama"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Coquimbo"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Valpara\u00edso"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Metropolitana de Santiago"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Del Libertador Gral. Bernardo O\u2019Higgins"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Del Maule"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Del Biob\u00edo"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "De la Araucan\u00eda"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "De los R\u00edos"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "De los Lagos"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Ays\u00e9n del Gral. Carlos Ib\u00e1\u00f1ez del Campo"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "Magallanes y de la Ant\u00e1rtica Chilena"
+    }
+},
+{
+    "model": "common.region",
+    "fields": {
+        "Name": "\u00d1uble"
+    }
+}
+]

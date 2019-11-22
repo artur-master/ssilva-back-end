@@ -1,0 +1,32 @@
+[
+{
+    "model": "empresas_and_proyectos.institucionfinanciera",
+    "fields": {
+        "Name": "No tiene"
+    }
+},
+{
+    "model": "empresas_and_proyectos.institucionfinanciera",
+    "fields": {
+        "Name": "Pendiente"
+    }
+},
+{
+    "model": "empresas_and_proyectos.institucionfinanciera",
+    "fields": {
+        "Name": "Banco Santander"
+    }
+},
+{
+    "model": "empresas_and_proyectos.institucionfinanciera",
+    "fields": {
+        "Name": "Banco Estado"
+    }
+},
+{
+    "model": "empresas_and_proyectos.institucionfinanciera",
+    "fields": {
+        "Name": "Banco Security"
+    }
+}
+]

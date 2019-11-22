@@ -1,0 +1,229 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+        html,body{height: 100%;}
+        body{
+            font-weight: 300;
+            color: #262B34;
+            height: 40px;
+        }
+        .bold{
+            font-weight: 300;
+        }
+        .highlight{
+          background-color:#ffffb1;
+        }
+        .highlight-add{
+          background-color:#cfffd1;
+        }
+    </style>
+</head>
+<body>
+  <div style="text-align:right">
+    <table>
+      <thead>
+        <tr style="border: 1px solid #000000;">
+          <th style="font-size: 80%; width: 7%; height: 20px;">Simbologia</th>
+          </tr>     
+      </thead>
+      <tbody>
+          <tr style="border: 1px solid #000000;">
+              <td style="font-size: 80%; height: 20px; text-align: center; background-color:#cfffd1;">
+                Creación
+              </td>
+          </tr>
+          <tr style="border: 1px solid #000000;">
+              <td style="font-size: 80%; height: 20px; text-align: center; background-color:#ffffb1;">
+                Modificación
+              </td>
+          </tr>
+      </tbody>
+      </table>
+  </div>
+
+  {% language 'es' %}
+    {% if not proyecto.Name == datos_modificados.Name %}
+      <h2 align="center"> Proyecto:<span class="highlight"> {{ datos_modificados.Name }} </span> </align> </h2>
+    {% else %}
+      <h2 align="center"> Proyecto: {{ proyecto.Name }} </align> </h2>
+    {% endif %}    
+    <br>
+
+    <div style="text-align:center">
+        <span><strong>Información del Proyecto</strong></span>
+    </div>
+  {% if not proyecto.Symbol == datos_modificados.Symbol %}
+      <p> <strong>Abreviación: </strong> <span class="highlight"> {{ datos_modificados.Symbol }} </span></p> 
+  {% else %}
+      <p> <strong>Abreviación: </strong> {{ proyecto.Symbol }}</p> 
+  {% endif %}
+
+  {% if not proyecto.InstitucionFinancieraID == institucion_financiera_nueva %}
+    <p> <strong>Institución Financiera Alzante: </strong> <span class="highlight"> {{ institucion_financiera_nueva.Name }} </span></p>
+  {% else %}
+    <p> <strong>Institución Financiera Alzante: </strong>{{ proyecto.InstitucionFinancieraID.Name }} </p>
+  {% endif %}
+  
+  {% if not proyecto.Address == datos_modificados.Address %}
+      <p> <strong>Dirección: </strong> <span class="highlight"> {{ datos_modificados.Address }} </span></p> 
+  {% else %}
+      <p> <strong>Dirección: </strong> {{ proyecto.Address }}</p>
+  {% endif %}
+
+  {% if not proyecto.ComunaID == comuna_nueva %}
+      <p> <strong>Comuna: </strong> <span class="highlight"> {{ comuna_nueva.Name }} </span></p> 
+  {% else %}
+      <p> <strong>Comuna: </strong> {{ proyecto.ComunaID.Name }}</p>
+  {% endif %}
+
+  {% if not proyecto.InmobiliariaID == inmobiliaria_nueva %}
+      <p> <strong>Inmobiliaria: </strong> <span class="highlight"> {{ inmobiliaria_nueva.RazonSocial }} </span></p> 
+  {% else %}
+      <p> <strong>Inmobiliaria: </strong> {{ proyecto.InmobiliariaID.RazonSocial }}</p>
+  {% endif %}
+
+  {% if not proyecto.ConstructoraID == constructora_nueva %}
+    <p> <strong>Constructora: </strong> <span class="highlight"> {{ constructora_nueva.RazonSocial }} </span></p> 
+  {% else %}
+    <p> <strong>Constructora: </strong> {{ proyecto.ConstructoraID.RazonSocial }}</p>
+  {% endif %}
+
+  <p><strong>Contacto(s): </strong></p>
+  {% for nuevo in contactos_nuevos %}
+    {% with contactos|index:forloop.counter0 as antiguo %}
+      {% if nuevo.ContactInfoTypeID == antiguo.ContactInfoTypeID %}
+          {% if nuevo.ContactInfoTypeID.Name == 'Email' and antiguo.ContactInfoTypeID.Name == 'Email' %}
+            {% if not nuevo.Value == antiguo.Value %}
+              <li> Email: <span class="highlight"> {{ nuevo.Value }} </span></li>
+            {% else %}
+              <li> Email: {{ antiguo.Value }} </li>
+            {% endif %}
+          {% else %}
+            {% if nuevo.ContactInfoTypeID.Name == 'Phone' and antiguo.ContactInfoTypeID.Name == 'Phone' %}   
+              {% if not nuevo.Value == antiguo.Value %}
+                  <li> Teléfono: <span class="highlight"> {{ nuevo.Value }}</span></li>
+              {% else %}
+                  <li> Teléfono: {{ antiguo.Value }}</li>
+              {% endif %}
+            {% endif %}    
+          {% endif %}
+      {% else %}
+        {% if nuevo.ContactInfoTypeID.Name == 'Email' %}
+          <li> Email: <span class="highlight-add"> {{ nuevo.Value }} </span></li>          
+        {% else %}
+          {% if nuevo.ContactInfoTypeID.Name == 'Phone' %}
+            <li> Teléfono: <span class="highlight-add"> {{ nuevo.Value }} </span></li>  
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endwith %}
+  {% endfor %}
+
+
+  {% if not proyecto.CotizacionDuration == datos_modificados.CotizacionDuration %}
+    <p> <strong>Duración de las Cotizaciones: </strong> <span class="highlight"> {{ datos_modificados.CotizacionDuration }} dia(s) </span></p> 
+  {% else %}
+    <p><strong>Duración de las Cotizaciones: </strong>  {{ proyecto.CotizacionDuration }} dia(s) </p>
+  {% endif %}
+
+  {% if not proyecto.GuaranteeAmount == datos_modificados.GuaranteeAmount %}
+    <p> <strong>Monto Garantía: </strong> <span class="highlight"> $ {{ datos_modificados.GuaranteeAmount| numberformat }} pesos </span></p> 
+  {% else %}
+    <p> <strong>Monto Garantía: </strong>  $ {{ proyecto.GuaranteeAmount | numberformat }} pesos </p>
+  {% endif %}
+
+  <p> <strong>Estado aprobación: </strong>  {{ proyecto.ProyectoApprovalState.Name }}</p>
+  <p> <strong>Fecha Creación: </strong> {{ date |date:"d/F/Y" }} </p>
+  <p> <strong>Hora Creación: </strong> {{ date |time:"H:i" }}</p> 
+
+  {% if proyecto.ProyectoAseguradoraID.Amount and proyecto.ProyectoAseguradoraID.ExpirationDate  %}
+    <p><strong>Aseguradora</strong></p>
+    <table style="width: 100%;">
+      <thead>
+        <tr style="border: 1px solid #000000;">
+          <th style="font-size: 80%; width: 15%">Aseguradora</th>
+          <th style="font-size: 80%; width: 15%">Monto</th>
+          <th style="font-size: 80%; width: 15%">Fecha de Vencimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border: 1px solid #000000;">
+          <td style="font-size: 80%; text-align: center">
+            {% if not aseguradora_nueva.AseguradoraID.Name == aseguradora.AseguradoraID.Name %}
+              <span class="highlight">{{ aseguradora_nueva.AseguradoraID.Name }} </span>
+            {% else %}
+              {{ aseguradora.AseguradoraID.Name }}
+            {% endif %}
+          </td>
+          <td style="font-size: 80%; text-align: center">
+            {% if not aseguradora_nueva.Amount == aseguradora.Amount %}
+              {% if aseguradora_nueva.Amount %}
+                <span class="highlight"> {{ aseguradora_nueva.Amount| floatformat }} UF</span>
+              {% else %}
+                <span class="highlight">-</span>
+              {% endif %}
+            {% else %}
+              {{ aseguradora.Amount | floatformat }} UF
+            {% endif %}
+          </td>
+          <td style="font-size: 80%; text-align: center">
+            {% if not aseguradora_nueva.ExpirationDate == aseguradora.ExpirationDate %}
+              {% if aseguradora_nueva.ExpirationDate %}
+                <span class="highlight">{{ aseguradora_nueva.ExpirationDate | date:"d/F/Y" }} </span>
+              {% else %}
+                <span class="highlight">-</span>
+              {% endif %}
+            {% else %}
+              {{ aseguradora.ExpirationDate | date:"d/F/Y" }}
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  {% endif %}
+
+  <p><strong>Usuarios</strong></p>
+  <table style="width: 100%;">
+    <thead>
+      <tr style="border: 1px solid #000000;">
+        <th style="font-size: 80%; width: 15%">Nombre</th>
+        <th style="font-size: 80%; width: 15%">Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for nuevo in usuarios_nuevos %}
+        <tr style="border: 1px solid #000000;">
+          {% with usuarios|index:forloop.counter0 as antiguo %}
+            {% if nuevo.UserID.UserID == antiguo.UserID.UserID %}
+              {% if not nuevo.UserID == antiguo.UserID %}
+                  <td style="font-size: 75%; text-align: center"> <span class="highlight"> {{ nuevo.UserID }} </span></td>
+              {% else %}
+                  <td style="font-size: 75%; text-align: center"> {{ antiguo.UserID }} </td>
+              {% endif %}
+
+              {% if not nuevo.UserProyectoTypeID.Name == antiguo.UserProyectoTypeID.Name %}
+                <td style="font-size: 75%; text-align: center"> <span class="highlight"> {{ nuevo.UserProyectoTypeID.Name }} </span></td>
+              {% else %}
+                <td style="font-size: 75%; text-align: center"> {{ antiguo.UserProyectoTypeID.Name }} </td>
+              {% endif %}
+            {% else %}
+                <td style="font-size: 75%; text-align: center"> <span class="highlight-add"> {{ nuevo.UserID }} </span></td>
+                <td style="font-size: 75%; text-align: center"> <span class="highlight-add"> {{ nuevo.UserProyectoTypeID.Name }} </span></td>   
+            {% endif %}
+          {% endwith %}
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  {% endlanguage %}
+  </body>
+</html>

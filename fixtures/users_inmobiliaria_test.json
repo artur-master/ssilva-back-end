@@ -1,0 +1,44 @@
+[
+{
+    "model": "empresas_and_proyectos.userinmobiliaria",
+    "fields": {
+        "UserID": [
+            "77421912"
+        ],
+        "InmobiliariaID": [
+            "INMOBILIARIA FORTALEZA PLACILLA SPA"
+        ],
+        "UserInmobiliariaTypeID": [
+            "Representante"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userinmobiliaria",
+    "fields": {
+        "UserID": [
+            "77421912"
+        ],
+        "InmobiliariaID": [
+            "INMOBILIARIA FORTALEZA PLACILLA SPA"
+        ],
+        "UserInmobiliariaTypeID": [
+            "Aprobador"
+        ]
+    }
+},
+{
+    "model": "empresas_and_proyectos.userinmobiliaria",
+    "fields": {
+        "UserID": [
+            "7667227k"
+        ],
+        "InmobiliariaID": [
+            "INMOBILIARIA FORTALEZA PLACILLA SPA"
+        ],
+        "UserInmobiliariaTypeID": [
+            "Aprobador"
+        ]
+    }
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+    "model": "ventas.counterfolio",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Nueva Franklin"
+        ]
+    }
+},
+{
+    "model": "ventas.counterfolio",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Nilontraro"
+        ]
+    }
+},
+{
+    "model": "ventas.counterfolio",
+    "fields": {
+        "Count": 1,
+        "ProyectoID": [
+            "Alameda Connect"
+        ]
+    }
+}
+]

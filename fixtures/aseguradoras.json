@@ -1,0 +1,26 @@
+[
+{
+    "model": "empresas_and_proyectos.aseguradora",
+    "fields": {
+        "Name": "No tiene"
+    }
+},
+{
+    "model": "empresas_and_proyectos.aseguradora",
+    "fields": {
+        "Name": "Pendiente"
+    }
+},
+{
+    "model": "empresas_and_proyectos.aseguradora",
+    "fields": {
+        "Name": "Metlife"
+    }
+},
+{
+    "model": "empresas_and_proyectos.aseguradora",
+    "fields": {
+        "Name": "HDI Seguros"
+    }
+}
+]

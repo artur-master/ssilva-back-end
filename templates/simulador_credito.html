@@ -1,0 +1,363 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            height: 30px;
+
+        }
+        .logo {
+            width: 120px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+{% language 'es' %}
+    <table>
+        <tr style="height:50px;">
+            <th><img class="logo" align="left" src="{% static 'logo.png' %}" /></th>
+            <th style="font-size: {{ tamaño_letra }}%;line-height: 80%">
+                <h6 style="text-align: right"> {{ gestion }} </h6>
+                <p style="text-align: right;font-weight: lighter;"> Augusto Leguia Norte 201, Las Condes, Santiago</p>
+                <p style="text-align: right;font-weight: lighter;">
+                    Fono: 4961300 Fax: 3629056
+                </p>
+            </th>
+        </tr>
+    </table>
+    <h2 style="font-size: {{ tamaño_letra }}%;text-align: center">
+        SIMULADOR DE CREDITO
+    </h2>
+    <table>
+        <tr style="height: 15px">
+            {% now "d" as day %}
+            {% now "m" as month %}
+            {% now "Y" as year %}
+            <td style="font-size: {{ tamaño_letra }}%;text-align: center">
+               Fecha: {{ day }}/{{ month }}/{{ year }}
+            </td>
+        </tr>
+        <tr style="height: 15px">
+            <td style="font-size: {{ tamaño_letra }}%;text-align: center">
+               Valor UF: {{ uf }}
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 20px">
+        <tr>
+            <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+               DEPARTAMENTO N°
+                {% for inmueble_reserva in inmuebles_a_reservar  %}
+                    {% if inmueble_reserva.InmuebleID.InmuebleTypeID.Name == 'Departamento' %}
+                        {{ inmueble_reserva.InmuebleID.Number }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    <table style="border: 0.8px solid #000000;margin-top: 20px">
+        <tr style="height: 80px">
+            <td style="padding-top:5px;font-size: {{ tamaño_letra }}%;text-align: center">
+                <strong>Valor de la Propiedad</strong> &nbsp;  {{ total_uf  | floatformat:2 }} UF <br>
+                <strong>Crédito Hipotecario</strong> &nbsp; {{ total_credito  | floatformat:2 }} UF <br>
+                <strong>Porcentaje a Financiar</strong> &nbsp; {{ porcentaje_credito  | floatformat:2 }} %
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 20px">
+        <tr>
+            <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                {{ cliente }}
+            </td>
+        </tr>
+    </table>
+    <table style="border: 0.8px solid #000000;margin-top: 10px">
+        <tr style="height: 50px">
+            <th style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Plazo(años)
+            </th>
+            <th style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Tasa
+            </th>
+            <th style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Dividendo(UF)
+            </th>
+            <th style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Seguro Incendio y Sismo(UF)
+            </th>
+            <th style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Seguro Desgravamen(UF)
+            </th>
+            <th style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Dividendo Total(UF)
+            </th>
+            <th style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Dividendo Total($)
+            </th>
+            <th style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                Renta Min. Exigida($)
+            </th>
+        </tr>
+        {% if values_8 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    8
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_8.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_8.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_8.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_8.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_8.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_8.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if values_10 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    10
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_10.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_10.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_10.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_10.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_10.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_10.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if values_15 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    15
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_15.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_15.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_15.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_15.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_15.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_15.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if values_20 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    20
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_20.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_20.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_20.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_20.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_20.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_20.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if values_25 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    25
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_25.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_25.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_25.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_25.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_25.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_25.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if values_30 %}
+            <tr style="height: 50px">
+                <td style="width: 230px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    30
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ rate | floatformat:2 }}
+                </td>
+                <td style="width: 250px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_30.dividend_uf }}
+                </td>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_30.fire_quake_insurance | floatformat:2 }}
+                </th>
+                <td style="width: 300px;font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_30.desgravamen_insurance | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {{ values_30.dividend_insurances | floatformat:2 }}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_30.dividend_insurances|multiplydecimal:uf as total_pesos %}
+                        {{ total_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+                <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;text-align: center">
+                    {% with values_30.min_rent|multiplydecimal:uf as renta_pesos %}
+                        {{ renta_pesos | numberformat }}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+    <table style="margin-top: 20px">
+        <tr>
+            <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;padding-right: 15px;text-align: right">
+                Ahorro Tributario 1er Año
+            </td>
+            <td style="width:100px;font-weight: bold;font-size: {{ tamaño_letra }}%;padding-left: 8px;text-align: left">
+                12.75
+            </td>
+            <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;padding-left: 5px;text-align: left">
+                343.705
+            </td>
+        </tr>
+    </table>
+    <table style="border: 0.8px solid #000000;margin-top: 20px">
+        <tr style="height: 80px">
+            <td style=" padding-top:5px;font-size: {{ tamaño_letra }}%;text-align: center">
+                <strong>Proyecto:</strong> {{ proyecto.Name }} <br>
+                <strong>Direccion:</strong> {{ proyecto.Address }} <br>
+                <strong>Fono:</strong>: 44657796 <br>
+                <strong>Ejecutivo:</strong> {{ reserva.VendedorID }}
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top:15px">
+        <tr style="height:20px">
+            <td style="font-size: 8px;padding-left: 2px;font-weight:bold">
+                1. La edad del cliente más el plazo del crédito no pueden superar los 80 años. La prima del seguro
+                de desgravamen es calculada sobre el saldo de la deuda.
+            </td>
+        </tr>
+        <tr style="height:20px">
+            <td style="font-size: 8px;padding-left: 2px;font-weight:bold">
+                2. El primer dividendo a pagar, se genera a partir del mes subsiguiente de la firma de escritura.
+            </td>
+        </tr>
+        <tr style="height:30px">
+            <td style="font-size: 8px;padding-left: 2px;font-weight:bold">
+                3. Los dividendos son referenciales y están sujetos a variación, dependiendo del mes en que se firma
+                la escritura y así también a las condiciones y variaciones propias del mercado para este tipo de
+                operaciones.
+            </td>
+        </tr>
+        <tr style="height:30px">
+            <td style="font-size: 8px;padding-left: 2px;font-weight:bold">
+                4. La tasa de interés de demás valores que se contienen en este instrumento son de referencia y no
+                comprometen a {{ gestion }} La evaluación y aprobación del crédito requiere previamente la entrega
+                de todos los antecedentes del cliente que la Institución Financiera exija.
+            </td>
+        </tr>
+    </table>
+{% endlanguage %}
+</body>
+</html>

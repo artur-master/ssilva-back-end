@@ -1,0 +1,20 @@
+[
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Marketing"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Legal"
+    }
+  },
+  {
+    "model": "empresas_and_proyectos.userproyectotype",
+    "fields": {
+      "Name": "Finanza"
+    }
+  }
+]

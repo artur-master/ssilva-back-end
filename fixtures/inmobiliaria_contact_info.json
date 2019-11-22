@@ -1,0 +1,26 @@
+[
+{
+    "model": "empresas_and_proyectos.inmobiliariacontactinfo",
+    "fields": {
+        "InmobiliariaID": [
+            "SOCIEDAD DE INVERSIONES NILONTRARO Y COMPA\u00d1IA LIMITADA"
+        ],
+        "ContactInfoTypeID": [
+            "Email"
+        ],
+        "Value": "lilianwrath@hotmail.com"
+    }
+},
+{
+    "model": "empresas_and_proyectos.inmobiliariacontactinfo",
+    "fields": {
+        "InmobiliariaID": [
+            "INMOBILIARIA NUEVA FRANKLIN SPA"
+        ],
+        "ContactInfoTypeID": [
+            "Email"
+        ],
+        "Value": "constanza@generaxxion.cl"
+    }
+}
+]

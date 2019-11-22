@@ -1,0 +1,32 @@
+[
+    {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
+            "Name": "Disponible"
+        }
+    },
+    {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
+            "Name": "Bloqueado por inmobiliaria"
+        }
+    },
+    {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
+            "Name": "Reservado"
+        }
+    },
+    {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
+            "Name": "Promesado"
+        }
+    },
+        {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
+            "Name": "Vendido"
+        }
+    }
+    ]

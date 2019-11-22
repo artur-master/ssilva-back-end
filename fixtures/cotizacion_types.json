@@ -1,0 +1,14 @@
+[
+{
+    "model": "ventas.cotizaciontype",
+    "fields": {
+        "Name": "Presencial"
+    }
+},
+{
+    "model": "ventas.cotizaciontype",
+    "fields": {
+        "Name": "No presencial"
+    }
+}
+]

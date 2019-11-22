@@ -1,0 +1,58 @@
+[
+{
+    "model": "empresas_and_proyectos.inmobiliaria",
+    "fields": {
+        "ComunaID": [
+            "Providencia"
+        ],
+        "Rut": "764864689",
+        "RazonSocial": "SOCIEDAD DE INVERSIONES NILONTRARO Y COMPA\u00d1IA LIMITADA",
+        "Direccion": "General Flores 238",
+        "IsInmobiliaria": true,
+        "IsConstructora": false,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.inmobiliaria",
+    "fields": {
+        "ComunaID": [
+            "Vitacura"
+        ],
+        "Rut": "767464614",
+        "RazonSocial": "INMOBILIARIA NUEVA FRANKLIN SPA",
+        "Direccion": "Avenida Kennedy 5770 Oficina 1202",
+        "IsInmobiliaria": true,
+        "IsConstructora": false,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.inmobiliaria",
+    "fields": {
+        "ComunaID": [
+            "Las Condes"
+        ],
+        "Rut": "765223822",
+        "RazonSocial": "INMOBILIARIA FORTALEZA PLACILLA SPA",
+        "Direccion": "Alonso de C\u00f3rdova 5900 Oficina 1201",
+        "IsInmobiliaria": true,
+        "IsConstructora": true,
+        "State": true
+    }
+},
+{
+    "model": "empresas_and_proyectos.inmobiliaria",
+    "fields": {
+        "ComunaID": [
+            "Las Condes"
+        ],
+        "Rut": "768964823",
+        "RazonSocial": "INMOBILIARIA AMENGUAL S.P.A",
+        "Direccion": "Augusto Leguia Norte 201",
+        "IsInmobiliaria": true,
+        "IsConstructora": false,
+        "State": true
+    }
+}
+]

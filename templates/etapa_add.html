@@ -1,0 +1,103 @@
+{% load static %}
+{% load i18n %}
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+        html,body{height: 100%;}
+        body{
+            font-weight: 300;
+            color: #262B34;
+            height: 40px;
+        }
+        .bold{
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    {% language 'es' %}
+    <h2 align="center"> Etapa: {{ etapa.Name }} </align> </h2>
+    <br>
+    <div style="text-align:center">
+            <span> <strong>Información de la Etapa</strong></span>
+    </div>
+  
+    <p> <strong>Estado: </strong>  {{ etapa.EtapaStateID.Name }}</p>
+    {% if etapa.SalesStartDate %}
+      <p> <strong>Inicio de Ventas: </strong>  {{ etapa.SalesStartDate |date:"d/F/Y" }}</p>
+    {% else %}
+      <p> <strong>Inicio de Ventas: </strong> Sin definir</p>
+    {% endif %}
+    <p><strong>Inmuebles</strong></p>
+    <table>
+        <thead>
+          <tr style="border: 1px solid #000000;">
+            <th style ="font-size: 70%;">Tipo</th>
+            <th style ="font-size: 70%;">Tipología</th>
+            <th style ="font-size: 70%;">Edificio</th>
+            <th style ="font-size: 65%;">Orientación(es)</th>
+            <th style ="font-size: 70%;">Número</th>
+            <th style ="font-size: 70%;">Piso</th>
+            <th style ="font-size: 70%;">Cantidad de Baños</th>
+            <th style ="font-size: 70%;">Cantidad de Habitaciones</th>
+            <th style ="font-size: 70%;">Metros Cuadrados Útiles</th>
+            <th style ="font-size: 70%;">Metros Cuadrados Totales</th>
+            <th style ="font-size: 70%;">Uso y Goce</th>
+            <th style ="font-size: 70%;">Precio</th>
+            <th style ="font-size: 70%;">Descuento Máximo</th>
+            <th style ="font-size: 70%;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inmueble in inmuebles %}
+          <tr style="border: 1px solid #000000;">
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.InmuebleTypeID.Name }} </td>
+            <td style="text-align: center; font-size: 70%;">
+            {% if inmueble.TipologiaID %}
+              {{ inmueble.TipologiaID.Name }}
+            {% else %}
+              <strong> - </strong>
+            {% endif %}
+            </td>
+            <td style="text-align: center; font-size: 70%;">
+            {% if inmueble.EdificioID %}
+              {{ inmueble.EdificioID.Name }}
+            {% else %}
+              <strong> - </strong>
+            {% endif %}
+            </td>
+            <td style="text-align: center; font-size: 70%;">    
+              {% for orientacion in inmueble.OrientationID.all %}
+                {{ orientacion.Name }}
+              {% endfor %}
+            </td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.Number }}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.Floor }}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.BathroomQuantity }}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.BedroomsQuantity }}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.UtilSquareMeters | floatformat}}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.TotalSquareMeters| floatformat }}</td>
+            <td style="text-align: center; font-size: 70%;">    
+              {% if inmueble.IsNotUsoyGoce %}
+                Sí
+              {% else %}
+                No
+              {% endif %}
+            </td>
+            <td style="text-align: center; font-size: 70%;">UF {{ inmueble.Price | floatformat }}</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.MaximunDiscount | floatformat }} %</td>
+            <td style="text-align: center; font-size: 70%;">{{ inmueble.InmuebleStateID.Name }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+    {% endlanguage %}
+
+  </body>
+</html>

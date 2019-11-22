@@ -1,0 +1,394 @@
+[
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Inmobiliaria sin representante",
+            "TableName": "Inmobiliaria",
+            "RedirectRouteName": "empresa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Inmobiliaria sin aprobador",
+            "TableName": "Inmobiliaria",
+            "RedirectRouteName": "empresa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin representante",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin vendedor",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin asistente comercial",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin jefe de proyectos",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto requiere aprobaci\u00f3n",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto aprobado",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto rechazado",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin aprobador",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Etapa sin fecha de ventas",
+            "TableName": "Etapa",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Cambio de contraseña pendiente",
+            "TableName": "User",
+            "RedirectRouteName": "miPerfil"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto con instituci\u00f3n financiera pendiente",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto con aseguradora pendiente",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto pendiente a aprobación",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto con constructora pendiente",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin inmuebles",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva con información pendiente",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva con control pendiente",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva rechazada",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva cancelada",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva modificada con información pendiente",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Reserva modificada con control pendiente",
+            "TableName": "Reserva",
+            "RedirectRouteName": "reserva"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Proyecto sin borrador de promesa",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta creada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+     {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta requiere aprobacion inmobiliaria",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+     {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta aprobada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta rechazada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Preaprobacion credito aprobada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Preaprobacion credito rechazada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta pendiente aprobacion confeccion promesa",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta requiere aprobacion confeccion promesa",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Confeccion promesa aprobada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Confeccion promesa rechazada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta cancelada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Oferta modificada",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa creada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Maqueta aprobada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Maqueta rechazada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa aprobada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa rechazada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa enviada a inmobiliaria",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Envio de copias",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa modificada",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Documento confirmado",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Documento rechazado",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Documento de actualizacion",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Crear comision",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Comision de actualizacion",
+            "TableName": "Proyecto",
+            "RedirectRouteName": "proyecto-tab-menu"
+        }
+    }
+]

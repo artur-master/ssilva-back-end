@@ -1,0 +1,672 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            height: 30px;
+
+        }
+        .logo {
+            width: 120px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+{% language 'es' %}
+    <table>
+        <tr style="height:50px;">
+            <th><img class="logo" align="left" src="{% static 'logo.png' %}"/></th>
+        </tr>
+    </table>
+    <h2 style="font-size: {{ tamaño_letra }}%;text-align: center">
+        SOLICITUD DE PRE-APROBACION DE CREDITO HIPOTECARIO
+    </h2>
+    <table>
+        <tr style="height:15px;">
+            <td style="font-size: 14px;padding-left: 2px;padding-top: 2px;font-weight:bold;text-align: left">
+                <p>
+                    Datos del Solicitante
+                </p>
+            </td>
+            <td style="font-size: 14px;padding-right: 2px;padding-top: 2px;font-weight: bold;text-align: right">
+                <p>
+                    {{ reserva.Folio }}
+                </p>
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Nombre: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Correo: &nbsp;&nbsp;&nbsp;&nbsp; {{ correo }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                RUT: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Rut  | rutformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Fecha Nacimiento: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.BirthDate  | date:"d/M/Y" }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Nacionalidad: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Nationality }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Estado Civil: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.CivilStatus }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Contrato Matrimonio: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.ContractMarriageType }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                N° Cargas: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Carga }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Telefono: &nbsp;&nbsp;&nbsp;&nbsp; {{ telefono }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Domicilio Particular: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Address }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Provincia: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.ComunaID.ProvinciaID.Name }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Comuna: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.ComunaID.Name}}
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 8px">
+        <tr style="height:15px;">
+            <td style="font-size: 14px;padding-left: 2px;padding-top: 2px;font-weight:bold;text-align: left">
+                <p>
+                    Antecedentes Laborales
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Profesion: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Ocupation }}
+            </td>
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Actividad o Cargo: &nbsp;&nbsp;&nbsp;&nbsp; {{ empleador.Extra.CurrentPosition }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Sueldo Variable: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $ {{ cliente.Extra.Values.VariableSalary | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Empleador: &nbsp;{{ empleador.RazonSocial }}
+            </td>
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Antiguedad laboral: &nbsp;&nbsp;&nbsp;&nbsp; {{ cliente.Antiquity }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Honorarios: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $ {{ cliente.Extra.Values.Honoraries | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Direccion: {{  empleador.Extra.Address }}
+            </td>
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Telefono: &nbsp;&nbsp;&nbsp;&nbsp; {{ empleador.Extra.Phone }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Retiros: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $ {{ cliente.Extra.Values.Retirements | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            {% if cliente.Extra.Independent %}
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Independiente: &nbsp;&nbsp;&nbsp;&nbsp; SI
+            </td>
+            {% else %}
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Independiente: &nbsp;&nbsp;&nbsp;&nbsp; NO
+            </td>
+            {% endif %}
+            <td style="width: 600px;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Renta Liquida: &nbsp;&nbsp;&nbsp;&nbsp; ${{ cliente.Extra.Values.LiquidIncome | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Arriendos: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $ {{ cliente.Extra.Values.RealStateLeasing | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Tipo de Actividad: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="width: 600px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Sueldo Fijo: &nbsp;&nbsp;&nbsp;&nbsp; $ {{ cliente.Extra.Values.LiquidIncome | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Pension: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $ {{ cliente.Extra.Values.Pension | numberformat }}
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 8px">
+        <tr style="height:15px;">
+            <td style="font-size: 14px;padding-left: 2px;padding-top: 2px;font-weight:bold;text-align: left">
+                <p>
+                    Datos del Financiamiento y de la Propiedad a Adquirir
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Tipo de Propiedad: &nbsp;&nbsp;&nbsp;&nbsp;
+                {% for inmueble_reserva in inmuebles_a_reservar  %}
+                    {{ inmueble_reserva.InmuebleID.InmuebleTypeID.Name }}
+                    {% if not inmueble_reserva.InmuebleID.IsNotUsoyGoce %}
+                        (Uso y Goce)
+                    {% endif %}
+                    N° {{ inmueble_reserva.InmuebleID.Number }} &nbsp;
+                    Piso: {{ inmueble_reserva.InmuebleID.Floor }} <br>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Proyecto: &nbsp;&nbsp;&nbsp;&nbsp; {{ proyecto.Name }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Direccion: &nbsp;&nbsp;&nbsp;&nbsp; {{ proyecto.Address }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Provincia: &nbsp;&nbsp;&nbsp;&nbsp; {{ proyecto.ComunaID.ProvinciaID.Name }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Comuna: &nbsp;&nbsp;&nbsp;&nbsp; {{ proyecto.ComunaID.Name }}
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Financiamiento:
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Precio de venta: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                UF &nbsp;&nbsp;&nbsp;&nbsp;   {{ total_uf | floatformat:2 }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Credito solicitado: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                UF &nbsp;&nbsp;&nbsp;&nbsp;   {{ total_credito | floatformat:2  }} &nbsp;
+                {{ porcentaje_credito | floatformat:0 }} %
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Cuota Contado: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                UF &nbsp;&nbsp;&nbsp;&nbsp;   {{ total_contado | floatformat:2  }} &nbsp;
+                {{ porcentaje_contado | floatformat:0 }} %
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Tipo de instrumento
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Letra de Crédito:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Plazo(años):
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Mutuo Hipotecario:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Leasing:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 8px">
+        <tr style="height:15px;">
+            <td style="font-size: 14px;padding-left: 2px;padding-top: 2px;font-weight:bold;text-align: left">
+                <p>
+                    Antecedentes Codeudor
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:22px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Cónyuge:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Rut Cónyuge:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Sueldo Fijo:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:22px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%">
+                Complementador:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Rut Complementador:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Sueldo Variable:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Dirección:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Antiguedad laboral:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Honorarios:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Profesión:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Teléfono:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Retiros:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Actividad o Cargo:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Fecha de Nacimiento:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Arriendos:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Empleador:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Independiente:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Pensión:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Tipo de Actividad:
+            </td>
+            <td style="width:500px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width:250px;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Parentesco:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+
+            </td>
+            <td style="width: 250px;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Renta Liquida:
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                $
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 8px">
+        <tr style="height:15px;">
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Patrimonio
+            </td>
+            <td style="text-align: center;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;" >
+                Activos
+            </td>
+            <td colspan="1">
+            </td>
+            <td style="text-align: center;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Pasivos
+            </td>
+            <td style="text-align: center;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Pagos Mensuales
+            </td>
+            <td style="text-align: center;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Saldos
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Bienes Raices:
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.RealState | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Linea/Tarjeta Crédito: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditCard.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditCard.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditCard.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Vehiculos: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.Vehicle | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Crédito de Consumo: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoConsumo.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoConsumo.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoConsumo.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Depositos(Acciones): &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.DownPayment | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Crédito Hipotecario: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoHipotecario.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoHipotecario.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoHipotecario.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Otros: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.Other | numberformat }}
+            </td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Prestamo Empleador: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.PrestamoEmpleador.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.PrestamoEmpleador.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.PrestamoEmpleador.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td></td>
+            <td></td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Grandes Tiendas: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoComercio.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoComercio.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.CreditoComercio.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td></td>
+            <td></td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Aval(deuda indirectas): &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.DeudaIndirecta.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.DeudaIndirecta.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.DeudaIndirecta.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td></td>
+            <td></td>
+            <td style="padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                Otros Créditos: &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.AnotherCredit.Pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.AnotherCredit.PagosMensuales | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ patrimonio.AnotherCredit.Saldo | numberformat }}
+            </td>
+        </tr>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                TOTAL  &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ totals.total_activos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                TOTAL  &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ totals.total_pasivos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ totals.total_pagos | numberformat }}
+            </td>
+            <td style="font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                 $ {{ totals.total_saldos | numberformat }}
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="border: 0.8px solid #000000;height:18px;">
+            <td style="width: 111px;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                TOTAL PATRIMONIO
+            </td>
+            <td style="width: 111px;font-weight: bold;padding-top: 2px;padding-left: 5px;font-size: {{ tamaño_letra | subtract:15 }}%;">
+                {% with totals.total_activos|subtract:totals.total_pasivos as total %}
+                 $ {{ total | numberformat }}&nbsp;
+                {% endwith %}
+            </td>
+        </tr>
+    </table>
+    <table style="margin-top: 8px">
+        <tr style="border: 0.8px solid #000000;height:60px">
+            <td style="font-size: 8px;padding-left: 2px;font-weight:bold;text-align: left">
+                <p>
+                    El suscrito autoriza expresamente a SGI Gestión Inmobiliaria S.A. a entregar a las
+                    Instituciones de Crédito que sean necesarias, la información señalada precedentemente, a objeto
+                    de gestionar la obtención del financiamiento que estoy adquiriendo. Declaro que los antecedentes
+                    señalados en el presente formulario son auténticos y asumo la responsabilidad de demostrarlo ante
+                    las Instituciones de Crédito que lo requiera para obtener la aprobación definitiva del
+                    financiamiento hipotecario. Asimismo declaro no poseer documentos protestados, deudas morosas
+                    y que en general me encuentro en condiciones de solicitar un financiamiento hipotecario.
+                </p>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <br>
+    <table>
+        <tr style="height:30px;">
+            <td style="border-top: 1.2px solid #000000;padding-left: 5px;text-align: center;width: 250px">
+                <p style="font-size:{{ tamaño_letra }}%;font-weight: bold;">
+                    Firma Solicitante
+                </p>
+            </td>
+            <td style="width: 2px;" colspan="1"></td>
+            <td style="padding-right: 5px;text-align: center;width: 300px">
+                {% now "d" as day %}
+                {% now "m" as month %}
+                {% now "Y" as year %}
+                <p style="font-size:{{ tamaño_letra }}%;font-weight: bold;">
+                    {{ day }}/{{ month }}/{{ year }}
+                </p>
+            </td>
+        </tr>
+    </table>
+{% endlanguage %}
+</body>
+</html>

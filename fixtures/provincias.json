@@ -1,0 +1,506 @@
+[
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Arica y Parinacota"
+            ],
+            "Name": "Arica"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Arica y Parinacota"
+            ],
+            "Name": "Parinacota"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Tarapac\u00e1"
+            ],
+            "Name": "Iquique"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Tarapac\u00e1"
+            ],
+            "Name": "Tamarugal"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Antofagasta"
+            ],
+            "Name": "Antofagasta"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Antofagasta"
+            ],
+            "Name": "El Loa"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Antofagasta"
+            ],
+            "Name": "Tocopilla"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Atacama"
+            ],
+            "Name": "Cha\u00f1aral"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Atacama"
+            ],
+            "Name": "Copiap\u00f3"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Atacama"
+            ],
+            "Name": "Huasco"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Coquimbo"
+            ],
+            "Name": "Choapa"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Coquimbo"
+            ],
+            "Name": "Elqui"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Coquimbo"
+            ],
+            "Name": "Limar\u00ed"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Isla de Pascua"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Los Andes"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Marga Marga"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Petorca"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Quillota"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "San Antonio"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "San Felipe de Aconcagua"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Valpara\u00edso"
+            ],
+            "Name": "Valpara\u00edso"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Libertador Gral. Bernardo O\u2019Higgins"
+            ],
+            "Name": "Cachapoal"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Libertador Gral. Bernardo O\u2019Higgins"
+            ],
+            "Name": "Cardenal Caro"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Libertador Gral. Bernardo O\u2019Higgins"
+            ],
+            "Name": "Colchagua"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Chacabuco"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Cordillera"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Maipo"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Melipilla"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Santiago"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Metropolitana de Santiago"
+            ],
+            "Name": "Talagante"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Maule"
+            ],
+            "Name": "Cauquenes"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Maule"
+            ],
+            "Name": "Curic\u00f3"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Maule"
+            ],
+            "Name": "Linares"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Maule"
+            ],
+            "Name": "Talca"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Biob\u00edo"
+            ],
+            "Name": "Arauco"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Biob\u00edo"
+            ],
+            "Name": "Biob\u00edo"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Del Biob\u00edo"
+            ],
+            "Name": "Concepci\u00f3n"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De la Araucan\u00eda"
+            ],
+            "Name": "Caut\u00edn"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De la Araucan\u00eda"
+            ],
+            "Name": "Malleco"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los R\u00edos"
+            ],
+            "Name": "Ranco"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los R\u00edos"
+            ],
+            "Name": "Valdivia"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los Lagos"
+            ],
+            "Name": "Chilo\u00e9"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los Lagos"
+            ],
+            "Name": "Llanquihue"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los Lagos"
+            ],
+            "Name": "Osorno"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "De los Lagos"
+            ],
+            "Name": "Palena"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Ays\u00e9n del Gral. Carlos Ib\u00e1\u00f1ez del Campo"
+            ],
+            "Name": "Ays\u00e9n"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Ays\u00e9n del Gral. Carlos Ib\u00e1\u00f1ez del Campo"
+            ],
+            "Name": "Capit\u00e1n Prat"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Ays\u00e9n del Gral. Carlos Ib\u00e1\u00f1ez del Campo"
+            ],
+            "Name": "Coyhaique"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Ays\u00e9n del Gral. Carlos Ib\u00e1\u00f1ez del Campo"
+            ],
+            "Name": "General Carrera"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Magallanes y de la Ant\u00e1rtica Chilena"
+            ],
+            "Name": "Ant\u00e1rtica Chilena"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Magallanes y de la Ant\u00e1rtica Chilena"
+            ],
+            "Name": "Magallanes"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Magallanes y de la Ant\u00e1rtica Chilena"
+            ],
+            "Name": "Tierra del Fuego"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "Magallanes y de la Ant\u00e1rtica Chilena"
+            ],
+            "Name": "\u00daltima Esperanza"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "\u00d1uble"
+            ],
+            "Name": "Diguill\u00edn"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "\u00d1uble"
+            ],
+            "Name": "Itata"
+        }
+    },
+    {
+        "model": "common.provincia",
+        "fields": {
+            "RegionID": [
+                "\u00d1uble"
+            ],
+            "Name": "Punilla"
+        }
+    }
+]

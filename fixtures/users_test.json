@@ -1,0 +1,359 @@
+[
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Pablo",
+            "LastNames": "De La Cuadra",
+            "Rut": "189806973",
+            "Email": "pcuadra@ssilva.cl",
+            "DjangoUser": [
+                "189806973"
+            ],
+            "RoleID": [
+                [
+                    "Administrador"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Eugenio Ricardo",
+            "LastNames": "Alarcon Alonso",
+            "Rut": "95771394",
+            "Email": "ealarcon@ssilva.cl",
+            "DjangoUser": [
+                "95771394"
+            ],
+            "RoleID": [
+                [
+                    "Gerente Comercial"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Maria Veronica",
+            "LastNames": "Araya Santis",
+            "Rut": "72163141",
+            "Email": "maraya@ssilva.cl",
+            "DjangoUser": [
+                "72163141"
+            ],
+            "RoleID": [
+                [
+                    "Vendedor"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Claudia Andrea",
+            "LastNames": "Moreno Mendez",
+            "Rut": "124730767",
+            "Email": "cmoreno@ssilva.cl",
+            "DjangoUser": [
+                "124730767"
+            ],
+            "RoleID": [
+                [
+                    "Asistente Comercial"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Paulo Andres",
+            "LastNames": "Godoy Catalan",
+            "Rut": "122652246",
+            "Email": "pgodoy@ssilva.cl",
+            "DjangoUser": [
+                "122652246"
+            ],
+            "RoleID": [
+                [
+                    "Jefe de Proyecto"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Guillermo David",
+            "LastNames": "Andrews Ariztia",
+            "Rut": "77421912",
+            "Email": "gandrews@ssilva.cl",
+            "DjangoUser": [
+                "77421912"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Patricio Kurt",
+            "LastNames": "Blamberg Weitzman",
+            "Rut": "7667227k",
+            "Email": "pkurt@ssilva.cl",
+            "DjangoUser": [
+                "7667227k"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "David",
+            "LastNames": "Hans",
+            "Rut": "174032203",
+            "Email": "dhans@ssilva.cl",
+            "DjangoUser": [
+                "174032203"
+            ],
+            "RoleID": [
+                [
+                    "Administrador"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "David",
+            "LastNames": "Morales",
+            "Rut": "184327171",
+            "Email": "dmorales@ssilva.cl",
+            "DjangoUser": [
+                "184327171"
+            ],
+            "RoleID": [
+                [
+                    "Administrador"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Alberto",
+            "LastNames": "Trebitsch Feliu",
+            "Rut": "57888032",
+            "Email": "atrebitsch@ssilva.cl",
+            "DjangoUser": [
+                "57888032"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Benjamin Enrique",
+            "LastNames": "Lewin Kohn",
+            "Rut": "51360761",
+            "Email": "blewin@ssilva.cl",
+            "DjangoUser": [
+                "51360761"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Enrique",
+            "LastNames": "Besa Joselin-Holt",
+            "Rut": "60657483",
+            "Email": "ebesa@ssilva.cl",
+            "DjangoUser": [
+                "60657483"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Francisco",
+            "LastNames": "Vial Bezanilla",
+            "Rut": "64004662",
+            "Email": "pcuadra@ssilva.cl",
+            "DjangoUser": [
+                "64004662"
+            ],
+            "RoleID": [
+                [
+                    "Inmobiliario"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Eduardo",
+            "LastNames": "Zamudio Oyarzo",
+            "Rut": "172507654",
+            "Email": "ezamudio@ssilva.cl",
+            "DjangoUser": [
+                "172507654"
+            ],
+            "RoleID": [
+                [
+                    "Vendedor"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Maria Loreto",
+            "LastNames": "Vargas Espinoza",
+            "Rut": "120750682",
+            "Email": "mvargas@ssilva.cl",
+            "DjangoUser": [
+                "120750682"
+            ],
+            "RoleID": [
+                [
+                    "Jefe de Proyecto"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Rosa",
+            "LastNames": "Alarcon Muga",
+            "Rut": "144680057",
+            "Email": "ralarcon@ssilva.cl",
+            "DjangoUser": [
+                "144680057"
+            ],
+            "RoleID": [
+                [
+                    "Vendedor"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Carolina",
+            "LastNames": "Riveros Aro",
+            "Rut": "137131641",
+            "Email": "criveros@ssilva.cl",
+            "DjangoUser": [
+                "137131641"
+            ],
+            "RoleID": [
+                [
+                    "Asistente Comercial"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Carlos Alfonso",
+            "LastNames": "Cofre Veloz",
+            "Rut": "171684129",
+            "Email": "ccofre@ssil.va.cl",
+            "DjangoUser": [
+                "171684129"
+            ],
+            "RoleID": [
+                [
+                    "Asistente Comercial"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Omar Osvaldo",
+            "LastNames": "Lopez",
+            "Rut": "84025259",
+            "Email": "olopez@ssilva.cl",
+            "DjangoUser": [
+                "84025259"
+            ],
+            "RoleID": [
+                [
+                    "Jefe de Proyecto"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Ruth",
+            "LastNames": "Lopez Acu\u00f1a",
+            "Rut": "66358909",
+            "Email": "rlopez@ssilva.cl",
+            "DjangoUser": [
+                "66358909"
+            ],
+            "RoleID": [
+                [
+                    "Vendedor"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "Name": "Sandra",
+            "LastNames": "Alfaro",
+            "Rut": "136726633",
+            "Email": "salfaro@ssilva.cl",
+            "DjangoUser": [
+                "136726633"
+            ],
+            "RoleID": [
+                [
+                    "Legal"
+                ]
+            ]
+        }
+    }
+]
