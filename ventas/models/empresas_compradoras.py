@@ -7,11 +7,11 @@ class EmpresaCompradora(models.Model):
         unique=True, default=uuid.uuid4, editable=False)
     RazonSocial = models.CharField(
         max_length=150,
-        unique=True,
+        #unique=True,
         null=True,
         blank=True)
     Rut = models.CharField(
-        unique=True,
+        #unique=True,
         max_length=12,
         null=True,
         blank=True)

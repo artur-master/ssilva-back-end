@@ -10,10 +10,12 @@ class EmpresaCompradoraSerializer(serializers.ModelSerializer):
 
 
 class CreateEmpresaCompradoraSerializer(serializers.ModelSerializer):
+    """
     Rut = serializers.CharField(
         validators=[validate_rut_empresa_compradora],
         allow_null=True
     )
+    """
 
     class Meta:
         model = EmpresaCompradora

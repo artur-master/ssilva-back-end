@@ -144,12 +144,13 @@ def return_graph(oferta):
     result = list()
 
     # Nodos
-    node_ac_co = add_node('AC', 'Crear oferta')
-    node_i_ai = add_node('I', 'Aprobación inmobiliaria')
+    node_ac_co = add_node('AC', 'Oferta')
+    node_i_ai = add_node('IN', 'Aprobación inmobiliaria')
     node_ac_pc = add_node('AC', 'Preaprobación crédito')
-    node_f_rg = add_node('F', 'Recepción de garantía')
-    node_l_p_a = add_node('L', 'Pendiente legal')
-    node_l_p = add_node('L', 'Promesa/Oferta cancelada ')
+    node_f_rg = add_node('FI', 'Recepción de garantía')
+    node_l_p_a = add_node('LG', 'Pendiente legal')
+    #node_l_p = add_node('LG', 'Promesa/Oferta cancelada ')
+    node_l_p = add_node('LG', 'Promesa')
 
     nodes = return_nodes(oferta, node_ac_co, node_i_ai, node_ac_pc,
                          node_f_rg, node_l_p_a, node_l_p)

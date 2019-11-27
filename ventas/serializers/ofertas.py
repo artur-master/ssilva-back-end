@@ -170,7 +170,7 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
             conditions.delete()
 
         reserva.ConditionID.clear()
-
+      
         for condition_data in conditions_data:
             condition = Condition.objects.create(
                 Description=condition_data['Description'],
@@ -282,7 +282,7 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                 raise CustomValidation(
                     "Oferta ya esta aprobada",
                     status_code=status.HTTP_409_CONFLICT)
-
+            
             for condition_data in conditions_data:
                 condition = Condition.objects.get(
                     ConditionID=condition_data['ConditionID'])
@@ -419,6 +419,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'Codeudor',
             'Folio',
             'OfertaState',
+            'AprobacionInmobiliariaState',
             'PayType',
             'ContactMethodType',
             'DateFirmaPromesa',
@@ -436,28 +437,28 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         )
 
     def get_patrimony(self, obj):
-        reserva = Reserva.objects.get(Folio=obj.Folio)
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
         if patrimonies.exists():
             return PatrimonySerializer(instance=patrimonies[0]).data
         return None
 
     def get_conditions(self, obj):
-        reserva = Reserva.objects.get(Folio=obj.Folio)
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         conditions = reserva.ConditionID.all()
         serializer = ConditionSerializer(
             instance=conditions, many=True)
         return serializer.data
 
     def get_cuotas(self, obj):
-        reserva = Reserva.objects.get(Folio=obj.Folio)
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         cuotas = reserva.CuotaID.all()
         serializer = ListCuotaSerializer(
             instance=cuotas, many=True)
         return serializer.data
 
     def get_inmuebles(self, obj):
-        reserva = Reserva.objects.get(Folio=obj.Folio)
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         inmuebles_reserva = ReservaInmueble.objects.filter(
             ReservaID=reserva)
         serializer = reservas.ListReservaInmuebleSerializer(
@@ -537,7 +538,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
                   'OfertaState', 'Inmuebles')
 
     def get_inmuebles(self, obj):
-        reserva = Reserva.objects.get(Folio=obj.Folio)
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         inmuebles_reserva = ReservaInmueble.objects.filter(
             ReservaID=reserva)
         serializer = ListInmuebleOfertaSerializer(

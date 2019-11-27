@@ -620,22 +620,18 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 Name=constants.COTIZATION_STATE[2])
             cotizacion.CotizacionStateID = cotizacion_state
             cotizacion.save()
-
+  
         if empresa_compradora_data:
-            empresa_compradora = get_or_none(EmpresaCompradora, Rut=rut_empresa_compradora)
-            if empresa_compradora:
-                empresa_compradora.RazonSocial = razon_social_empresa_compradora
-                empresa_compradora.Rut = rut_empresa_compradora
-                empresa_compradora.Address = direccion_empresa_compradora
-                empresa_compradora.ClienteID = cliente
-                empresa_compradora.save()
-            else:
-                EmpresaCompradora.objects.create(
-                    RazonSocial=razon_social_empresa_compradora,
-                    Rut=rut_empresa_compradora,
-                    Address=direccion_empresa_compradora,
-                    ClienteID=cliente
-                )
+            empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=cliente)
+            if len(empresa_compradora) > 0:
+                empresa_compradora = empresa_compradora[0]
+            else:   
+               empresa_compradora = EmpresaCompradora()
+            empresa_compradora.RazonSocial = razon_social_empresa_compradora
+            empresa_compradora.Address = direccion_empresa_compradora
+            empresa_compradora.Rut=rut_empresa_compradora
+            empresa_compradora.ClienteID = cliente
+            empresa_compradora.save()
         else:
             empresa_compradora = None
 
@@ -681,23 +677,20 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 )
         else:
             patrimony = None
+            
         if empleador_data:
-            empleador = get_or_none(Empleador, Rut=rut_empleador)
-        else:
-            empleador = None
-
-        if empleador:
+            empleador = Empleador.objects.filter(ClienteID=cliente)
+            if len(empleador) > 0:
+                empleador = empleador[0]
+            else:   
+               empleador = Empleador()
             empleador.RazonSocial = razon_social_empleador
+            empleador.Rut = rut_empleador
             empleador.ClienteID = cliente
             empleador.Extra = empleador_data['Extra']
             empleador.save()
-        elif not empleador and isinstance(empleador_data, dict):
-            empleador = Empleador.objects.create(
-                Rut=rut_empleador,
-                RazonSocial=razon_social_empleador,
-                Extra=empleador_data['Extra'],
-                ClienteID=cliente
-            )
+        else:
+            empleador = None    
 
         if codeudor_id:
             codeudor = get_or_none(Cliente, UserID=codeudor_id)
@@ -708,19 +701,19 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             codeudor = save_cliente_return(codeudor_data, codeudor, current_user)
 
         if codeudor and co_empleador_data:
-            co_empleador = get_or_none(Empleador, Rut=rut_co_empleador)
-            if co_empleador:
-                co_empleador.RazonSocial = razon_social_co_empleador
-                co_empleador.ClienteID = codeudor
-                co_empleador.Extra = co_empleador_data['Extra']
-                co_empleador.save()
-            else:
-                Empleador.objects.create(
-                    Rut=rut_co_empleador,
-                    RazonSocial=razon_social_co_empleador,
-                    Extra=co_empleador_data['Extra'],
-                    ClienteID=codeudor
-                )
+            co_empleador = Empleador.objects.filter(ClienteID=cliente)
+            if len(co_empleador) > 0:
+                co_empleador = co_empleador[0]
+            else:   
+               co_empleador = Empleador()
+            co_empleador.RazonSocial = razon_social_co_empleador
+            co_empleador.Rut = rut_co_empleador
+            co_empleador.ClienteID = codeudor
+            co_empleador.Extra = co_empleador_data['Extra']
+            co_empleador.save()
+        else:
+            co_empleador = None 
+
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
         
@@ -1187,7 +1180,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         miss_info = False
-
         if instance.ReservaStateID.Name == constants.RESERVA_STATE[2]:
             raise CustomValidation(
                 "Reserva en estado oferta, debe modificar oferta",
@@ -1201,7 +1193,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         pay_type_name = validated_data.get('PayType', False)
         date_firma_promesa = validated_data.get('DateFirmaPromesa', False)
         value_producto_financiero = validated_data.get('ValueProductoFinanciero', False)
-
+        
         empresa_compradora_data = validated_data.get('EmpresaCompradoraID', False)
         if empresa_compradora_data:
             razon_social_empresa_compradora = empresa_compradora_data['RazonSocial']
@@ -1294,14 +1286,16 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
 			
         if 'Codeudor' in validated_data and codeudor:
             codeudor = save_cliente_return(validated_data['Codeudor'], codeudor, current_user)
-
-        if empresa_compradora_data is not False:
-            empresa_compradora = EmpresaCompradora.objects.get(
-                ClienteID=cliente
-            )
+        if empresa_compradora_data:
+            empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=cliente)
+            if len(empresa_compradora) > 0:
+                empresa_compradora = empresa_compradora[0]
+            else:   
+               empresa_compradora = EmpresaCompradora()
             empresa_compradora.RazonSocial = razon_social_empresa_compradora
-            empresa_compradora.Rut = rut_empresa_compradora
             empresa_compradora.Address = direccion_empresa_compradora
+            empresa_compradora.Rut=rut_empresa_compradora
+            empresa_compradora.ClienteID = cliente
             empresa_compradora.save()
         else:
             empresa_compradora = None

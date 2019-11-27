@@ -164,9 +164,9 @@ class LoginViewSet(viewsets.ViewSet):
             return Response({'detail': 'Ingrese ambos campos'},
                             status=status.HTTP_409_CONFLICT)
 
-        if not validar_rut(rut):
-            return Response({'detail': 'Rut Inválido'},
-                            status=status.HTTP_409_CONFLICT)
+        #if not validar_rut(rut):
+        #    return Response({'detail': 'Rut Inválido'},
+        #                    status=status.HTTP_409_CONFLICT)
 
         user = authenticate(username=rut, password=password)
 

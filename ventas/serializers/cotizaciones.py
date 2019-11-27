@@ -31,6 +31,8 @@ from ventas.serializers.clientes import ListClienteSerializer, CreateClienteCont
 from .cuotas import (
     ListCuotaSerializer,
     CreateCuotaSerializer)
+from .empresas_compradoras import (EmpresaCompradoraSerializer)
+from ventas.models.empresas_compradoras import EmpresaCompradora
 
 
 class CotizacionTypeSerializer(serializers.ModelSerializer):
@@ -201,6 +203,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
     PayType = serializers.UUIDField(
         source='PayType.PayTypeID'
     )	
+    EmpresaCompradora = serializers.SerializerMethodField('get_empresa_compradora')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -244,6 +247,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'Vendedor',
             'VendedorID',
             'PayType',
+            'EmpresaCompradora'
         )
 
     def get_inmuebles(self, obj):
@@ -271,7 +275,13 @@ class CotizacionSerializer(serializers.ModelSerializer):
         for cuota in cuotas:
             total += cuota.Amount
         return total
-
+        
+    def get_empresa_compradora(self, obj):
+        empresa_compradora = EmpresaCompradora.objects.filter(
+            ClienteID=obj.ClienteID)
+        if empresa_compradora.exists():
+            return EmpresaCompradoraSerializer(instance=empresa_compradora[0]).data
+        return None    
 
 class ListCotizacionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
