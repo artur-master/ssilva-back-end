@@ -268,11 +268,14 @@ class CheckAdminOrConsCliPermission(permissions.BasePermission):
         has_permission = False
         # Verifica si el usuario actual tiene los permisos Administra clientes o Consulta clientes
         for permission in permissions:
+            if permission.Name == constants.PERMISSIONS[12]:
+                has_permission = True
+            if permission.Name == constants.PERMISSIONS[16]:
+                has_permission = True
             if permission.Name == constants.PERMISSIONS[17]:
                 has_permission = True
             if permission.Name == constants.PERMISSIONS[18]:
                 has_permission = True
-
         return has_permission
 
 
