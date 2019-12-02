@@ -22,8 +22,7 @@ class InstitucionFinancieraViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action == 'retrieve' or self.action == 'list':
-            permission_classes = [IsAuthenticated,
-                                  CheckAdminOrConsParamPermission, ]
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated, CheckAdminParamPermission, ]
         return [permission() for permission in permission_classes]

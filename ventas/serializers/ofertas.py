@@ -420,6 +420,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'Folio',
             'OfertaState',
             'AprobacionInmobiliariaState',
+            'PreAprobacionCreditoState',
             'PayType',
             'ContactMethodType',
             'DateFirmaPromesa',
@@ -587,19 +588,17 @@ class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
 
 class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
     InstitucionFinanciera = serializers.CharField(
-        write_only=True
     )
     OfertaID = serializers.CharField(
         write_only=True
     )
     Date = serializers.DateTimeField(
-        write_only=True,
         allow_null=True,
         required=False,
     )
     Observacion = serializers.CharField(
-        write_only=True,
         allow_null=True,
+        allow_blank=True,
         required=False
     )
     DocumentCredit = serializers.FileField(
@@ -607,14 +606,13 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
         required=False
     )
     Result = serializers.CharField(
-        write_only=True,
         allow_null=True,
         required=False
     )
     
     class Meta:
         model = PreAprobacionCredito
-        fields = ('InstitucionFinanciera', 'OfertaID', 'Date', 'Observacion', 'DocumentCredit', 'Result')
+        fields = ('PreAprobacionCreditoID', 'InstitucionFinanciera', 'OfertaID', 'Date', 'Observacion', 'DocumentCredit', 'Result')
 
     def create(self, validated_data):
         oferta_id = validated_data['OfertaID']
