@@ -352,9 +352,23 @@ class CheckAdminOrVendedorOrMoniOrConsProyectosPermission(
                 has_permission = True
             if permission.Name == constants.PERMISSIONS[16]:
                 has_permission = True
-
+            if permission.Name == constants.PERMISSIONS[20]:
+                has_permission = True
         return has_permission
-
+        
+'''        
+class CheckRecepcionaGarantiasProyectosPermission(
+        permissions.BasePermission):
+    message = constants.PERMISSION_MESSAGE
+    def has_permission(self, request, view):
+        permissions = return_permissions(request.user)
+        
+        has_permission = False
+        for permission in permissions:
+            if permission.Name == constants.PERMISSIONS[20]:
+                has_permission = True
+        return has_permission        
+'''
 
 class CheckApproveInmueblesPermission(
         permissions.BasePermission):
@@ -446,8 +460,10 @@ class CheckApproveConfeccionPromesaPermission(
         has_permission = False
         # Verifica si el usuario actual tiene el permiso Aprueba confeccion promesa
         for permission in permissions:
-            if permission.Name == constants.PERMISSIONS[21]:
+            if permission.Name == constants.PERMISSIONS[16]:
                 has_permission = True
+            if permission.Name == constants.PERMISSIONS[21]:
+                has_permission = True    
 
         return has_permission
 

@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from common.permissions import (
     CheckAdminOrVendedorOrMoniOrConsProyectosPermission,
     CheckAdminOrVendedorOrMoniProyectosPermission,
-    CheckAdminMoniProyectosPermission,
+      CheckAdminMoniProyectosPermission,
     CheckAprobadorPermission,
     CheckRecepcionaGarantiasPermission,
     CheckAsistenteComercialPermission,
@@ -40,7 +40,7 @@ class OfertaViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action == 'retrieve' or self.action == 'list':
-            permission_classes = [IsAuthenticated, CheckAdminOrVendedorOrMoniOrConsProyectosPermission, ]
+            permission_classes = [IsAuthenticated, CheckAdminOrVendedorOrMoniOrConsProyectosPermission ]
         else:
             permission_classes = [IsAuthenticated,
                                   CheckAdminOrVendedorOrMoniProyectosPermission, ]

@@ -26,7 +26,7 @@ def return_nodes(oferta, node_ac_co, node_i_ai, node_ac_pc,
         nodes.append(node_i_ai)
 
         if oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[0]:
-            set_color(node_ac_pc, 'white')
+            set_color(node_ac_pc, 'green')
         elif oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[1]:
             set_color(node_ac_pc, 'white')
         elif oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[2]:

@@ -313,10 +313,8 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
             Comment=comment,
         )
 
-        instance.save()
-
         send_to_confeccion_promesa(instance, current_user)
-
+        instance.save()
         return instance
 
 
@@ -421,6 +419,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'OfertaState',
             'AprobacionInmobiliariaState',
             'PreAprobacionCreditoState',
+            'RecepcionGarantiaState',
             'PayType',
             'ContactMethodType',
             'DateFirmaPromesa',
@@ -579,10 +578,9 @@ class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
             VentaLogTypeID=venta_log_type,
             Comment=comment,
         )
-
-        instance.save()
+        
         send_to_confeccion_promesa(instance, current_user)
-
+        instance.save()
         return instance
 
 
@@ -706,7 +704,8 @@ class RegisterResultPreAprobacionSerializer(serializers.ModelSerializer):
 
 def send_to_confeccion_promesa(oferta, current_user):
     if (oferta.AprobacionInmobiliariaState == constants.APROBACION_INMOBILIARIA_STATE[2] and
-            oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[2] and
+            (oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[2] or 
+                oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[0]) and
             oferta.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[1]):
 
         oferta.OfertaState = constants.OFERTA_STATE[1]
@@ -730,7 +729,7 @@ def send_to_confeccion_promesa(oferta, current_user):
 
         jefe_proyecto_type = UserProyectoType.objects.get(
             Name=constants.USER_PROYECTO_TYPE[1])
-
+    
         # Usuarios
         jefe_proyecto = UserProyecto.objects.filter(
             ProyectoID=oferta.ProyectoID,
@@ -928,7 +927,7 @@ class CancelOfertaSerializer(serializers.ModelSerializer):
                 instance, jefe_proyecto, vendedor, asistente_comercial, representantes, aprobadores)
         else:
             crear_notificacion_oferta_cancelada(
-                instance, jefe_proyecto, vendedor, asistente_comercial)
+                instance, jefe_proyecto, vendedor, asistente_comercial, representantes, aprobadores)
 
         instance.OfertaState = constants.OFERTA_STATE[4]
         instance.save()
