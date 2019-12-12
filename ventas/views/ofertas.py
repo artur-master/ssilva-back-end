@@ -75,7 +75,7 @@ class OfertaViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Oferta modificada con éxito",
-                             "o": RetrieveOfertaSerializer(instance=instance, context={'request': request}).data},
+                             "oferta": RetrieveOfertaSerializer(instance=instance, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
