@@ -4,6 +4,7 @@ from common.permissions import (
     CheckAdminOrVendedorOrMoniProyectosPermission,
       CheckAdminMoniProyectosPermission,
     CheckAprobadorPermission,
+    CheckApproveUpdateOfertaPermission,
     CheckRecepcionaGarantiasPermission,
     CheckAsistenteComercialPermission,
     CheckApproveConfeccionPromesaPermission)
@@ -21,6 +22,7 @@ from ventas.serializers.ofertas import (
     ListPreAprobacionCreditoSerializer,
     RegisterResultPreAprobacionSerializer,
     ApproveConfeccionPromesaSerializer,
+    ApproveUpdateOfertaSerializer,
     CancelOfertaSerializer)
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -72,8 +74,8 @@ class OfertaViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({"status": "Oferta modificada con éxito",
-                             "detail": RetrieveOfertaSerializer(instance=instance).data},
+            return Response({"detail": "Oferta modificada con éxito",
+                             "o": RetrieveOfertaSerializer(instance=instance, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
@@ -241,6 +243,35 @@ class ApproveConfeccionPromesaViewSet(viewsets.ModelViewSet):
                 serializer.save()
                 return Response({"oferta": serializer.data,
                                  "detail": "Rechazo realizado con éxito"},
+                                status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+class ApproveUpdateOfertaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, CheckApproveUpdateOfertaPermission)
+    serializer_class = ApproveUpdateOfertaSerializer
+    queryset = Oferta.objects.all()
+    lookup_field = 'OfertaID'
+
+    def partial_update(self, request, OfertaID):
+        serializer = ApproveUpdateOfertaSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            resolution = serializer.validated_data.get("Resolution")
+            if resolution:
+                serializer.save()
+                return Response({"oferta": serializer.data,
+                                 "detail": "Aprobación modificaciones oferta"},
+                                status=status.HTTP_200_OK)
+            else:
+                serializer.save()
+                return Response({"oferta": serializer.data,
+                                 "detail": "Rechazo modificaciones oferta"},
                                 status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},

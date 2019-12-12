@@ -390,5 +390,30 @@
             "TableName": "Proyecto",
             "RedirectRouteName": "proyecto-tab-menu"
         }
+    },
+     {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Rechazo Modificacion oferta",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Aprobacion Modificacion oferta",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Refund garantia",
+            "TableName": "Oferta",
+            "RedirectRouteName": "oferta"
+        }
     }
+    
 ]

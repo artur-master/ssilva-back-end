@@ -41,7 +41,8 @@ NOTIFICATION_TYPE = [
     "Maqueta aprobada", "Maqueta rechazada", "Promesa aprobada",
     "Promesa rechazada", "Promesa enviada a inmobiliaria",
     "Envio de copias", "Promesa modificada", "Documento confirmado", "Documento rechazado", "Documento de actualizacion",
-    "Crear comision", "Comision de actualizacion"
+    "Crear comision", "Comision de actualizacion",
+    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta", "Refund garantia"
 ]
 
 PROYECTO_APPROVAL_STATE = [
@@ -89,6 +90,8 @@ VENTA_LOG_TYPE = [
     "Envio copias",
     "Modificacion promesa(Antes de firma comprador)",
     "Modificacion promesa(Despues de firma comprador)",
+    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta",
+    "Refund garantia"
 ]
 
 USER_PROYECTO_TYPE = [
@@ -209,6 +212,7 @@ OFERTA_STATE = [
     "Rechazada por legal",
     "Promesa",
     "Cancelada",
+    "Modificado"
 ]
 
 APROBACION_INMOBILIARIA_STATE = [
@@ -228,6 +232,7 @@ PRE_APROBACION_CREDITO_STATE = [
 RECEPCION_GARANTIA_STATE = [
     "Pendiente recepcion en finanzas",
     "Aprobada",
+    "Refund",
 ]
 
 RESULT = [

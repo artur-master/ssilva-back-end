@@ -30,6 +30,7 @@ from ventas.views.ofertas import (
     ListPreAprobacionCreditoViewSet,
     RegisterResultPreAprobacionViewSet,
     ApproveConfeccionPromesaViewSet,
+    ApproveUpdateOfertaViewSet,
     CancelOfertaViewSet)
 from ventas.views.reservas import (
     ReservaViewSet,
@@ -105,7 +106,10 @@ router.register(
     'ofertas-approve-confeccion-promesa',
     ApproveConfeccionPromesaViewSet)
 router.register('ofertas-cancel', CancelOfertaViewSet)
-
+router.register(
+    'ofertas-approve-modificar',
+    ApproveUpdateOfertaViewSet)
+    
 router.register('logs',
                 VentaLogViewSet,
                 base_name='logs')

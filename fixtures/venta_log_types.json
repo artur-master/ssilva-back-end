@@ -187,5 +187,26 @@
          "Name": "Modificacion promesa(Despues de firma comprador)",
          "MaximunDays": 0
      }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Rechazo Modificacion oferta",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Aprobacion Modificacion oferta",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "Refund garantia",
+         "MaximunDays": 0
+     }
 }
 ]

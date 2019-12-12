@@ -741,7 +741,58 @@ def crear_notificacion_oferta_pendiente_aprobacion_inmobiliaria(
     for aprobador in aprobador_proyecto:
         notification_add.UserID.add(aprobador.UserID)
 
+def crear_notificacion_modify_oferta_aprobada(
+        oferta,
+        jefe_proyecto,
+        vendedor_proyecto):
+    # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[50])
 
+    message = "Oferta %s proyecto %s aprobada" % (
+        oferta.Folio, oferta.ProyectoID)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=oferta.OfertaID,
+        Message=message,
+        RedirectRouteID=oferta.OfertaID
+    )
+
+    if jefe_proyecto.exists():
+        for jefe in jefe_proyecto:
+            notification_add.UserID.add(jefe.UserID)
+
+    if vendedor_proyecto.exists():
+        for vendedor in vendedor_proyecto:
+            notification_add.UserID.add(vendedor.UserID)
+       
+def crear_notificacion_modify_oferta_rechazada(
+        oferta,
+        jefe_proyecto,
+        vendedor_proyecto):
+    # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[49])
+
+    message = "Oferta %s proyecto %s rechazada" % (
+        oferta.Folio, oferta.ProyectoID)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=oferta.OfertaID,
+        Message=message,
+        RedirectRouteID=oferta.OfertaID
+    )
+
+    if jefe_proyecto.exists():
+        for jefe in jefe_proyecto:
+            notification_add.UserID.add(jefe.UserID)
+
+    if vendedor_proyecto.exists():
+        for vendedor in vendedor_proyecto:
+            notification_add.UserID.add(vendedor.UserID)       
+       
 def crear_notificacion_oferta_aprobada(
         oferta,
         jefe_proyecto,
@@ -876,6 +927,30 @@ def crear_notificacion_oferta_a_confeccion_promesa(
         for vendedor in vendedor_proyecto:
             notification_add.UserID.add(vendedor.UserID)
 
+def crear_notificacion_oferta_refund(oferta,
+        jefe_proyecto,
+        vendedor_proyecto):
+    # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[53])
+
+    message = "Oferta %s proyecto %s refund" % (
+        oferta.Folio, oferta.ProyectoID.Name)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=oferta.OfertaID,
+        Message=message,
+        RedirectRouteID=oferta.OfertaID
+    )
+
+    if jefe_proyecto.exists():
+        for jefe in jefe_proyecto:
+            notification_add.UserID.add(jefe.UserID)
+
+    if vendedor_proyecto.exists():
+        for vendedor in vendedor_proyecto:
+            notification_add.UserID.add(vendedor.UserID)
 
 def crear_notificacion_oferta_requiere_aprobacion(
         oferta,

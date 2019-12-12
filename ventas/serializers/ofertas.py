@@ -30,6 +30,8 @@ from common.notifications import (
     crear_notificacion_oferta_pendiente_aprobacion_inmobiliaria,
     crear_notificacion_oferta_aprobada,
     crear_notificacion_oferta_rechazada,
+    crear_notificacion_modify_oferta_aprobada,
+    crear_notificacion_modify_oferta_rechazada,
     crear_notificacion_pre_aprobacion_aprobada,
     crear_notificacion_pre_aprobacion_rechazada,
     crear_notificacion_oferta_a_confeccion_promesa,
@@ -38,6 +40,7 @@ from common.notifications import (
     crear_notificacion_confeccion_promesa_rechazada,
     crear_notificacion_oferta_cancelada,
     crear_notificacion_oferta_modificada,
+    crear_notificacion_oferta_refund,
     eliminar_notificacion_oferta_a_confeccion_promesa,
     eliminar_notificacion_oferta_requiere_aprobacion,
     eliminar_notificaciones_oferta)
@@ -170,13 +173,13 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
             conditions.delete()
 
         reserva.ConditionID.clear()
-      
-        for condition_data in conditions_data:
-            condition = Condition.objects.create(
-                Description=condition_data['Description'],
-                IsImportant=condition_data['IsImportant']
-            )
-            reserva.ConditionID.add(condition)
+        if conditions_data:
+          for condition_data in conditions_data:
+              condition = Condition.objects.create(
+                  Description=condition_data['Description'],
+                  IsImportant=condition_data['IsImportant']
+              )
+              reserva.ConditionID.add(condition)
 
         instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[1]
         instance.save()
@@ -351,8 +354,16 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         source='CodeudorID',
         allow_null=True
     )
+    PayTypeID = serializers.UUIDField(
+        source='PayTypeID.PayTypeID',
+        allow_null=True
+    )
     PayType = serializers.CharField(
         source='PayTypeID.Name'
+    )
+    ContactMethodTypeID = serializers.UUIDField(
+        source='ContactMethodTypeID.ContactMethodTypeID',
+        allow_null=True
     )
     ContactMethodType = serializers.CharField(
         source='ContactMethodTypeID.Name'
@@ -370,6 +381,12 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         read_only=True
     )
     PaymentInstitucionFinanciera = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True
+    )
+    ValueProductoFinanciero = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False,
@@ -420,12 +437,15 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'AprobacionInmobiliariaState',
             'PreAprobacionCreditoState',
             'RecepcionGarantiaState',
+            'PayTypeID',
             'PayType',
+            'ContactMethodTypeID',
             'ContactMethodType',
             'DateFirmaPromesa',
             'PaymentFirmaPromesa',
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
+            'ValueProductoFinanciero',
             'AhorroPlus',
             'Condition',
             'Cuotas',
@@ -550,24 +570,38 @@ class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
     RecepcionGarantiaState = serializers.CharField(
         read_only=True
     )
+    Refund = serializers.BooleanField(
+        write_only=True
+    )
 
     class Meta:
         model = Oferta
-        fields = ('RecepcionGarantiaState',)
+        fields = ('RecepcionGarantiaState', 'Refund')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
+        refund = validated_data.pop('Refund')
+        
+        if refund:
+          if instance.RecepcionGarantiaState != constants.RECEPCION_GARANTIA_STATE[1]:
+              raise CustomValidation(
+                  "No Recepcion de garantia",
+                  status_code=status.HTTP_409_CONFLICT)
+          instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[2]  
+          venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[30])
+          comment = "Oferta {0} garantia refund".format(instance.Folio)  
+          
+        else:
+          if instance.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[1]:
+              raise CustomValidation(
+                  "Recepcion de garantia ya ha sido ingresada",
+                  status_code=status.HTTP_409_CONFLICT)
 
-        if instance.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[1]:
-            raise CustomValidation(
-                "Recepcion de garantia ya ha sido ingresada",
-                status_code=status.HTTP_409_CONFLICT)
+          instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[1]
 
-        instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[1]
+          venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[10])
 
-        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[10])
-
-        comment = "Oferta {0} garantia recepcionada".format(instance.Folio)
+          comment = "Oferta {0} garantia recepcionada".format(instance.Folio)
 
         VentaLog.objects.create(
             VentaID=instance.OfertaID,
@@ -578,7 +612,7 @@ class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
             VentaLogTypeID=venta_log_type,
             Comment=comment,
         )
-        
+          
         send_to_confeccion_promesa(instance, current_user)
         instance.save()
         return instance
@@ -703,10 +737,33 @@ class RegisterResultPreAprobacionSerializer(serializers.ModelSerializer):
 
 
 def send_to_confeccion_promesa(oferta, current_user):
+    # Tipos de Usuarios
+    vendedor_type = UserProyectoType.objects.get(
+        Name=constants.USER_PROYECTO_TYPE[2])
+
+    jefe_proyecto_type = UserProyectoType.objects.get(
+        Name=constants.USER_PROYECTO_TYPE[1])
+
+    # Usuarios
+    jefe_proyecto = UserProyecto.objects.filter(
+        ProyectoID=oferta.ProyectoID,
+        UserProyectoTypeID=jefe_proyecto_type)
+
+    vendedor = UserProyecto.objects.filter(
+        ProyectoID=oferta.ProyectoID,
+        UserProyectoTypeID=vendedor_type)
+
+    permission = Permission.objects.get(Name=constants.PERMISSIONS[21])
+
+    usuarios_aprueba_confeccion_promesa = User.objects.filter(
+        RoleID__PermissionID=permission
+    )
+    
     if (oferta.AprobacionInmobiliariaState == constants.APROBACION_INMOBILIARIA_STATE[2] and
             (oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[2] or 
                 oferta.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[0]) and
-            oferta.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[1]):
+            oferta.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[1] and
+            oferta.OfertaState != constants.OFERTA_STATE[5]):
 
         oferta.OfertaState = constants.OFERTA_STATE[1]
 
@@ -722,35 +779,16 @@ def send_to_confeccion_promesa(oferta, current_user):
             VentaLogTypeID=venta_log_type,
             Comment=comment,
         )
-
-        # Tipos de Usuarios
-        vendedor_type = UserProyectoType.objects.get(
-            Name=constants.USER_PROYECTO_TYPE[2])
-
-        jefe_proyecto_type = UserProyectoType.objects.get(
-            Name=constants.USER_PROYECTO_TYPE[1])
-    
-        # Usuarios
-        jefe_proyecto = UserProyecto.objects.filter(
-            ProyectoID=oferta.ProyectoID,
-            UserProyectoTypeID=jefe_proyecto_type)
-
-        vendedor = UserProyecto.objects.filter(
-            ProyectoID=oferta.ProyectoID,
-            UserProyectoTypeID=vendedor_type)
-
-        permission = Permission.objects.get(Name=constants.PERMISSIONS[21])
-
-        usuarios_aprueba_confeccion_promesa = User.objects.filter(
-            RoleID__PermissionID=permission
-        )
+        
         crear_notificacion_oferta_a_confeccion_promesa(
             oferta, jefe_proyecto, vendedor)
 
         crear_notificacion_oferta_requiere_aprobacion(
             oferta, usuarios_aprueba_confeccion_promesa
         )
-
+    
+    if oferta.OfertaState == constants.OFERTA_STATE[5] and oferta.RecepcionGarantiaState == constants.RECEPCION_GARANTIA_STATE[2]:
+        crear_notificacion_oferta_refund(oferta, jefe_proyecto, vendedor)
 
 class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
     OfertaState = serializers.CharField(
@@ -835,6 +873,60 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
 
         return instance
 
+class ApproveUpdateOfertaSerializer(serializers.ModelSerializer):
+    OfertaState = serializers.CharField(
+        read_only=True
+    )
+    Resolution = serializers.BooleanField(
+        write_only=True
+    )
+    
+    class Meta:
+        model = Oferta
+        fields = ('OfertaState', 'Resolution')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        resolution = validated_data.pop('Resolution')
+
+        # Tipos de Usuarios
+        vendedor_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+
+        jefe_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[1])
+
+        # Usuarios
+        jefe_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=jefe_proyecto_type)
+
+        vendedor = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_type)
+
+        if resolution:
+            instance.OfertaState = constants.OFERTA_STATE[0]
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[29])
+            crear_notificacion_modify_oferta_aprobada(instance, jefe_proyecto, vendedor)
+        else:
+            instance.OfertaState = constants.OFERTA_STATE[2]
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[28])
+            crear_notificacion_modify_oferta_rechazada(instance, jefe_proyecto, vendedor)
+
+        VentaLog.objects.create(
+            VentaID=instance.OfertaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=venta_log_type,
+        )
+
+        instance.save()
+
+        return instance
 
 class CancelOfertaSerializer(serializers.ModelSerializer):
     OfertaState = serializers.CharField(
@@ -1027,7 +1119,8 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             direccion_empresa_compradora = empresa_compradora_data['Address']
 
         pay_type = get_or_none(PayType, PayTypeID=pay_type_id)
-
+        print(pay_type_id);
+        print(pay_type);
         # Validaciones campos obligatorios
         if not pay_type:
             raise CustomValidation(
@@ -1059,7 +1152,8 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.CodeudorID = codeudor
         instance.ContactMethodTypeID = contact_method_type
         instance.EmpresaCompradoraID = empresa_compradora
-        instance.OfertaState = constants.OFERTA_STATE[0]
+        # Modificado state
+        instance.OfertaState = constants.OFERTA_STATE[5]
         instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[0]
         instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
         instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']

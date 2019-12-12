@@ -433,6 +433,22 @@ class CheckAprobadorPermission(
 
         return has_permission
 
+class CheckApproveUpdateOfertaPermission(
+        permissions.BasePermission):
+    message = constants.PERMISSION_MESSAGE
+
+    def has_permission(self, request, view):
+        permissions = return_permissions(request.user)
+
+        has_permission = False
+        # Verifica si el usuario actual tiene el permiso Es aprobador inmobiliario
+        for permission in permissions:
+            if permission.Name == constants.PERMISSIONS[7]:
+                has_permission = True
+            if permission.Name == constants.PERMISSIONS[8]:
+                has_permission = True    
+
+        return has_permission
 
 class CheckRecepcionaGarantiasPermission(
         permissions.BasePermission):
