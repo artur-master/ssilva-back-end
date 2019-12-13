@@ -61,7 +61,7 @@ from rest_framework import serializers, status
 from django.contrib.sites.shortcuts import get_current_site
 
 
-def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, folio,
+def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, folio, cotizacion_type,
                   contact_method_type, payment_firma_promesa, payment_firma_escritura,
                   payment_institucion_financiera, ahorro_plus, paytype, date_firma_promesa,
                   value_producto_financiero, current_user):
@@ -73,6 +73,7 @@ def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, fol
 
     instance = Oferta.objects.create(
         ProyectoID=proyecto,
+        CotizacionTypeID=cotizacion_type,
         ClienteID=cliente,
         VendedorID=vendedor,
         CodeudorID=codeudor,
@@ -332,6 +333,10 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         source='EmpresaCompradoraID',
         allow_null=True
     )
+    CotizacionType=serializers.CharField(
+        source='CotizacionTypeID.Name',
+        allow_null=True
+    )
     ClienteID = serializers.UUIDField(
         source='ClienteID.UserID'
     )
@@ -424,6 +429,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'OfertaID',
             'ProyectoID',
             'Proyecto',
+            'CotizacionType',
             'ClienteID',
             'Cliente',
             'Date',

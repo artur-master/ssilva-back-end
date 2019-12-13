@@ -64,7 +64,7 @@ from ventas.models.ventas_logs import (
 from ventas.serializers import ofertas
 from users.serializers.users import UserProfileSerializer
 from ventas.serializers.clientes import ClienteSerializer
-from ventas.serializers.cotizaciones import CreateClienteCotizacionSerializer
+from ventas.serializers.cotizaciones import (CreateClienteCotizacionSerializer, CotizacionType)
 from ventas.serializers.documents_venta import DocumentVentaSerializer
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.snippets.clientes_serializers import save_cliente_return
@@ -81,7 +81,6 @@ from .empleadores import CreateEmpleadorSerializer
 from .empresas_compradoras import (
     EmpresaCompradoraSerializer,
     CreateEmpresaCompradoraSerializer)
-
 
 class ListReservaInmuebleSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.CharField(
@@ -201,6 +200,10 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         many=True,
         allow_null=True
     )
+    CotizacionType=serializers.CharField(
+        source='CotizacionTypeID.Name',
+        allow_null=True
+    )
     ClienteID = serializers.UUIDField(
         source='ClienteID.UserID',
         allow_null=True
@@ -242,6 +245,9 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
     ContactMethodType = serializers.CharField(
         source='ContactMethodTypeID.Name',
         allow_null=True
+    )
+    ContactMethodTypeID = serializers.CharField(
+        source='ContactMethodTypeID.ContactMethodTypeID'
     )
     PaymentFirmaPromesa = serializers.DecimalField(
         max_digits=10,
@@ -298,6 +304,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'ReservaID',
             'ProyectoID',
             'Proyecto',
+            'CotizacionType',
             'ClienteID',
             'Date',
             'Cliente',
@@ -310,6 +317,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'ReservaState',
             'PayType',
             'ContactMethodType',
+            'ContactMethodTypeID',
             'DateFirmaPromesa',
             'PaymentFirmaPromesa',
             'PaymentFirmaEscritura',
@@ -382,6 +390,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         source='EmpresaCompradoraID',
         required=False,
         allow_null=True
+    )
+    CotizacionType = serializers.CharField(
+        write_only=True
     )
     Condition = CreateConditionSerializer(
         source='ConditionID',
@@ -501,6 +512,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         fields = (
             'ProyectoID',
             'Condition',
+            'CotizacionType',
             'Cliente',
             'CotizacionID',
             'CodeudorID',
@@ -531,7 +543,6 @@ class CreateReservaSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         current_user = return_current_user(self)
         miss_info = False
-
         proyecto_id = validated_data['ProyectoID']
         contact_method_type_id = validated_data.get('ContactMethodTypeID')
         codeudor_id = validated_data.get('CodeudorID')
@@ -541,7 +552,13 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         value_producto_financiero = validated_data.get('ValueProductoFinanciero')
 
         empresa_compradora_data = validated_data.get('EmpresaCompradoraID')
-
+        
+        if validated_data['CotizacionType']:
+          cotizacion_type = CotizacionType.objects.get(
+            Name=validated_data['CotizacionType'])
+        else:
+          cotizacion_type = None
+        
         if empresa_compradora_data:
             razon_social_empresa_compradora = empresa_compradora_data['RazonSocial']
             rut_empresa_compradora = empresa_compradora_data['Rut']
@@ -737,6 +754,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                             ClienteID=cliente,
                             VendedorID=current_user,
                             Folio=folio,
+                            CotizacionTypeID=cotizacion_type, 
                             CodeudorID=codeudor,
                             EmpresaCompradoraID=empresa_compradora,
                             ReservaStateID=reserva_state,
@@ -1851,7 +1869,7 @@ class ControlReservaSerializer(serializers.ModelSerializer):
 
             eliminar_notificacion_reserva_pendiente_control(instance)
             ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
-                                  instance.EmpresaCompradoraID, instance.Folio, instance.ContactMethodTypeID,
+                                  instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID, instance.ContactMethodTypeID,
                                   instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
                                   instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID, instance.DateFirmaPromesa,
                                   instance.ValueProductoFinanciero, current_user)

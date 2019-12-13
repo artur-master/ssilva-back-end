@@ -6,7 +6,7 @@ from users.models import User
 from ventas.models.empresas_compradoras import EmpresaCompradora
 from ventas.models.finding_contact import ContactMethodType
 from ventas.models.payment_forms import PayType
-
+from ventas.models.cotizaciones import CotizacionType
 
 class Oferta(models.Model):
     OfertaID = models.UUIDField(
@@ -17,6 +17,12 @@ class Oferta(models.Model):
         Proyecto,
         related_name='proyecto_oferta',
         on_delete=models.CASCADE)
+    CotizacionTypeID = models.ForeignKey(
+        CotizacionType,
+        related_name='tipo_cotizacion_oferta',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)     
     ClienteID = models.ForeignKey(
         Cliente,
         related_name='cliente_oferta',
