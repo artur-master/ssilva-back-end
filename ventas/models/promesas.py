@@ -6,6 +6,7 @@ from empresas_and_proyectos.models.proyectos import Proyecto
 from users.models import User
 from ventas.models.clientes import Cliente
 from ventas.models.payment_forms import PayType
+from ventas.models.cotizaciones import CotizacionType
 
 
 class Promesa(models.Model):
@@ -17,6 +18,12 @@ class Promesa(models.Model):
         Proyecto,
         related_name='proyecto_promesa',
         on_delete=models.CASCADE)
+    CotizacionTypeID = models.ForeignKey(
+        CotizacionType,
+        related_name='tipo_cotizacion_promesa',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)     
     ClienteID = models.ForeignKey(
         Cliente,
         related_name='cliente_promesa',

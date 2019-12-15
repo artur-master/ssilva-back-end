@@ -850,7 +850,7 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
             inmuebles = ReservaInmueble.objects.filter(ReservaID=reserva)
 
             create_promesa(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
-                           inmuebles, instance.Folio, instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
+                           inmuebles, instance.Folio, instance.CotizacionTypeID, instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
                            instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID, current_user)
         else:
             if instance.OfertaState == constants.OFERTA_STATE[3]:

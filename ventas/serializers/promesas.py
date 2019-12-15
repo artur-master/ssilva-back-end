@@ -15,18 +15,24 @@ from ventas.models.ofertas import Oferta
 from ventas.models.payment_forms import PayType
 from ventas.models.ventas_logs import VentaLog, VentaLogType
 from ventas.models.promesas import Promesa, PromesaInmueble
-from ventas.serializers.cotizaciones import ListCotizacionesInmueblesSerializer
+from ventas.serializers.reservas import ListReservaInmuebleSerializer
 from ventas.serializers.documents_venta import DocumentVentaSerializer
 from rest_framework import serializers, status
-
+from ventas.serializers.clientes import ClienteSerializer
+from users.serializers.users import UserProfileSerializer
 from ventas.serializers.reservas import CreateReservaInmuebleSerializer
+from ventas.models.reservas import Reserva
+from ventas.models.ofertas import  Oferta
+from ventas.models.patrimonies import Patrimony
+from ventas.serializers.patrimonies import PatrimonySerializer
+from ventas.serializers.cuotas import ListCuotaSerializer
 
-
-def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, payment_firma_promesa,
+def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
 
     instance = Promesa.objects.create(
         ProyectoID=proyecto,
+        CotizacionTypeID=cotizacion_type,
         ClienteID=cliente,
         VendedorID=vendedor,
         CodeudorID=codeudor,
@@ -102,14 +108,9 @@ class ListPromesaSerializer(serializers.ModelSerializer):
     ClienteID = serializers.UUIDField(
         source='ClienteID.UserID'
     )
-    ClienteName = serializers.CharField(
-        source='ClienteID.Name'
-    )
-    ClienteLastNames = serializers.CharField(
-        source='ClienteID.LastNames'
-    )
-    ClienteRut = serializers.CharField(
-        source='ClienteID.Rut'
+    Cliente = ClienteSerializer(
+        source='ClienteID',
+        allow_null=True
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
 
@@ -122,7 +123,7 @@ class ListPromesaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
         fields = ('PromesaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
-                  'ClienteName', 'ClienteLastNames', 'ClienteRut', 'Folio',
+                  'Cliente', 'Folio',
                   'PromesaState', 'Inmuebles')
 
     def get_inmuebles(self, obj):
@@ -190,7 +191,6 @@ class RetrieveModifiedPromesaSerializer(serializers.ModelSerializer):
         read_only=True
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
-
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -225,44 +225,30 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     Proyecto = serializers.CharField(
         source='ProyectoID.Name'
     )
+    CotizacionType=serializers.CharField(
+        source='CotizacionTypeID.Name',
+        allow_null=True
+    )
     ClienteID = serializers.UUIDField(
         source='ClienteID.UserID'
     )
-    ClienteName = serializers.CharField(
-        source='ClienteID.Name'
-    )
-    ClienteLastNames = serializers.CharField(
-        source='ClienteID.LastNames'
-    )
-    ClienteRut = serializers.CharField(
-        source='ClienteID.Rut'
+    Cliente = ClienteSerializer(
+        source='ClienteID',
+        allow_null=True
     )
     VendedorID = serializers.UUIDField(
         source='VendedorID.UserID'
     )
-    VendedorName = serializers.CharField(
-        source='VendedorID.Name'
-    )
-    VendedorLastNames = serializers.CharField(
-        source='VendedorID.LastNames'
-    )
-    VendedorRut = serializers.CharField(
-        source='VendedorID.Rut'
+    Vendedor = UserProfileSerializer(
+        source='VendedorID',
+        allow_null=True
     )
     CodeudorID = serializers.UUIDField(
         source='CodeudorID.UserID',
         allow_null=True
     )
-    CodeudorName = serializers.CharField(
-        source='CodeudorID.Name',
-        allow_null=True
-    )
-    CodeudorLastNames = serializers.CharField(
-        source='CodeudorID.LastNames',
-        allow_null=True
-    )
-    CodeudorRut = serializers.CharField(
-        source='CodeudorID.Rut',
+    Codeudor = ClienteSerializer(
+        source='CodeudorID',
         allow_null=True
     )
     PayType = serializers.CharField(
@@ -299,6 +285,9 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     DocumentPaymentForm = serializers.SerializerMethodField(
         'get_document_payment_form_url')
     # Modification = serializers.SerializerMethodField('get_promesa_modified')
+    Patrimony = serializers.SerializerMethodField('get_patrimony')
+    Cuotas = serializers.SerializerMethodField('get_cuotas')
+    OfertaID = serializers.SerializerMethodField('get_oferta_id')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -317,18 +306,13 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'PromesaID',
             'ProyectoID',
             'Proyecto',
+            'CotizacionType',
             'ClienteID',
-            'ClienteName',
-            'ClienteLastNames',
-            'ClienteRut',
+            'Cliente',
             'VendedorID',
-            'VendedorName',
-            'VendedorLastNames',
-            'VendedorRut',
+            'Vendedor',
             'CodeudorID',
-            'CodeudorName',
-            'CodeudorLastNames',
-            'CodeudorRut',
+            'Codeudor',
             'Date',
             'DocumentFirmaComprador',
             'DocumentPaymentForm',
@@ -344,12 +328,15 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
             'Inmuebles',
-            'Documents')
+            'Patrimony',
+            'Cuotas',
+            'Documents',
+            'OfertaID')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
             PromesaID=obj)
-        serializer = ListCotizacionesInmueblesSerializer(
+        serializer = ListReservaInmuebleSerializer(
             instance=inmuebles_promesa, many=True)
         return serializer.data
 
@@ -390,7 +377,24 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return serializer.data
         except AttributeError:
             return {}
-
+    
+    def get_patrimony(self, obj):
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+        patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
+        if patrimonies.exists():
+            return PatrimonySerializer(instance=patrimonies[0]).data
+        return None
+    
+    def get_cuotas(self, obj):
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+        cuotas = reserva.CuotaID.all()
+        serializer = ListCuotaSerializer(
+            instance=cuotas, many=True)
+        return serializer.data    
+        
+    def get_oferta_id(self, obj):    
+        oferta = Oferta.objects.filter(Folio=obj.Folio).first()
+        return oferta.OfertaID
 
 class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
