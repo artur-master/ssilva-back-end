@@ -129,7 +129,7 @@ class ListPromesaSerializer(serializers.ModelSerializer):
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
             PromesaID=obj)
-        serializer = ListCotizacionesInmueblesSerializer(
+        serializer = ListReservaInmuebleSerializer(
             instance=inmuebles_promesa, many=True)
         return serializer.data
 
