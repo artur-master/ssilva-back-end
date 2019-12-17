@@ -26,6 +26,7 @@ from ventas.models.ofertas import  Oferta
 from ventas.models.patrimonies import Patrimony
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.cuotas import ListCuotaSerializer
+from django.contrib.sites.shortcuts import get_current_site
 
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
@@ -351,20 +352,14 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return None
 
     def get_document_firma_comprador_url(self, obj):
-        if obj.DocumentFirmaComprador and hasattr(
-                obj.DocumentFirmaComprador, 'url'):
-            url = self.context.get('url')
-            absolute_url = get_full_path_x(url)
-            return "%s%s" % (absolute_url, obj.DocumentFirmaComprador.url)
+        if obj.DocumentFirmaComprador:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentFirmaComprador.url
         else:
             return ""
 
     def get_document_payment_form_url(self, obj):
-        if obj.DocumentPaymentForm and hasattr(
-                obj.DocumentPaymentForm, 'url'):
-            url = self.context.get('url')
-            absolute_url = get_full_path_x(url)
-            return "%s%s" % (absolute_url, obj.DocumentPaymentForm.url)
+        if obj.DocumentPaymentForm:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPaymentForm.url
         else:
             return ""
 
@@ -962,3 +957,25 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
             Comment=comment
         )
         return instance
+
+class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
+    DocumentFirmaComprador = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    
+    class Meta:
+        model = Promesa
+        fields = (
+            'DocumentFirmaComprador',)
+
+    def update(self, instance, validated_data):
+        if 'DocumentFirmaComprador' in validated_data:
+          instance.DocumentFirmaComprador = validated_data['DocumentFirmaComprador']
+          instance.PromesaState = constants.PROMESA_STATE[9]
+          instance.save()
+
+        return instance
+        
+
+

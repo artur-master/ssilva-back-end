@@ -49,6 +49,7 @@ from ventas.views.ventas_logs import (
     VentaLogVendedorViewSet)
 from ventas.views.promesas import (
     PromesaViewSet,
+    UploadConfeccionPromesaViewSet,
     ApproveMaquetaPromesaViewSet,
     ApproveControlPromesaViewSet,
     RegisterSendPromesaToInmobiliariaViewSet,
@@ -121,6 +122,9 @@ router.register('logs-vendedores',
                 base_name='logs-vendedores')
                 
 router.register('promesas', PromesaViewSet)
+router.register(
+    'promesas-upload-confeccion-promesa',
+    UploadConfeccionPromesaViewSet)
 router.register(
     'promesas-approve-maqueta',
     ApproveMaquetaPromesaViewSet)

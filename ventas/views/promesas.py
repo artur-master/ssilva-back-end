@@ -10,13 +10,16 @@ from ventas.serializers.promesas import (
     RegisterSignatureInmobiliariaSerializer,
     LegalizePromesaSerializer,
     SendCopiesSerializer,
-    UpdatePromesaSerializer)
+    UpdatePromesaSerializer,
+    UploadConfeccionPromesaSerializer)
 from empresas_and_proyectos.models.proyectos import Proyecto
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from common.permissions import (
+  CheckAdminOrVendedorOrMoniProyectosPermission,
+  CheckConfeccionaMaquetasPromesaPermission)
 
 class PromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -80,6 +83,27 @@ class PromesaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+class UploadConfeccionPromesaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, CheckConfeccionaMaquetasPromesaPermission)
+    serializer_class = UploadConfeccionPromesaSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+    
+    def partial_update(self, request, PromesaID):
+        serializer = UploadConfeccionPromesaSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+  
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"detail": "Documentos subidos con éxito",
+                             "promesa": UploadConfeccionPromesaSerializer(instance).data},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
 
 class ApproveMaquetaPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

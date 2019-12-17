@@ -483,6 +483,20 @@ class CheckApproveConfeccionPromesaPermission(
 
         return has_permission
 
+class CheckConfeccionaMaquetasPromesaPermission(
+        permissions.BasePermission):
+    message = constants.PERMISSION_MESSAGE
+
+    def has_permission(self, request, view):
+        permissions = return_permissions(request.user)
+
+        has_permission = False
+        # Verifica si el usuario actual tiene el permiso Aprueba confeccion promesa
+        for permission in permissions:
+            if permission.Name == constants.PERMISSIONS[22]:
+                has_permission = True  
+
+        return has_permission
 
 class CheckProyectoMarketingPermission(permissions.BasePermission):
     message = constants.PERMISSION_MESSAGE
