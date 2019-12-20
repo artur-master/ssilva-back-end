@@ -166,8 +166,10 @@ def print_nominative(pdf):
 def print_to_the_carrier(pdf):
     pdf.drawString(744, 320, "XXXXXX")
 
-
-def generate_old_check(date, number, has_year, beneficiary, nominative, crossed, to_the_carrier):
+def print_account_number(pdf, account_number):
+    pdf.drawString(744, 318, "XXXXXX")    
+    
+def generate_old_check(date, number, has_year, beneficiary, nominative, crossed, to_the_carrier, account_number):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Cheque_Antiguo.pdf"'
 
@@ -179,6 +181,7 @@ def generate_old_check(date, number, has_year, beneficiary, nominative, crossed,
     print_date(pdf, date, has_year)
     print_beneficiary(pdf, beneficiary)
     print_number_words(pdf, words)
+    print_account_number(pdf, account_number)
 
     if crossed:
         print_crossed(pdf)

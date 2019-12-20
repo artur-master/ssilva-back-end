@@ -27,7 +27,11 @@ from ventas.models.patrimonies import Patrimony
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.cuotas import ListCuotaSerializer
 from django.contrib.sites.shortcuts import get_current_site
-
+from ventas.models.conditions import  Condition
+from ventas.serializers.conditions import (
+    ConditionSerializer,
+    CreateConditionSerializer)
+    
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
 
@@ -226,6 +230,11 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     Proyecto = serializers.CharField(
         source='ProyectoID.Name'
     )
+    Condition = CreateConditionSerializer(
+        source='ConditionID',
+        many=True,
+        required=False
+    )
     CotizacionType=serializers.CharField(
         source='CotizacionTypeID.Name',
         allow_null=True
@@ -306,6 +315,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         fields = (
             'PromesaID',
             'ProyectoID',
+            'Condition',
             'Proyecto',
             'CotizacionType',
             'ClienteID',
@@ -463,21 +473,29 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
         read_only=True
     )
+    
     Comment = serializers.CharField(
         write_only=True,
         allow_blank=True
     )
+    
+    Condition = CreateConditionSerializer(
+        source='ConditionID',
+        many=True,
+        required=False
+    )
+    
     Resolution = serializers.BooleanField(
         write_only=True
     )
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'Resolution', 'Comment')
+        fields = ('PromesaState', 'Resolution', 'Comment', 'Condition')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
-
+        conditions_data = validated_data.get('ConditionID', False)
         comment = validated_data.pop('Comment')
         resolution = validated_data.pop('Resolution')
 
@@ -520,8 +538,34 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
                 )
                 inmueble.InmuebleID.InmuebleStateID = inmueble_state
                 inmueble.InmuebleID.save()
+            
+            if conditions_data is not False and conditions_data is not None:
+                conditions = Condition.objects.filter(
+                    condition_promesa=instance
+                )
+                if conditions.exists():
+                    conditions.delete()
 
+                instance.ConditionID.clear()
+
+                for condition_data in conditions_data:
+                    condition = Condition.objects.create(
+                        Description=condition_data['Description']
+                    )
+                    instance.ConditionID.add(condition)
+            elif conditions_data is None:
+                conditions = Condition.objects.filter(
+                    condition_promesa=instance
+                )
+                if conditions.exists():
+                    conditions.delete()
+
+                instance.ConditionID.clear()
+            else:
+                conditions = None
+            
             crear_notificacion_promesa_aprobada(instance, instance.ProyectoID, jefe_proyecto, vendedor)
+        
         else:
             if instance.PromesaState == constants.PROMESA_STATE[2]:
                 raise CustomValidation(

@@ -22,6 +22,7 @@ from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from ventas.serializers.documents_venta import DocumentVentaSerializer
 
 
 class ReservaViewSet(viewsets.ModelViewSet):
@@ -189,7 +190,7 @@ class UploadDocumentsReservaViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Documentos subidos con éxito",
-                             "documentos": UploadDocumentsReservaSerializer(instance).data},
+                             "Documentos": DocumentVentaSerializer(instance,context={'url': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},

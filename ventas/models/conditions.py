@@ -7,7 +7,8 @@ class Condition(models.Model):
         unique=True,
         default=uuid.uuid4,
         editable=False)
-    Description = models.CharField(max_length=150)
+    Description = models.CharField(max_length=150, null=True,
+        blank=True)
     IsImportant = models.BooleanField(default=False)
     IsApprove = models.BooleanField(default=False)
     def __str__(self):

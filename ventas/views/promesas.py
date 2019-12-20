@@ -122,11 +122,11 @@ class ApproveMaquetaPromesaViewSet(viewsets.ModelViewSet):
             resolution = serializer.validated_data.get("Resolution")
             instance = serializer.save()
             if resolution:
-                return Response({"promesa": RetrievePromesaSerializer(instance).data,
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                                  "detail": "Aprobación realizada con éxito"},
                                 status=status.HTTP_200_OK)
             else:
-                return Response({"promesa": RetrievePromesaSerializer(instance).data,
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                                  "detail": "Rechazo realizado con éxito"},
                                 status=status.HTTP_200_OK)
         else:
@@ -151,11 +151,11 @@ class ApproveControlPromesaViewSet(viewsets.ModelViewSet):
             resolution = serializer.validated_data.get("Resolution")
             instance = serializer.save()
             if resolution:
-                return Response({"promesa": RetrievePromesaSerializer(instance).data,
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                                  "detail": "Aprobación realizada con éxito"},
                                 status=status.HTTP_200_OK)
             else:
-                return Response({"promesa": RetrievePromesaSerializer(instance).data,
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                                  "detail": "Rechazo realizado con éxito"},
                                 status=status.HTTP_200_OK)
         else:

@@ -2015,10 +2015,25 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
     Folio = serializers.CharField(
         write_only=True
     )
+    
     DocumentCotizacion = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
+    '''
+    DocumentOferta = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentFichaPreAprobacion = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentSimulador = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    '''
     DocumentCertificadoMatrimonio = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2115,6 +2130,14 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
 
         if 'DocumentCotizacion' in validated_data:
             documents.DocumentCotizacion = validated_data['DocumentCotizacion']
+        '''   
+        if 'DocumentOferta' in validated_data:
+            documents.DocumentOferta = validated_data['DocumentOferta']
+        if 'DocumentFichaPreAprobacion' in validated_data:
+            documents.DocumentFichaPreAprobacion = validated_data['DocumentFichaPreAprobacion']
+        if 'DocumentSimulador' in validated_data:
+            documents.DocumentSimulador = validated_data['DocumentSimulador']
+        '''    
         if 'DocumentCertificadoMatrimonio' in validated_data:
             documents.DocumentCertificadoMatrimonio = validated_data['DocumentCertificadoMatrimonio']
         if 'DocumentConstitucionSociedad' in validated_data:

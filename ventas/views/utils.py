@@ -43,12 +43,12 @@ class GenerateCheckViewSet(APIView):
             response = generate_new_check(
                 body.get('City'), body.get('Date'), body.get('Number'), body.get('HasYear'),
                 body.get('Beneficiary'), body.get('Nominative'),
-                body.get('Crossed'), body.get('ToTheCarrier'))
+                body.get('Crossed'), body.get('ToTheCarrier'), body.get('AccountNumber'))
         else:
             response = generate_old_check(
                 body.get('Date'), body.get('Number'), body.get('HasYear'),
                 body.get('Beneficiary'), body.get('Nominative'),
-                body.get('Crossed'), body.get('ToTheCarrier'))
+                body.get('Crossed'), body.get('ToTheCarrier'), body.get('AccountNumber'))
 
         return response
 

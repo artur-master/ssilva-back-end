@@ -7,6 +7,7 @@ from users.models import User
 from ventas.models.clientes import Cliente
 from ventas.models.payment_forms import PayType
 from ventas.models.cotizaciones import CotizacionType
+from ventas.models.conditions import Condition
 
 
 class Promesa(models.Model):
@@ -90,6 +91,11 @@ class Promesa(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL)
+    ConditionID = models.ManyToManyField(
+        Condition,
+        related_name='condition_promesa',
+        null=True,
+        blank=True)    
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaState)
