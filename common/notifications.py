@@ -1133,6 +1133,25 @@ def crear_notificacion_promesa_creada(
         notification_add.UserID.add(usuario_confecciona_maquetas)
 
 
+def crear_notificacion_maqueta_jp_aprobada(promesa, jp_proyecto):
+    # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[52])
+
+    message = "Confeccion maqueta promesa %s proyecto %s ha sido aprobada - AC" % (
+        promesa.Folio, promesa.ProyectoID.Name)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=promesa.PromesaID,
+        Message=message,
+        RedirectRouteID=promesa.PromesaID
+    )
+
+    if jp_proyecto.exists():
+        for jp in jp_proyecto:
+            notification_add.UserID.add(jp.UserID)
+
 def crear_notificacion_maqueta_aprobada(promesa, vendedor_proyecto):
     # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
     notification_type = NotificationType.objects.get(

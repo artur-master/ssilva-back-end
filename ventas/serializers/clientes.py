@@ -82,6 +82,7 @@ class ListClienteSerializer(serializers.ModelSerializer):
     BirthDate = serializers.SerializerMethodField()
     ClienteProyecto = serializers.SerializerMethodField(
         'get_cliente_project')
+    Empleador = serializers.SerializerMethodField('get_empleador_cliente')    
     def get_Contact(self, obj):
         query_set = ClienteContactInfo.objects.filter(UserID=obj)
         return [ClienteContactInfoSerializer(instance).data for instance in query_set]
@@ -97,6 +98,15 @@ class ListClienteSerializer(serializers.ModelSerializer):
         serializer = ClienteProyectoSerializer(
             instance=cliente_project, many=True)
         return serializer.data
+    def get_empleador_cliente(self, obj):
+        empleador_cliente = Empleador.objects.filter(ClienteID=obj).order_by("-id")
+        if empleador_cliente.exists():
+            empleador_cliente = empleador_cliente[0]
+            serializer = EmpleadorSerializer(
+                instance=empleador_cliente)
+            return serializer.data
+        return None    
+    
     class Meta:
         model = Cliente
         fields = ('UserID', 'Name', 'LastNames',
@@ -106,7 +116,7 @@ class ListClienteSerializer(serializers.ModelSerializer):
                   'Carga', 'Salary', 'TotalPatrimony',
                   'Antiquity', 'ContractMarriageType',
                   'GiroEmpresa', 'ReprenetanteLegal',
-                  'Extra', 'IsCompany', 'IsDefinitiveResidence', 'Contact','ClienteProyecto')
+                  'Extra', 'IsCompany', 'IsDefinitiveResidence', 'Contact','ClienteProyecto','Empleador')
 
 
 class ClienteSerializer(serializers.ModelSerializer):

@@ -23,26 +23,28 @@ PERMISSIONS = [
 ]
 
 NOTIFICATION_TYPE = [
-    "Inmobiliaria sin representante", "Proyecto sin representante", "Proyecto sin vendedor",
-    "Proyecto sin asistente comercial", "Proyecto sin jefe de proyectos", "Proyecto requiere aprobación",
-    "Proyecto aprobado", "Proyecto rechazado", "Cambio de contraseña pendiente", "Inmobiliaria sin aprobador",
-    "Proyecto sin aprobador", "Etapa sin fecha de ventas", "Proyecto con instituci\u00f3n financiera pendiente",
-    "Proyecto con aseguradora pendiente", "Proyecto pendiente a aprobación", "Proyecto con constructora pendiente",
-    "Proyecto sin inmuebles", "Reserva con información pendiente", "Reserva con control pendiente",
-    "Reserva rechazada", "Reserva cancelada", "Reserva modificada con información pendiente",
-    "Reserva modificada con control pendiente", "Proyecto sin borrador de promesa",
+    "Inmobiliaria sin representante", "Proyecto sin representante", "Proyecto sin vendedor", #2
+    "Proyecto sin asistente comercial", "Proyecto sin jefe de proyectos", "Proyecto requiere aprobación", #5
+    "Proyecto aprobado", "Proyecto rechazado", "Cambio de contraseña pendiente", "Inmobiliaria sin aprobador", #9
+    "Proyecto sin aprobador", "Etapa sin fecha de ventas", "Proyecto con instituci\u00f3n financiera pendiente", #12
+    "Proyecto con aseguradora pendiente", "Proyecto pendiente a aprobación", "Proyecto con constructora pendiente", #15
+    "Proyecto sin inmuebles", "Reserva con información pendiente", "Reserva con control pendiente", #18
+    "Reserva rechazada", "Reserva cancelada", "Reserva modificada con información pendiente", #21
+    "Reserva modificada con control pendiente", "Proyecto sin borrador de promesa", #23
     "Oferta creada", "Oferta requiere aprobacion inmobiliaria",
     "Oferta aprobada", "Oferta rechazada",
     "Preaprobacion credito aprobada", "Preaprobacion credito rechazada",
-    "Oferta pendiente aprobacion confeccion promesa",
+    "Oferta pendiente aprobacion confeccion promesa", #30
     "Oferta requiere aprobacion confeccion promesa",
     "Confeccion promesa aprobada", "Confeccion promesa rechazada",
-    "Oferta cancelada", "Oferta modificada", "Promesa creada",
-    "Maqueta aprobada", "Maqueta rechazada", "Promesa aprobada",
-    "Promesa rechazada", "Promesa enviada a inmobiliaria",
+    "Oferta cancelada", "Oferta modificada", "Promesa creada", #36
+    "Maqueta aprobada", "Maqueta rechazada", "Promesa aprobada", #39
+    "Promesa rechazada", "Promesa enviada a inmobiliaria", #41
     "Envio de copias", "Promesa modificada", "Documento confirmado", "Documento rechazado", "Documento de actualizacion",
-    "Crear comision", "Comision de actualizacion",
-    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta", "Refund garantia"
+    "Crear comision", "Comision de actualizacion", #48
+    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta", "Refund garantia", #51
+    "Maqueta aprobada - AC" #52
+    
 ]
 
 PROYECTO_APPROVAL_STATE = [
@@ -77,12 +79,12 @@ VENTA_LOG_TYPE = [
     "Aprobacion reserva", "Rechazo reserva",
     "Cancelacion reserva", "Modificacion reserva",
     "Creacion oferta", "Envio aprobacion inmobiliaria",
-    "Aprobacion oferta", "Rechazo oferta",
+    "Aprobacion oferta", "Rechazo oferta", # 9
     "Recepcion garantia", "Envio oferta a confeccion promesa",
     "Aprobacion confeccion promesa", "Rechazo confeccion promesa",
     "Cancelacion oferta", "Modificacion oferta",
     "Creacion cotizacion", "Creacion promesa",
-    "Aprobacion maqueta", "Rechazo maqueta",
+    "Aprobacion maqueta", "Rechazo maqueta", # 19
     "Aprobacion promesa", "Rechazo promesa",
     "Registro envio promesa a inmobiliaria",
     "Registro firma de inmobiliaria",
@@ -91,7 +93,8 @@ VENTA_LOG_TYPE = [
     "Modificacion promesa(Antes de firma comprador)",
     "Modificacion promesa(Despues de firma comprador)",
     "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta",
-    "Refund garantia"
+    "Refund garantia", # 30
+    "AC Aprobacion maqueta" #31
 ]
 
 USER_PROYECTO_TYPE = [
@@ -250,8 +253,9 @@ PROMESA_STATE = [
     "Pendiente envio de copias",
     "Pendiente escrituracion",
     "Escritura",
-    "Pendiente aprobación de maqueta",
+    "Pendiente AC aprobación de maqueta", #9
     "Promesa modificada",
+    "Pendiente JP aprobación de maqueta", #11
 ]
 
 ETAPA_STATE = [

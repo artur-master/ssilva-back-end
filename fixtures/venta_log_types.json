@@ -208,5 +208,12 @@
          "Name": "Refund garantia",
          "MaximunDays": 0
      }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
+         "Name": "AC Aprobacion maqueta",
+         "MaximunDays": 0
+     }
 }
 ]

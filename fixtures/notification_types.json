@@ -414,6 +414,13 @@
             "TableName": "Oferta",
             "RedirectRouteName": "oferta"
         }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Maqueta aprobada - AC",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
     }
-    
 ]

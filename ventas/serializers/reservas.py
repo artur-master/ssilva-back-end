@@ -1293,9 +1293,9 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         else:
             cotizacion = None
 
-
         if 'Cliente' in validated_data:
             cliente = save_cliente_return(validated_data['Cliente'], cliente, current_user)
+            instance.ClienteID = cliente
 
         if codeudor_id:
             codeudor = Cliente.objects.get(UserID=codeudor_id)
@@ -1304,6 +1304,8 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
 			
         if 'Codeudor' in validated_data and codeudor:
             codeudor = save_cliente_return(validated_data['Codeudor'], codeudor, current_user)
+            instance.CodeudorID = codeudor
+            
         if empresa_compradora_data:
             empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=cliente)
             if len(empresa_compradora) > 0:

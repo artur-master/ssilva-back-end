@@ -1,5 +1,6 @@
 from common import constants
-from common.notifications import crear_notificacion_promesa_creada, crear_notificacion_maqueta_aprobada, \
+from common.notifications import crear_notificacion_promesa_creada, crear_notificacion_maqueta_jp_aprobada, \
+    crear_notificacion_maqueta_aprobada, \
     crear_notificacion_maqueta_rechazada, crear_notificacion_promesa_aprobada, crear_notificacion_promesa_rechazada, \
     crear_notificacion_promesa_enviada_a_inmobiliaria, crear_notificacion_copias_enviadas, \
     crear_notificacion_promesa_modificada
@@ -432,16 +433,25 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
             # Tipos de Usuario
             vendedor_type = UserProyectoType.objects.get(
                 Name=constants.USER_PROYECTO_TYPE[2])
+            jefe_proyecto_type = UserProyectoType.objects.get(
+                Name=constants.USER_PROYECTO_TYPE[1])    
 
             # Usuarios
             vendedor = UserProyecto.objects.filter(
                 ProyectoID=instance.ProyectoID,
                 UserProyectoTypeID=vendedor_type)
-
-            instance.PromesaState = constants.PROMESA_STATE[1]
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[18])
-
-            crear_notificacion_maqueta_aprobada(instance, vendedor)
+            jefe_proyecto = UserProyecto.objects.filter(
+                ProyectoID=instance.ProyectoID,
+                UserProyectoTypeID=jefe_proyecto_type)
+            
+            if instance.PromesaState == constants.PROMESA_STATE[9]:
+              instance.PromesaState = constants.PROMESA_STATE[11]
+              venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
+              crear_notificacion_maqueta_jp_aprobada(instance, jefe_proyecto)
+            else:  
+              instance.PromesaState = constants.PROMESA_STATE[1]
+              venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[18])
+              crear_notificacion_maqueta_aprobada(instance, vendedor)
         else:
             # Tipos de Usuario
             permission = Permission.objects.get(Name=constants.PERMISSIONS[22])

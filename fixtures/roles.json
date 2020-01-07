@@ -21,6 +21,12 @@
         ],
         [
           "Aprueba proyectos"
+        ],
+        [
+          "Administra clientes"
+        ],
+        [
+          "Consulta clientes"
         ]
       ]
     }
@@ -44,6 +50,12 @@
         ],
         [
           "Es asistente comercial"
+        ],
+        [
+          "Administra clientes"
+        ],
+        [
+          "Consulta clientes"
         ]
       ]
     }
@@ -72,6 +84,12 @@
         ],
         [
           "Consulta proyectos"
+        ],
+        [
+          "Administra clientes"
+        ],
+        [
+          "Consulta clientes"
         ]
       ]
     }
