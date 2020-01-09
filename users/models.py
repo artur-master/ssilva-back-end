@@ -58,8 +58,8 @@ class User(models.Model):
     UserID = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     Name = models.CharField(max_length=40, null=True, blank=True)
     LastNames = models.CharField(max_length=60, null=True, blank=True)
-    Rut = models.CharField(max_length=12, null=True, blank=True)
-    Email = models.EmailField(max_length=60, null=True, blank=True)
+    Rut = models.CharField(max_length=12, null=True, blank=True, unique=True, error_messages={'unique': 'Rut ingresado ya existe en el sistema'})
+    Email = models.EmailField(max_length=60, null=True, blank=True, unique=True, error_messages={'unique': 'Email ingresado ya existe en el sistema'})
     RoleID = models.ManyToManyField(Role, related_name='role_user', blank=True)
     DjangoUser = models.OneToOneField(
         "auth.User",

@@ -49,6 +49,12 @@ def validate_rut_usuario(value):
             'Rut ingresado ya existe en el sistema',
             status_code=status.HTTP_409_CONFLICT)
 
+def validate_email_usuario(value):
+    user = User.objects.filter(Email=value)
+    if user.exists():
+        raise CustomValidation(
+            'Email ingresado ya existe en el sistema',
+            status_code=status.HTTP_409_CONFLICT)
 
 def validate_name_empresa(value):
     inmobiliaria = Inmobiliaria.objects.filter(RazonSocial=value)

@@ -1153,7 +1153,8 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             empresa_compradora.save()
         else:
             empresa_compradora = None
-
+            
+        instance.ClienteID = cliente
         instance.VendedorID = current_user
         instance.CodeudorID = codeudor
         instance.ContactMethodTypeID = contact_method_type

@@ -7,7 +7,7 @@ from common.models import NotificationType, Notification
 from common.serializers import notifications
 from common.notifications import crear_notificacion_cambio_clave
 from common.services import enviar_contrasena_por_email, generar_contrasena
-from common.validations import validate_rut_usuario
+from common.validations import validate_rut_usuario, validate_email_usuario
 from .roles import RoleNameIDSerializer, RoleIDSerializer
 from rest_framework import serializers
 
@@ -74,9 +74,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         source='RoleID',
         many=True
     )
-    Rut = serializers.CharField(
-        validators=[validate_rut_usuario]
-    )
+    
     IsActive = serializers.BooleanField(
         source='DjangoUser.is_active',
         read_only=True
@@ -129,6 +127,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        if(instance.Rut != validated_data.get('Rut', instance.Rut)):
+            instance.Rut = validated_data.get('Rut', instance.Rut)
         instance.Name = validated_data.get('Name', instance.Name)
         instance.LastNames = validated_data.get('LastNames', instance.LastNames)
         instance.Email = validated_data.get('Email', instance.Email)
@@ -142,6 +142,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             instance.DjangoUser.first_name = validated_data.get('Name', instance.Name)
             instance.DjangoUser.last_name = validated_data.get('LastNames', instance.LastNames)
             instance.DjangoUser.email = validated_data.get('Email', instance.Email)
+            instance.DjangoUser.username = validated_data.get('Rut', instance.Rut)
 
         # Se limpia la relación entre los roles y el usuario
         # para asi poder guardar las nuevas relaciones
