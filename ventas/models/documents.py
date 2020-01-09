@@ -8,8 +8,12 @@ class DocumentVenta(models.Model):
         blank=True)
     DocumentCotizacion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    
     DocumentOferta = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentOfertaFirmada = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+        
     DocumentFichaPreAprobacion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentSimulador = models.FileField(
