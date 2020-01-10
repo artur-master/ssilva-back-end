@@ -224,7 +224,7 @@ class ProyectoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Proyecto
-        fields = ('ProyectoID', 'Name', 'Symbol', 'Address', 'Comuna',
+        fields = ('ProyectoID', 'Name', 'Symbol', 'Address', 'Comuna', 'Arquitecto',
                   'Notifications',
                   'UsersProyecto',
                   'ProyectoApprovalState',
@@ -869,7 +869,8 @@ class CreateUserProyectoSerializer(serializers.ModelSerializer):
     UserID = serializers.CharField(
         write_only=True,
         required=False,
-        allow_null=True
+        allow_null=True,
+        allow_blank=True
     )
     User = serializers.CharField(
         source='UserID',
@@ -1025,6 +1026,11 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         required=True,
         allow_null=True
     )
+    Arquitecto = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True
+    )
     Symbol = serializers.CharField(
         required=False,
         allow_null=True
@@ -1071,7 +1077,8 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'Aseguradora',
             'MoreThanOneEtapa',
             'EtapaStateID',
-            'EntregaInmediata'
+            'EntregaInmediata',
+            'Arquitecto'
         )
 
     def create(self, validated_data):
@@ -1110,6 +1117,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
 
         instance = Proyecto.objects.create(
             Name=validated_data['Name'],
+            Arquitecto=validated_data.get('Arquitecto',''),
             Symbol=symbol.upper() if symbol else symbol,
             Address=validated_data.get('Address'),
             InstitucionFinancieraID=institucion_financiera,
@@ -1184,6 +1192,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         proyecto_hist_data = dict(ProyectoID=instance.ProyectoID,
                                   Counter=counter.Count,
                                   Name=validated_data['Name'],
+                                  Arquitecto=validated_data.get('Arquitecto',''),
                                   Symbol=symbol.upper() if symbol else symbol,
                                   Address=validated_data.get('Address'),
                                   InstitucionFinancieraID=institucion_financiera,
@@ -1495,6 +1504,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
         allow_null=True
     )
     Name = serializers.CharField(required=False)
+    Arquitecto = serializers.CharField(required=False, allow_null=True, allow_blank=True)
     Symbol = serializers.CharField(required=False, allow_null=True)
     Address = serializers.CharField(required=False, allow_null=True)
     CotizacionDuration = serializers.CharField(required=False, allow_null=True)
@@ -1506,6 +1516,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
         fields = (
             'ProyectoID',
             'Name',
+            'Arquitecto',
             'Symbol',
             'Address',
             'ContactInfo',
@@ -1543,6 +1554,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
         region_id = validated_data.get('RegionID', False)
         comment = validated_data.get('Comment', False)
         symbol = validated_data.get('Symbol', False)
+        arquitecto = validated_data.get('Arquitecto', False)
         etapa_state_id = validated_data.get('EtapaStateID', False)
 
         # Arreglos para guardar objetos antes del cambio
@@ -1569,6 +1581,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
         proyecto_hist_data = dict(ProyectoID=instance.ProyectoID,
                                   Counter=counter.Count,
                                   Name=validated_data.get('Name', instance.Name),
+                                  Arquitecto=arquitecto,
                                   Symbol=symbol.upper() if symbol else symbol,
                                   Address=validated_data.get('Address'),
                                   InstitucionFinancieraID=institucion_financiera,
@@ -1646,35 +1659,36 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.UserProyecto.clear()
             if proyecto_users_data is not None:
                 for proyecto_user_data in proyecto_users_data:
-                    user_proyecto_type = UserProyectoType.objects.get(
-                        Name=proyecto_user_data['UserProyectoTypeID'])
-                    user_proyecto = User.objects.get(
-                        UserID=proyecto_user_data['UserID'])
+                    if proyecto_user_data['UserID']:
+                        user_proyecto_type = UserProyectoType.objects.get(
+                            Name=proyecto_user_data['UserProyectoTypeID'])
+                        user_proyecto = User.objects.get(
+                            UserID=proyecto_user_data['UserID'])
 
-                    UserProyecto.objects.create(
-                        UserID=user_proyecto,
-                        ProyectoID=instance,
-                        UserProyectoTypeID=user_proyecto_type
-                    )
-                    HistoricalUserProyecto.objects.create(
-                        UserID=user_proyecto,
-                        ProyectoID=proyecto_hist,
-                        UserProyectoTypeID=user_proyecto_type
-                    )
-                    if proyecto_user_data['UserProyectoTypeID'] in (constants.USER_PROYECTO_TYPE[5],
-                                                                    constants.USER_PROYECTO_TYPE[6],
-                                                                    constants.USER_PROYECTO_TYPE[7]):
-                        notification_type = NotificationType.objects.get(
-                            Name=constants.NOTIFICATION_TYPE[46])
-                        notification = Notification.objects.create(
-                            NotificationTypeID=notification_type,
-                            TableID=instance.ProyectoID,
-                            Message="You have been assigned to project %s to upload %s documents" % (instance.Name,
-                                                                                                     proyecto_user_data[
-                                                                                                         'UserProyectoTypeID']),
-                            RedirectRouteID=instance.ProyectoID
+                        UserProyecto.objects.create(
+                            UserID=user_proyecto,
+                            ProyectoID=instance,
+                            UserProyectoTypeID=user_proyecto_type
                         )
-                        notification.UserID.add(user_proyecto)
+                        HistoricalUserProyecto.objects.create(
+                            UserID=user_proyecto,
+                            ProyectoID=proyecto_hist,
+                            UserProyectoTypeID=user_proyecto_type
+                        )
+                        if proyecto_user_data['UserProyectoTypeID'] in (constants.USER_PROYECTO_TYPE[5],
+                                                                        constants.USER_PROYECTO_TYPE[6],
+                                                                        constants.USER_PROYECTO_TYPE[7]):
+                            notification_type = NotificationType.objects.get(
+                                Name=constants.NOTIFICATION_TYPE[46])
+                            notification = Notification.objects.create(
+                                NotificationTypeID=notification_type,
+                                TableID=instance.ProyectoID,
+                                Message="You have been assigned to project %s to upload %s documents" % (instance.Name,
+                                                                                                         proyecto_user_data[
+                                                                                                             'UserProyectoTypeID']),
+                                RedirectRouteID=instance.ProyectoID
+                            )
+                            notification.UserID.add(user_proyecto)
 
         # Crear/Eliminar Notificaciones
 
@@ -1817,6 +1831,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
 
         if 'Name' in validated_data:
             instance.Name = validated_data.get('Name')
+        if arquitecto is not False:
+            instance.Arquitecto = arquitecto   
         if symbol is not False:
             instance.Symbol = symbol.upper() if symbol else symbol
         if 'Address' in validated_data:

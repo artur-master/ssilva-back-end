@@ -10,5 +10,11 @@
     "fields": {
         "Name": "Aprobador"
     }
+},
+{
+    "model": "empresas_and_proyectos.userinmobiliariatype",
+    "fields": {
+        "Name": "Autorizador"
+    }
 }
 ]

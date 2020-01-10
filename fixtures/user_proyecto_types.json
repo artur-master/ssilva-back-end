@@ -52,11 +52,5 @@
     "fields": {
       "Name": "Autorizador"
     }
-  },
-  {
-    "model": "empresas_and_proyectos.userproyectotype",
-    "fields": {
-      "Name": "Arquitecto"
-    }
   }
 ]

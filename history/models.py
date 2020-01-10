@@ -63,6 +63,7 @@ class HistoricalProyecto(models.Model):
         null=True,
         blank=True)
     Name = models.CharField(max_length=150)
+    Arquitecto = models.CharField(max_length=150, null=True, blank=True)
     Symbol = models.CharField(max_length=20, null=True, blank=True)
     Address = models.CharField(max_length=150, null=True, blank=True)
     ContactInfo = models.ManyToManyField(

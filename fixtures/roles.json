@@ -179,20 +179,6 @@
   {
     "model": "users.role",
     "fields": {
-      "Name": "Arquitecto",
-      "PermissionID": [
-        [
-          "Aprueba inmuebles"
-        ],
-        [
-          "Aprueba confeccion promesa"
-        ]
-      ]
-    }
-  },
-  {
-    "model": "users.role",
-    "fields": {
       "Name": "Finanzas",
       "PermissionID": [
         [
