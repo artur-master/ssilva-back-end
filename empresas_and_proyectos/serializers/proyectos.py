@@ -516,6 +516,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         many=True
     )
 
+
     Metadata = serializers.SerializerMethodField('get_project_meta')
 
     @staticmethod
@@ -532,6 +533,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         fields = (
             'ProyectoID',
             'Name',
+            'Arquitecto',
             'Symbol',
             'Address',
             'ContactInfo',
