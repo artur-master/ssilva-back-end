@@ -48,6 +48,8 @@ class Promesa(models.Model):
     PromesaState = models.CharField(max_length=100)
     DocumentFirmaComprador = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentPromesa = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
     DocumentPaymentForm = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DateEnvioPromesa = models.DateTimeField(

@@ -291,8 +291,11 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     Documents = serializers.SerializerMethodField('get_documents')
+    DocumentPromesa = serializers.SerializerMethodField(
+        'get_document_promesa_url')
     DocumentFirmaComprador = serializers.SerializerMethodField(
         'get_document_firma_comprador_url')
+        
     DocumentPaymentForm = serializers.SerializerMethodField(
         'get_document_payment_form_url')
     # Modification = serializers.SerializerMethodField('get_promesa_modified')
@@ -326,6 +329,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'CodeudorID',
             'Codeudor',
             'Date',
+            'DocumentPromesa',
             'DocumentFirmaComprador',
             'DocumentPaymentForm',
             'DateEnvioPromesa',
@@ -361,7 +365,13 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return serializer.data
         except DocumentVenta.DoesNotExist:
             return None
-
+    
+    def get_document_promesa_url(self, obj):
+        if obj.DocumentPromesa:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesa.url
+        else:
+            return ""
+            
     def get_document_firma_comprador_url(self, obj):
         if obj.DocumentFirmaComprador:
           return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentFirmaComprador.url
@@ -443,12 +453,13 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
             jefe_proyecto = UserProyecto.objects.filter(
                 ProyectoID=instance.ProyectoID,
                 UserProyectoTypeID=jefe_proyecto_type)
-            
+            # if AC approves, move to JP to approve
             if instance.PromesaState == constants.PROMESA_STATE[9]:
               instance.PromesaState = constants.PROMESA_STATE[11]
               venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
               crear_notificacion_maqueta_jp_aprobada(instance, jefe_proyecto)
-            else:  
+            # AC approve has approved and now JP approves, move to 'Pendiente firma comprador'
+            else:
               instance.PromesaState = constants.PROMESA_STATE[1]
               venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[18])
               crear_notificacion_maqueta_aprobada(instance, vendedor)
@@ -940,7 +951,8 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
 
         if (instance.PromesaState == constants.PROMESA_STATE[0] or
                 instance.PromesaState == constants.PROMESA_STATE[1] or
-                instance.PromesaState == constants.PROMESA_STATE[9]):
+                instance.PromesaState == constants.PROMESA_STATE[9] or
+                instance.PromesaState == constants.PROMESA_STATE[11]):
 
             oferta = Oferta.objects.get(Folio=instance.Folio)
             oferta.OfertaState = constants.OFERTA_STATE[0]
@@ -1013,7 +1025,7 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
         return instance
 
 class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
-    DocumentFirmaComprador = serializers.FileField(
+    DocumentPromesa = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
@@ -1021,11 +1033,11 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
         fields = (
-            'DocumentFirmaComprador',)
+            'DocumentPromesa',)
 
     def update(self, instance, validated_data):
-        if 'DocumentFirmaComprador' in validated_data:
-          instance.DocumentFirmaComprador = validated_data['DocumentFirmaComprador']
+        if 'DocumentPromesa' in validated_data:
+          instance.DocumentPromesa = validated_data['DocumentPromesa']
           instance.PromesaState = constants.PROMESA_STATE[9]
           instance.save()
 
