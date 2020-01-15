@@ -293,6 +293,13 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     Documents = serializers.SerializerMethodField('get_documents')
     DocumentPromesa = serializers.SerializerMethodField(
         'get_document_promesa_url')
+    DocumentPromesaFirma = serializers.SerializerMethodField(
+        'get_document_promesa_firma_url')  
+    DocumentChequesFirma = serializers.SerializerMethodField(
+        'get_document_cheques_firma_url')  
+    DocumentPlantaFirma = serializers.SerializerMethodField(
+        'get_document_planta_firma_url')     
+        
     DocumentFirmaComprador = serializers.SerializerMethodField(
         'get_document_firma_comprador_url')
         
@@ -330,6 +337,9 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'Codeudor',
             'Date',
             'DocumentPromesa',
+            'DocumentPromesaFirma',
+            'DocumentChequesFirma',
+            'DocumentPlantaFirma',
             'DocumentFirmaComprador',
             'DocumentPaymentForm',
             'DateEnvioPromesa',
@@ -371,12 +381,28 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
           return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesa.url
         else:
             return ""
+    def get_document_promesa_firma_url(self, obj):
+        if obj.DocumentPromesaFirma:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesaFirma.url
+        else:
+            return ""        
+    def get_document_cheques_firma_url(self, obj):
+        if obj.DocumentChequesFirma:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentChequesFirma.url
+        else:
+            return ""   
+    
+    def get_document_planta_firma_url(self, obj):
+        if obj.DocumentPlantaFirma:
+          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPlantaFirma.url
+        else:
+            return ""
             
     def get_document_firma_comprador_url(self, obj):
         if obj.DocumentFirmaComprador:
           return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentFirmaComprador.url
         else:
-            return ""
+            return ""        
 
     def get_document_payment_form_url(self, obj):
         if obj.DocumentPaymentForm:
@@ -1032,8 +1058,7 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Promesa
-        fields = (
-            'DocumentPromesa',)
+        fields = ('DocumentPromesa','PromesaState')
 
     def update(self, instance, validated_data):
         if 'DocumentPromesa' in validated_data:
@@ -1042,6 +1067,38 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
           instance.save()
 
         return instance
+
+class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
+    DocumentPromesaFirma = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentChequesFirma = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentPlantaFirma = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    
+    class Meta:
+        model = Promesa
+        fields = ('DocumentPromesaFirma','DocumentChequesFirma','DocumentPlantaFirma',
+                  'PromesaState')
+
+    def update(self, instance, validated_data):
+        if 'DocumentPromesaFirma' in validated_data:
+          instance.DocumentPromesaFirma = validated_data['DocumentPromesaFirma']
+        if 'DocumentChequesFirma' in validated_data:
+          instance.DocumentChequesFirma = validated_data['DocumentChequesFirma']
+        if 'DocumentPlantaFirma' in validated_data:
+          instance.DocumentPlantaFirma = validated_data['DocumentPlantaFirma']
+        
+        instance.PromesaState = constants.PROMESA_STATE[12]
+        instance.save()
+        return instance
+        
         
 
 

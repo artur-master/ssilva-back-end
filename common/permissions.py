@@ -498,6 +498,21 @@ class CheckConfeccionaMaquetasPromesaPermission(
 
         return has_permission
 
+class CheckUploadFirmaDocumentPromesaPermission(
+        permissions.BasePermission):
+    message = constants.PERMISSION_MESSAGE
+
+    def has_permission(self, request, view):
+        permissions = return_permissions(request.user)
+
+        has_permission = False
+        # Vendor can upload firma documents
+        for permission in permissions:
+            if permission.Name == constants.PERMISSIONS[8]:
+                has_permission = True  
+
+        return has_permission
+
 class CheckProyectoMarketingPermission(permissions.BasePermission):
     message = constants.PERMISSION_MESSAGE
 

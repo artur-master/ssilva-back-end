@@ -244,8 +244,8 @@ RESULT = [
 ]
 
 PROMESA_STATE = [
-    "Pendiente confección",
-    "Pendiente firma comprador",
+    "Pendiente confección", #0 -> #9
+    "Pendiente firma comprador", #1 -> #12
     "Pendiente envío a inmobiliaria",
     "Pendiente control",
     "Pendiente firma inmobiliaria",
@@ -253,9 +253,10 @@ PROMESA_STATE = [
     "Pendiente envio de copias",
     "Pendiente escrituracion",
     "Escritura",
-    "Pendiente AC aprobación de maqueta", #9
+    "Pendiente AC aprobación de maqueta", #9 -> #11
     "Promesa modificada",
-    "Pendiente JP aprobación de maqueta", #11
+    "Pendiente JP aprobación de maqueta", #11 -> #1
+    "Pendiente aprobación de firma comprador",
 ]
 
 ETAPA_STATE = [

@@ -46,9 +46,17 @@ class Promesa(models.Model):
     Date = models.DateTimeField(auto_now_add=True)
     Folio = models.CharField(max_length=50)
     PromesaState = models.CharField(max_length=100)
-    DocumentFirmaComprador = models.FileField(
-        upload_to="DocumentVentas", null=True, blank=True)
     DocumentPromesa = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+        
+    DocumentPromesaFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)    
+    DocumentChequesFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)   
+    DocumentPlantaFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)    
+        
+    DocumentFirmaComprador = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentPaymentForm = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)

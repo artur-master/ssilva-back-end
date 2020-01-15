@@ -11,13 +11,15 @@ from ventas.serializers.promesas import (
     LegalizePromesaSerializer,
     SendCopiesSerializer,
     UpdatePromesaSerializer,
-    UploadConfeccionPromesaSerializer)
+    UploadConfeccionPromesaSerializer,
+    UploadFirmaDocumentSerializer)
 from empresas_and_proyectos.models.proyectos import Proyecto
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from common.permissions import (
+  CheckUploadFirmaDocumentPromesaPermission,
   CheckAdminOrVendedorOrMoniProyectosPermission,
   CheckConfeccionaMaquetasPromesaPermission)
 
@@ -133,6 +135,27 @@ class ApproveMaquetaPromesaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+class UploadFirmaDocumentViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, CheckUploadFirmaDocumentPromesaPermission)
+    serializer_class = UploadFirmaDocumentSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+    
+    def partial_update(self, request, PromesaID):
+        serializer = UploadFirmaDocumentSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+  
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"detail": "Documentos subidos con éxito",
+                             "promesa": UploadFirmaDocumentSerializer(instance).data},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
 
 class ApproveControlPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
