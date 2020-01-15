@@ -201,7 +201,7 @@ class RegisterSendPromesaToInmobiliariaViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({"promesa": RetrievePromesaSerializer(instance).data,
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                              "detail": "Envio promesa a inmobiliaria con éxito"},
                             status=status.HTTP_200_OK)
         else:
@@ -224,7 +224,7 @@ class RegisterSignatureInmobiliariaViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({"promesa": RetrievePromesaSerializer(instance).data,
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                              "detail": "Registro firma de inmobiliaria con éxito"},
                             status=status.HTTP_200_OK)
         else:
@@ -247,7 +247,7 @@ class LegalizePromesaViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({"promesa": RetrievePromesaSerializer(instance).data,
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                              "detail": "Registro de fecha de legalización con éxito"},
                             status=status.HTTP_200_OK)
         else:
@@ -270,7 +270,7 @@ class SendCopiesViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({"promesa": RetrievePromesaSerializer(instance).data,
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                              "detail": "Registro envio de copias con éxito"},
                             status=status.HTTP_200_OK)
         else:

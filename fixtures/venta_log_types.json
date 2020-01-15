@@ -170,6 +170,13 @@
 {
      "model": "ventas.ventalogtype",
      "fields": {
+         "Name": "Legalizacion promesa",
+         "MaximunDays": 0
+     }
+},
+{
+     "model": "ventas.ventalogtype",
+     "fields": {
          "Name": "Envio copias",
          "MaximunDays": 0
      }
