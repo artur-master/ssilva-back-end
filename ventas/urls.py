@@ -56,7 +56,10 @@ from ventas.views.promesas import (
     RegisterSendPromesaToInmobiliariaViewSet,
     RegisterSignatureInmobiliariaViewSet,
     LegalizePromesaViewSet,
-    SendCopiesViewSet)
+    SendCopiesViewSet,
+    NegociacionPromesaViewSet,
+    SendNegociacionPromesaViewSet,
+    ControlNegociacionPromesaViewSet)
 
 router = DefaultRouter()
 
@@ -148,6 +151,17 @@ router.register(
 router.register(
     'promesas-send-copies',
     SendCopiesViewSet)
+router.register(
+    'promesas-send-negociacion-to-jp',
+    NegociacionPromesaViewSet)
+router.register(
+    'promesas-send-negociacion-to-in',
+    SendNegociacionPromesaViewSet)
+router.register(
+    'promesas-control-negociacion',
+    ControlNegociacionPromesaViewSet)
+
+
 router.register('finding-types', FindingTypeViewSet)
 router.register('cotizacion-types', CotizacionTypeViewSet)
 router.register('contact-method-types', ContactMethodTypeViewSet)

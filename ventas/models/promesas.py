@@ -100,12 +100,7 @@ class Promesa(models.Model):
         related_name='promesa_modificada',
         null=True,
         blank=True,
-        on_delete=models.SET_NULL)
-    ConditionID = models.ManyToManyField(
-        Condition,
-        related_name='condition_promesa',
-        null=True,
-        blank=True)    
+        on_delete=models.SET_NULL)  
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaState)

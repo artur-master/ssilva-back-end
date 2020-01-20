@@ -422,5 +422,37 @@
             "TableName": "Promesa",
             "RedirectRouteName": "promesa"
         }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa requiere revisión a negociación",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Promesa requiere aprobacion inmobiliaria a negociación",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Aprobacion negociación",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Rechazo negociación",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
     }
 ]

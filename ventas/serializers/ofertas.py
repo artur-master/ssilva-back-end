@@ -295,7 +295,9 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                         raise CustomValidation(
                             "Revisar todas las condiciones importantes para aprobar oferta",
                             status_code=status.HTTP_409_CONFLICT)
-
+                    condition.IsApprove=True
+                    condition.save()
+                    
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[2]
             instance.IsApproveInmobiliaria = True
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[8])

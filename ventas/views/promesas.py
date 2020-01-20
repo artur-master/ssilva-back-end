@@ -12,7 +12,10 @@ from ventas.serializers.promesas import (
     SendCopiesSerializer,
     UpdatePromesaSerializer,
     UploadConfeccionPromesaSerializer,
-    UploadFirmaDocumentSerializer)
+    UploadFirmaDocumentSerializer,
+    SendNegociacionJPSerializer,
+    SendNegociacionINSerializer,
+    ControlNegociacionSerializer,)
 from empresas_and_proyectos.models.proyectos import Proyecto
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -91,13 +94,13 @@ class UploadConfeccionPromesaViewSet(viewsets.ModelViewSet):
     serializer_class = UploadConfeccionPromesaSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
-    
+
     def partial_update(self, request, PromesaID):
         serializer = UploadConfeccionPromesaSerializer(
             self.get_object(), data=request.data,
             partial=True, context={'request': request}
         )
-  
+
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Documentos subidos con éxito",
@@ -141,13 +144,13 @@ class UploadFirmaDocumentViewSet(viewsets.ModelViewSet):
     serializer_class = UploadFirmaDocumentSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
-    
+
     def partial_update(self, request, PromesaID):
         serializer = UploadFirmaDocumentSerializer(
             self.get_object(), data=request.data,
             partial=True, context={'request': request}
         )
-  
+
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Documentos subidos con éxito",
@@ -277,4 +280,74 @@ class SendCopiesViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+class NegociacionPromesaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = SendNegociacionJPSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
 
+    def partial_update(self, request, PromesaID):
+        serializer = SendNegociacionJPSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                             "detail": "Envio negociación a JP"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+class SendNegociacionPromesaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = SendNegociacionINSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+
+    def partial_update(self, request, PromesaID):
+        serializer = SendNegociacionINSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                             "detail": "Envio negociación a IN"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+class ControlNegociacionPromesaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ControlNegociacionSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+
+    def partial_update(self, request, PromesaID):
+        serializer = ControlNegociacionSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+        if serializer.is_valid():
+            resolution = serializer.validated_data.get("Resolution")
+            if resolution:
+                instance = serializer.save()
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                                 "detail": "Aprobación negociación con éxito"},
+                                status=status.HTTP_200_OK)
+            else:
+                instance = serializer.save()
+                return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                                 "detail": "Rechazo negociación con éxito"},
+                                status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)

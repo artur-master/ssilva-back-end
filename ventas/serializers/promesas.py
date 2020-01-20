@@ -3,7 +3,11 @@ from common.notifications import crear_notificacion_promesa_creada, crear_notifi
     crear_notificacion_maqueta_aprobada, \
     crear_notificacion_maqueta_rechazada, crear_notificacion_promesa_aprobada, crear_notificacion_promesa_rechazada, \
     crear_notificacion_promesa_enviada_a_inmobiliaria, crear_notificacion_copias_enviadas, \
-    crear_notificacion_promesa_modificada
+    crear_notificacion_promesa_modificada, \
+    crear_notificacion_promesa_envio_a_negociacion, \
+    crear_notificacion_promesa_control_negociacion, \
+    crear_notificacion_promesa_aprobada_negociacion, \
+    crear_notificacion_promesa_rechazada_negociacion
 from common.services import get_full_path_x, return_current_user
 from common.validations import CustomValidation
 from empresas_and_proyectos.models.inmuebles import Inmueble, InmuebleState
@@ -23,19 +27,21 @@ from ventas.serializers.clientes import ClienteSerializer
 from users.serializers.users import UserProfileSerializer
 from ventas.serializers.reservas import CreateReservaInmuebleSerializer
 from ventas.models.reservas import Reserva
-from ventas.models.ofertas import  Oferta
+from ventas.models.ofertas import Oferta
 from ventas.models.patrimonies import Patrimony
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.cuotas import ListCuotaSerializer
 from django.contrib.sites.shortcuts import get_current_site
-from ventas.models.conditions import  Condition
+from ventas.models.conditions import Condition
 from ventas.serializers.conditions import (
     ConditionSerializer,
-    CreateConditionSerializer)
-    
+    CreateConditionSerializer,
+    ApproveConditionSerializer)
+from ventas.serializers.cotizaciones import ListCotizacionesInmueblesSerializer
+
+
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
-
     instance = Promesa.objects.create(
         ProyectoID=proyecto,
         CotizacionTypeID=cotizacion_type,
@@ -197,6 +203,7 @@ class RetrieveModifiedPromesaSerializer(serializers.ModelSerializer):
         read_only=True
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
+
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -236,7 +243,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         many=True,
         required=False
     )
-    CotizacionType=serializers.CharField(
+    CotizacionType = serializers.CharField(
         source='CotizacionTypeID.Name',
         allow_null=True
     )
@@ -294,22 +301,23 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     DocumentPromesa = serializers.SerializerMethodField(
         'get_document_promesa_url')
     DocumentPromesaFirma = serializers.SerializerMethodField(
-        'get_document_promesa_firma_url')  
+        'get_document_promesa_firma_url')
     DocumentChequesFirma = serializers.SerializerMethodField(
-        'get_document_cheques_firma_url')  
+        'get_document_cheques_firma_url')
     DocumentPlantaFirma = serializers.SerializerMethodField(
-        'get_document_planta_firma_url')     
-        
+        'get_document_planta_firma_url')
+
     DocumentFirmaComprador = serializers.SerializerMethodField(
         'get_document_firma_comprador_url')
-        
+
     DocumentPaymentForm = serializers.SerializerMethodField(
         'get_document_payment_form_url')
     # Modification = serializers.SerializerMethodField('get_promesa_modified')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     Cuotas = serializers.SerializerMethodField('get_cuotas')
     OfertaID = serializers.SerializerMethodField('get_oferta_id')
-
+    Condition = serializers.SerializerMethodField('get_conditions')
+    
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -375,38 +383,40 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return serializer.data
         except DocumentVenta.DoesNotExist:
             return None
-    
+
     def get_document_promesa_url(self, obj):
         if obj.DocumentPromesa:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesa.url
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesa.url
         else:
             return ""
+
     def get_document_promesa_firma_url(self, obj):
         if obj.DocumentPromesaFirma:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesaFirma.url
-        else:
-            return ""        
-    def get_document_cheques_firma_url(self, obj):
-        if obj.DocumentChequesFirma:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentChequesFirma.url
-        else:
-            return ""   
-    
-    def get_document_planta_firma_url(self, obj):
-        if obj.DocumentPlantaFirma:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPlantaFirma.url
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPromesaFirma.url
         else:
             return ""
-            
+
+    def get_document_cheques_firma_url(self, obj):
+        if obj.DocumentChequesFirma:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentChequesFirma.url
+        else:
+            return ""
+
+    def get_document_planta_firma_url(self, obj):
+        if obj.DocumentPlantaFirma:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPlantaFirma.url
+        else:
+            return ""
+
     def get_document_firma_comprador_url(self, obj):
         if obj.DocumentFirmaComprador:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentFirmaComprador.url
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentFirmaComprador.url
         else:
-            return ""        
+            return ""
 
     def get_document_payment_form_url(self, obj):
         if obj.DocumentPaymentForm:
-          return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPaymentForm.url
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPaymentForm.url
         else:
             return ""
 
@@ -419,28 +429,35 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return serializer.data
         except AttributeError:
             return {}
-    
+
     def get_patrimony(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
         if patrimonies.exists():
             return PatrimonySerializer(instance=patrimonies[0]).data
         return None
-    
+
     def get_cuotas(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
         cuotas = reserva.CuotaID.all()
         serializer = ListCuotaSerializer(
             instance=cuotas, many=True)
-        return serializer.data    
-        
-    def get_oferta_id(self, obj):    
+        return serializer.data
+
+    def get_oferta_id(self, obj):
         oferta = Oferta.objects.filter(Folio=obj.Folio).first()
         return oferta.OfertaID
+        
+    def get_conditions(self, obj):
+        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+        conditions = reserva.ConditionID.all()
+        serializer = ConditionSerializer(
+            instance=conditions, many=True)
+        return serializer.data
 
 class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
-       read_only=True
+        read_only=True
     )
     Comment = serializers.CharField(
         write_only=True,
@@ -470,7 +487,7 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
             vendedor_type = UserProyectoType.objects.get(
                 Name=constants.USER_PROYECTO_TYPE[2])
             jefe_proyecto_type = UserProyectoType.objects.get(
-                Name=constants.USER_PROYECTO_TYPE[1])    
+                Name=constants.USER_PROYECTO_TYPE[1])
 
             # Usuarios
             vendedor = UserProyecto.objects.filter(
@@ -481,14 +498,14 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
                 UserProyectoTypeID=jefe_proyecto_type)
             # if AC approves, move to JP to approve
             if instance.PromesaState == constants.PROMESA_STATE[9]:
-              instance.PromesaState = constants.PROMESA_STATE[11]
-              venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
-              crear_notificacion_maqueta_jp_aprobada(instance, jefe_proyecto)
+                instance.PromesaState = constants.PROMESA_STATE[11]
+                venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
+                crear_notificacion_maqueta_jp_aprobada(instance, jefe_proyecto)
             # AC approve has approved and now JP approves, move to 'Pendiente firma comprador'
             else:
-              instance.PromesaState = constants.PROMESA_STATE[1]
-              venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[18])
-              crear_notificacion_maqueta_aprobada(instance, vendedor)
+                instance.PromesaState = constants.PROMESA_STATE[1]
+                venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[18])
+                crear_notificacion_maqueta_aprobada(instance, vendedor)
         else:
             # Tipos de Usuario
             permission = Permission.objects.get(Name=constants.PERMISSIONS[22])
@@ -520,18 +537,18 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
         read_only=True
     )
-    
+
     Comment = serializers.CharField(
         write_only=True,
         allow_blank=True
     )
-    
+
     Condition = CreateConditionSerializer(
         source='ConditionID',
         many=True,
         required=False
     )
-    
+
     Resolution = serializers.BooleanField(
         write_only=True
     )
@@ -585,7 +602,7 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
                 )
                 inmueble.InmuebleID.InmuebleStateID = inmueble_state
                 inmueble.InmuebleID.save()
-            
+
             if conditions_data is not False and conditions_data is not None:
                 conditions = Condition.objects.filter(
                     condition_promesa=instance
@@ -610,9 +627,9 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
                 instance.ConditionID.clear()
             else:
                 conditions = None
-            
+
             crear_notificacion_promesa_aprobada(instance, instance.ProyectoID, jefe_proyecto, vendedor)
-        
+
         else:
             if instance.PromesaState == constants.PROMESA_STATE[2]:
                 raise CustomValidation(
@@ -753,8 +770,8 @@ class RegisterSignatureInmobiliariaSerializer(serializers.ModelSerializer):
         instance.DateRegresoPromesa = date
 
         comment = "Registro fecha firma inmobiliaria promesa {folio} proyecto {nombre}".format(
-                                                                                  folio=instance.Folio,
-                                                                                  nombre=instance.ProyectoID.Name)
+            folio=instance.Folio,
+            nombre=instance.ProyectoID.Name)
 
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
@@ -811,8 +828,8 @@ class LegalizePromesaSerializer(serializers.ModelSerializer):
         instance.DateLegalizacionPromesa = date
 
         comment = "Registro fecha legalizacion promesa {folio} proyecto {nombre}".format(
-                                                                                  folio=instance.Folio,
-                                                                                  nombre=instance.ProyectoID.Name)
+            folio=instance.Folio,
+            nombre=instance.ProyectoID.Name)
 
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
@@ -856,8 +873,8 @@ class SendCopiesSerializer(serializers.ModelSerializer):
         instance.DateEnvioCopias = date
 
         comment = "Registro fecha envio copias promesa {folio} proyecto {nombre}".format(
-                                                                                  folio=instance.Folio,
-                                                                                  nombre=instance.ProyectoID.Name)
+            folio=instance.Folio,
+            nombre=instance.ProyectoID.Name)
 
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
@@ -953,6 +970,7 @@ class ModifiedPromesaSerializer(serializers.ModelSerializer):
         decimal_places=2,
         allow_null=True
     )
+
     class Meta:
         model = Promesa
         fields = ('ClienteID', 'CodeudorID', 'PayType',
@@ -992,8 +1010,8 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
                 Name=constants.VENTA_LOG_TYPE[26])
 
             comment = "Modificacion promesa {folio} proyecto {nombre} antes de la firma comprador".format(
-                                                                                      folio=instance.Folio,
-                                                                                      nombre=instance.ProyectoID.Name)
+                folio=instance.Folio,
+                nombre=instance.ProyectoID.Name)
         else:
             promesa_modified_data = validated_data.pop('PromesaModified')
             cliente = Cliente.objects.get(UserID=promesa_modified_data.get('ClienteID'))
@@ -1026,8 +1044,8 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
                 Name=constants.VENTA_LOG_TYPE[27])
 
             comment = "Modificacion promesa {folio} proyecto {nombre} despues de la firma comprador".format(
-                                                                                      folio=instance.Folio,
-                                                                                      nombre=instance.ProyectoID.Name)
+                folio=instance.Folio,
+                nombre=instance.ProyectoID.Name)
             # Crear Notificaciones
 
             jefe_proyecto_type = UserProyectoType.objects.get(
@@ -1050,23 +1068,25 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
         )
         return instance
 
+
 class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
     DocumentPromesa = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
-    
+
     class Meta:
         model = Promesa
-        fields = ('DocumentPromesa','PromesaState')
+        fields = ('DocumentPromesa', 'PromesaState')
 
     def update(self, instance, validated_data):
         if 'DocumentPromesa' in validated_data:
-          instance.DocumentPromesa = validated_data['DocumentPromesa']
-          instance.PromesaState = constants.PROMESA_STATE[9]
-          instance.save()
+            instance.DocumentPromesa = validated_data['DocumentPromesa']
+            instance.PromesaState = constants.PROMESA_STATE[9]
+            instance.save()
 
         return instance
+
 
 class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
     DocumentPromesaFirma = serializers.FileField(
@@ -1081,24 +1101,248 @@ class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
-    
+
     class Meta:
         model = Promesa
-        fields = ('DocumentPromesaFirma','DocumentChequesFirma','DocumentPlantaFirma',
+        fields = ('DocumentPromesaFirma', 'DocumentChequesFirma', 'DocumentPlantaFirma',
                   'PromesaState')
 
     def update(self, instance, validated_data):
         if 'DocumentPromesaFirma' in validated_data:
-          instance.DocumentPromesaFirma = validated_data['DocumentPromesaFirma']
+            instance.DocumentPromesaFirma = validated_data['DocumentPromesaFirma']
         if 'DocumentChequesFirma' in validated_data:
-          instance.DocumentChequesFirma = validated_data['DocumentChequesFirma']
+            instance.DocumentChequesFirma = validated_data['DocumentChequesFirma']
         if 'DocumentPlantaFirma' in validated_data:
-          instance.DocumentPlantaFirma = validated_data['DocumentPlantaFirma']
-        
+            instance.DocumentPlantaFirma = validated_data['DocumentPlantaFirma']
+
         instance.PromesaState = constants.PROMESA_STATE[12]
         instance.save()
         return instance
-        
-        
 
 
+class SendNegociacionJPSerializer(serializers.ModelSerializer):
+    PromesaState = serializers.CharField(
+        read_only=True
+    )
+
+    Condition = ConditionSerializer(
+        required=False,
+        many=True,
+        allow_null=True,
+        write_only=True
+    )
+
+    class Meta:
+        model = Promesa
+        fields = ('PromesaState', 'Condition')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        conditions_data = validated_data.pop('Condition')
+
+        # Usuarios
+        jefe_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[1])
+        vendedor_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+        # Usuarios
+        jefe_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=jefe_proyecto_type)
+
+        vendedor_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_proyecto_type)
+
+        reserva = Reserva.objects.get(Folio=instance.Folio)
+        conditions = reserva.ConditionID.all()
+       
+        if conditions.exists():
+            conditions.delete()
+
+        reserva.ConditionID.clear()
+        if conditions_data:
+          for condition_data in conditions_data:
+              condition = Condition.objects.create(
+                  Description=condition_data['Description'],
+                  IsImportant=condition_data.get('IsImportant',False),
+                  IsApprove=condition_data.get('IsApprove',False)
+              )
+              reserva.ConditionID.add(condition)
+
+        crear_notificacion_promesa_envio_a_negociacion(instance, instance.ProyectoID, jefe_proyecto, vendedor_proyecto)
+
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[32]),
+            Comment=''
+        )
+
+        instance.PromesaState = constants.PROMESA_STATE[13]
+        instance.save()
+
+        return instance
+
+
+class SendNegociacionINSerializer(serializers.ModelSerializer):
+    PromesaState = serializers.CharField(
+        read_only=True
+    )
+
+    Condition = ConditionSerializer(
+        required=False,
+        many=True,
+        allow_null=True,
+        write_only=True
+    )
+
+    class Meta:
+        model = Promesa
+        fields = ('PromesaState', 'Condition')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        conditions_data = validated_data.pop('Condition')
+
+        # Usuarios
+        jefe_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[1])
+        vendedor_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+        representante_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[0])
+        aprobador_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[4])
+        # Usuarios
+        jefe_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=jefe_proyecto_type)
+        vendedor_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_proyecto_type)
+        representante_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=representante_proyecto_type)
+        aprobador_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=aprobador_proyecto_type)
+        
+        reserva = Reserva.objects.get(Folio=instance.Folio)
+        conditions = reserva.ConditionID.all()
+        
+        if conditions.exists():
+            conditions.delete()
+
+        reserva.ConditionID.clear()
+        if conditions_data:
+          for condition_data in conditions_data:
+              condition = Condition.objects.create(
+                  Description=condition_data['Description'],
+                  IsImportant=condition_data.get('IsImportant',False),
+                  IsApprove=condition_data.get('IsApprove',False)
+              )
+              reserva.ConditionID.add(condition)
+        instance.PromesaState = constants.PROMESA_STATE[14]
+        instance.save()
+        
+        crear_notificacion_promesa_control_negociacion(instance, instance.ProyectoID, jefe_proyecto, vendedor_proyecto,
+                                                       representante_proyecto, aprobador_proyecto)
+
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[33]),
+            Comment=''
+        )
+
+        return instance
+
+class ControlNegociacionSerializer(serializers.ModelSerializer):
+    PromesaState = serializers.CharField(
+        read_only=True
+    )
+
+    Condition = ApproveConditionSerializer(
+        required=False,
+        many=True,
+        allow_null=True,
+        write_only=True
+    )
+
+    Comment = serializers.CharField(
+        write_only=True,
+        allow_blank=True
+    )
+    Resolution = serializers.BooleanField(
+        write_only=True
+    )
+
+    class Meta:
+        model = Oferta
+        fields = ('Condition', 'PromesaState',
+                  'Resolution', 'Comment')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        resolution = validated_data.pop('Resolution')
+        conditions_data = validated_data.pop('Condition')
+        comment = validated_data.pop('Comment')
+
+        # Tipos de Usuarios
+        vendedor_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+
+        jefe_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[1])
+
+        # Usuarios
+        jefe_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=jefe_proyecto_type)
+
+        vendedor = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_type)
+
+        if resolution:
+            for condition_data in conditions_data:
+                condition = Condition.objects.get(
+                    ConditionID=condition_data['ConditionID'])
+                if condition.IsImportant:
+                    if not condition_data['IsApprove']:
+                        raise CustomValidation(
+                            "Revisar todas las condiciones importantes para aprobar promesa",
+                            status_code=status.HTTP_409_CONFLICT)
+                    condition.IsApprove=True
+                    condition.save()
+                
+            instance.PromesaState = constants.PROMESA_STATE[1]
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[34])
+            crear_notificacion_promesa_aprobada_negociacion(instance, jefe_proyecto, vendedor)
+        else:
+            instance.PromesaState = constants.PROMESA_STATE[10]
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[35])
+            crear_notificacion_promesa_rechazada_negociacion(instance, jefe_proyecto, vendedor)
+
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=venta_log_type,
+            Comment=comment,
+        )
+
+        instance.save()
+        return instance
