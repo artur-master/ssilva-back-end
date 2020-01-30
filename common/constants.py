@@ -46,10 +46,10 @@ NOTIFICATION_TYPE = [
     "Crear comision", "Comision de actualizacion",  # 48
     "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta", "Refund garantia",  # 51
     "Maqueta aprobada - AC",  # 52
-    "Promesa requiere revisión a negociación", #53
-    "Promesa requiere aprobacion inmobiliaria a negociación", #54
-    "Aprobacion negociación", #55
-    "Rechazo negociación", #56
+    "Promesa requiere revisión a negociación",  # 53
+    "Promesa requiere aprobacion inmobiliaria a negociación",  # 54
+    "Aprobacion negociación",  # 55
+    "Rechazo negociación",  # 56
 ]
 
 PROYECTO_APPROVAL_STATE = [
@@ -113,7 +113,7 @@ VENTA_LOG_TYPE = [
     "Refund garantia",  # 30
     "AC Aprobacion maqueta",  # 31
     "Envio a negociación",  # 32
-    "Envio negociación a inmobiliaria", #33
+    "Envio negociación a inmobiliaria",  # 33
     "Aprobacion a negociación",  # 34
     "Rechazo a negociación",  # 35
 ]
@@ -265,21 +265,22 @@ RESULT = [
 ]
 
 PROMESA_STATE = [
-    "Pendiente confección",  # 0 -> #9
-    "Pendiente firma comprador",  # 1 -> #12 or #1->#13
-    "Pendiente envío a inmobiliaria",  # 2 -> #4
-    "Pendiente control",
-    "Pendiente firma inmobiliaria",  # 4 -> #5 or #6
-    "Pendiente legalizacion",  # 5 -> #6
-    "Pendiente envio de copias",  # 6 -> #7 or #8
+    "Pendiente confección",  # 0 -> 9
+    "Pendiente firma comprador",  # 1 -> 12 or 13
+    "Pendiente envío a inmobiliaria",  # 2 -> 3
+    "Pendiente factura", # 3 -> 4
+    "Pendiente firma inmobiliaria",  # 4 -> 5 or 6
+    "Pendiente legalizacion",  # 5 -> 6
+    "Pendiente envio de copias",  # 6 -> 7 or 8
     "Pendiente escrituracion",  # 7
     "Escritura",  # 8
-    "Pendiente AC aprobación de maqueta",  # 9 -> #11
-    "Promesa modificada",  # 10 -> #0
-    "Pendiente JP aprobación de maqueta",  # 11 -> #1
-    "Pendiente aprobación de firma comprador",  # 12 -> #2
-    "Pendiente revisión negociación",  # 13 -> #14     send condition to JP review
-    "Pendiente negociación inmobiliaria",  # 14     wait IN approve condition. If reject -> #10, if approve -> #1
+    "Pendiente AC aprobación de maqueta",  # 9 -> 11
+    "Promesa modificada",  # 10 -> 0
+    "Pendiente JP aprobación de maqueta",  # 11 -> 1
+    "Pendiente aprobación de firma comprador",  # 12 -> 2
+    "Pendiente revisión negociación",  # 13 -> 14     send condition to JP review
+    "Pendiente negociación inmobiliaria",  # 14 -> 15 or 1
+    "Rechazada Inmobiliaria",  # 15
 ]
 
 ETAPA_STATE = [
