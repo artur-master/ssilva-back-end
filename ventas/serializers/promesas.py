@@ -22,7 +22,6 @@ from ventas.models.conditions import Condition
 from ventas.models.documents import DocumentVenta
 from ventas.models.facturas import FacturaInmueble, ComisionInmobiliaria, Factura
 from ventas.models.ofertas import Oferta
-from ventas.models.ofertas import Oferta
 from ventas.models.patrimonies import Patrimony
 from ventas.models.payment_forms import PayType
 from ventas.models.promesas import Promesa, PromesaInmueble
@@ -38,8 +37,7 @@ from ventas.serializers.cuotas import ListCuotaSerializer
 from ventas.serializers.documents_venta import DocumentVentaSerializer
 from ventas.serializers.facturas import RetrieveFacturaSerializer
 from ventas.serializers.patrimonies import PatrimonySerializer
-from ventas.serializers.reservas import CreateReservaInmuebleSerializer
-from ventas.serializers.reservas import ListReservaInmuebleSerializer
+from ventas.serializers.reservas import CreateReservaInmuebleSerializer, ListReservaInmuebleSerializer
 
 
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,

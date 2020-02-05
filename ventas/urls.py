@@ -11,6 +11,11 @@ from ventas.views.cotizaciones import (
     CotizacionesClienteViewSet,
     CotizacionesCotizadorViewSet,
     CotizacionTypeViewSet)
+
+from ventas.views.desistimiento import (
+    RegisterDesistimientoViewSet,
+    ApproveDesistimientoViewSet)
+
 from ventas.views.facturas import (
     ComisionInmobiliariaViewSet,
     UpdateComisionesAPIView,
@@ -164,6 +169,13 @@ router.register(
 router.register(
     'promesas-control-negociacion',
     ControlNegociacionPromesaViewSet)
+
+router.register(
+    'promesas-register-desistimiento',
+    RegisterDesistimientoViewSet)
+router.register(
+    'promesas-aprrove-desistimiento',
+    ApproveDesistimientoViewSet)
 
 router.register('finding-types', FindingTypeViewSet)
 router.register('cotizacion-types', CotizacionTypeViewSet)

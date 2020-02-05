@@ -50,6 +50,8 @@ NOTIFICATION_TYPE = [
     "Promesa requiere aprobacion inmobiliaria a negociación",  # 54
     "Aprobacion negociación",  # 55
     "Rechazo negociación",  # 56
+    "Pendiente aprobacion desistimiento",  # 57
+    "Aprobacion desistimiento",  # 58
 ]
 
 PROYECTO_APPROVAL_STATE = [
@@ -110,12 +112,15 @@ VENTA_LOG_TYPE = [
     "Modificacion promesa(Despues de firma comprador)",
     "Rechazo Modificacion oferta",
     "Aprobacion Modificacion oferta",
+    "Aprobacion Modificacion oferta",
     "Refund garantia",  # 30
     "AC Aprobacion maqueta",  # 31
     "Envio a negociación",  # 32
     "Envio negociación a inmobiliaria",  # 33
     "Aprobacion a negociación",  # 34
     "Rechazo a negociación",  # 35
+    "Register Desistimiento",  # 36
+    "Aprobacion Desistimiento",  # 37
 ]
 
 USER_PROYECTO_TYPE = [
@@ -268,19 +273,52 @@ PROMESA_STATE = [
     "Pendiente confección",  # 0 -> 9
     "Pendiente firma comprador",  # 1 -> 12 or 13
     "Pendiente envío a inmobiliaria",  # 2 -> 3
-    "Pendiente factura", # 3 -> 4
+    "Pendiente factura",  # 3 -> 4
     "Pendiente firma inmobiliaria",  # 4 -> 5 or 6
     "Pendiente legalizacion",  # 5 -> 6
     "Pendiente envio de copias",  # 6 -> 7 or 8
     "Pendiente escrituracion",  # 7
     "Escritura",  # 8
     "Pendiente AC aprobación de maqueta",  # 9 -> 11
-    "Promesa modificada",  # 10 -> 0
+    "Promesa modificada",  # 10 -> PROMESA_MODIFICADA_STATE
     "Pendiente JP aprobación de maqueta",  # 11 -> 1
     "Pendiente aprobación de firma comprador",  # 12 -> 2
     "Pendiente revisión negociación",  # 13 -> 14     send condition to JP review
     "Pendiente negociación inmobiliaria",  # 14 -> 15 or 1
     "Rechazada Inmobiliaria",  # 15
+    "Desistimiento",  # 16 -> PROMESA_DESISTIMIENTO_STATE
+    "Resiliación",  # 17 -> PROMESA_RESILIACION_STATE
+    "Resolución",  # 18 -> PROMESA_RESLUCION_STATE
+    "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE
+]
+
+PROMESA_DESISTIMIENTO_STATE = [
+    "Pendiente aprobación",
+    "Pendiente devolución garantía",
+    "Aprobada"
+]
+
+PROMESA_RESILIACION_STATE = [
+    "Pendiente JP aprobación",
+    "Pendiente GC aprobación",
+    "Pendiente IN aprobación",
+    "Pendiente confección de resciliación",
+    "Pendiente firma de resciliación",
+    "Pendiente devolución garantía",
+    "Aprobada"
+]
+
+PROMESA_RESLUCION_STATE = [
+    "Pendiente JP aprobación",
+    "Pendiente GC aprobación",
+    "Pendiente IN aprobación",
+    "Pendiente confección de resolución",
+    "Pendiente devolución garantía",
+    "Aprobada"
+]
+
+PROMESA_MODIFICACION_STATE = [
+
 ]
 
 ETAPA_STATE = [

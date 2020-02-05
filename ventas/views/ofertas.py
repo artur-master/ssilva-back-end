@@ -1,8 +1,13 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from common.permissions import (
     CheckAdminOrVendedorOrMoniOrConsProyectosPermission,
     CheckAdminOrVendedorOrMoniProyectosPermission,
-      CheckAdminMoniProyectosPermission,
+    CheckAdminMoniProyectosPermission,
     CheckAprobadorPermission,
     CheckApproveUpdateOfertaPermission,
     CheckRecepcionaGarantiasPermission,
@@ -24,10 +29,6 @@ from ventas.serializers.ofertas import (
     ApproveConfeccionPromesaSerializer,
     ApproveUpdateOfertaSerializer,
     CancelOfertaSerializer)
-from rest_framework import viewsets, status
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 
 class OfertaViewSet(viewsets.ModelViewSet):
@@ -42,7 +43,7 @@ class OfertaViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action == 'retrieve' or self.action == 'list':
-            permission_classes = [IsAuthenticated, CheckAdminOrVendedorOrMoniOrConsProyectosPermission ]
+            permission_classes = [IsAuthenticated, CheckAdminOrVendedorOrMoniOrConsProyectosPermission]
         else:
             permission_classes = [IsAuthenticated,
                                   CheckAdminOrVendedorOrMoniProyectosPermission, ]
@@ -247,6 +248,7 @@ class ApproveConfeccionPromesaViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
 
 class ApproveUpdateOfertaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

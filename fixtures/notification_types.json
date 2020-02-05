@@ -454,5 +454,21 @@
             "TableName": "Promesa",
             "RedirectRouteName": "promesa"
         }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Pendiente aprobacion desistimiento",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
+    },
+    {
+        "model": "common.notificationtype",
+        "fields": {
+            "Name": "Aprobacion desistimiento",
+            "TableName": "Promesa",
+            "RedirectRouteName": "promesa"
+        }
     }
 ]

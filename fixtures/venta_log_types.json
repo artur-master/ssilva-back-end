@@ -250,5 +250,20 @@
       "Name": "Rechazo a negociación",
       "MaximunDays": 0
     }
-  }
+  },
+  {
+    "model": "ventas.ventalogtype",
+    "fields": {
+      "Name": "Register Desistimiento",
+      "MaximunDays": 0
+    }
+  },
+  {
+    "model": "ventas.ventalogtype",
+    "fields": {
+      "Name": "Aprobacion Desistimiento",
+      "MaximunDays": 0
+    }
+  },
+
 ]

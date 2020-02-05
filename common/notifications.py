@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
+
+from common.services import formatear_rut
+from users.models import User
 from . import constants
 from .models import Notification, NotificationType
-from users.models import User
-from common.services import formatear_rut
 
 
 # Funciones para la creacion de notificaciones
@@ -1195,6 +1196,7 @@ def crear_notificacion_maqueta_rechazada(promesa, usuarios_confecciona_maquetas)
     for usuario_confecciona_maquetas in usuarios_confecciona_maquetas:
         notification_add.UserID.add(usuario_confecciona_maquetas)
 
+
 def crear_notificacion_promesa_envio_a_negociacion(
         promesa,
         proyecto,
@@ -1815,3 +1817,44 @@ def eliminar_notificaciones_oferta(oferta):
 
     if notification.exists():
         notification.delete()
+
+
+def crear_notificacion_register_desistimiento_aprobada(promesa, users):
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[57])
+
+    message = "Promesa %s proyecto %s pendiente aprobacion desistimiento" % (
+        promesa.Folio, proyecto.Name)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=promesa.PromesaID,
+        Message=message,
+        RedirectRouteID=promesa.PromesaID
+    )
+
+    if users.exists():
+        for user in users:
+            notification_add.UserID.add(user.UserID)
+
+def crear_notificacion_desistimiento_aprobada(promesa, representante_proyecto, aprobador_proyecto):
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[58])
+
+    message = "Promesa %s proyecto %s aprobacion desistimiento" % (
+        promesa.Folio, proyecto.Name)
+
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=promesa.PromesaID,
+        Message=message,
+        RedirectRouteID=promesa.PromesaID
+    )
+
+    if representante_proyecto.exists():
+        for user in representante_proyecto:
+            notification_add.UserID.add(user.UserID)
+
+    if aprobador_proyecto.exists():
+        for user in aprobador_proyecto:
+            notification_add.UserID.add(user.UserID)

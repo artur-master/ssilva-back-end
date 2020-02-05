@@ -45,7 +45,12 @@ class Promesa(models.Model):
         through='PromesaInmueble')
     Date = models.DateTimeField(auto_now_add=True)
     Folio = models.CharField(max_length=50)
-    PromesaState = models.CharField(max_length=100)
+    PromesaState = models.CharField(max_length=200)
+    PromesaDesistimientoState = models.CharField(max_length=200, null=True, blank=True)
+    PromesaResiliaciontate = models.CharField(max_length=200, null=True, blank=True)
+    PromesaResolucionState = models.CharField(max_length=200, null=True, blank=True)
+    PromesaModificacionState = models.CharField(max_length=200, null=True, blank=True)
+
     DocumentPromesa = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
         

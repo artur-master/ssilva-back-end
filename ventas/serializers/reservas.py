@@ -1,9 +1,8 @@
 import decimal
-from django.db import transaction
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
-from ventas.models.counter_folios import CounterFolio
 
 from common import constants
 from common.generate_pdf import (
@@ -39,6 +38,7 @@ from empresas_and_proyectos.models.proyectos import (
     UserProyectoType)
 from empresas_and_proyectos.serializers.inmuebles import ListOrientationSerializer
 from empresas_and_proyectos.serializers.proyectos import RestrictionSerializer
+from users.serializers.users import UserProfileSerializer
 from ventas.models.clientes import (
     Cliente,
     ClienteContactInfo)
@@ -46,6 +46,7 @@ from ventas.models.conditions import Condition
 from ventas.models.cotizaciones import (
     Cotizacion,
     CotizacionState)
+from ventas.models.counter_folios import CounterFolio
 from ventas.models.documents import DocumentVenta
 from ventas.models.empleadores import Empleador
 from ventas.models.empresas_compradoras import EmpresaCompradora
@@ -62,7 +63,6 @@ from ventas.models.ventas_logs import (
     VentaLogType,
     VentaLog)
 from ventas.serializers import ofertas
-from users.serializers.users import UserProfileSerializer
 from ventas.serializers.clientes import ClienteSerializer
 from ventas.serializers.cotizaciones import (CreateClienteCotizacionSerializer, CotizacionType)
 from ventas.serializers.documents_venta import DocumentVentaSerializer
@@ -81,6 +81,7 @@ from .empleadores import CreateEmpleadorSerializer
 from .empresas_compradoras import (
     EmpresaCompradoraSerializer,
     CreateEmpresaCompradoraSerializer)
+
 
 class ListReservaInmuebleSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.CharField(
@@ -200,7 +201,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         many=True,
         allow_null=True
     )
-    CotizacionType=serializers.CharField(
+    CotizacionType = serializers.CharField(
         source='CotizacionTypeID.Name',
         allow_null=True
     )
@@ -220,7 +221,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         source='VendedorID',
         allow_null=True
     )
-  
+
     CodeudorID = serializers.UUIDField(
         source='CodeudorID.UserID',
         allow_null=True
@@ -552,13 +553,13 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         value_producto_financiero = validated_data.get('ValueProductoFinanciero')
 
         empresa_compradora_data = validated_data.get('EmpresaCompradoraID')
-        
+
         if validated_data['CotizacionType']:
-          cotizacion_type = CotizacionType.objects.get(
-            Name=validated_data['CotizacionType'])
+            cotizacion_type = CotizacionType.objects.get(
+                Name=validated_data['CotizacionType'])
         else:
-          cotizacion_type = None
-        
+            cotizacion_type = None
+
         if empresa_compradora_data:
             razon_social_empresa_compradora = empresa_compradora_data['RazonSocial']
             rut_empresa_compradora = empresa_compradora_data['Rut']
@@ -637,16 +638,16 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 Name=constants.COTIZATION_STATE[2])
             cotizacion.CotizacionStateID = cotizacion_state
             cotizacion.save()
-  
+
         if empresa_compradora_data:
             empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=cliente)
             if len(empresa_compradora) > 0:
                 empresa_compradora = empresa_compradora[0]
-            else:   
-               empresa_compradora = EmpresaCompradora()
+            else:
+                empresa_compradora = EmpresaCompradora()
             empresa_compradora.RazonSocial = razon_social_empresa_compradora
             empresa_compradora.Address = direccion_empresa_compradora
-            empresa_compradora.Rut=rut_empresa_compradora
+            empresa_compradora.Rut = rut_empresa_compradora
             empresa_compradora.ClienteID = cliente
             empresa_compradora.save()
         else:
@@ -679,41 +680,41 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             else:
                 patrimony = Patrimony.objects.create(
                     ClienteID=cliente,
-                    RealState = patrimony_data.get('RealState', 0),
-                    Vehicle = patrimony_data.get('Vehicle', 0),
-                    DownPayment = patrimony_data.get('DownPayment', 0),
-                    Other = patrimony_data.get('Other', 0),
-                    CreditCard = patrimony_data.get('CreditCard', default_),
-                    CreditoConsumo = patrimony_data.get('CreditoConsumo', default_),
-                    CreditoHipotecario = patrimony_data.get('CreditoHipotecario', default_),
-                    PrestamoEmpleador = patrimony_data.get('PrestamoEmpleador', default_),
-                    CreditoComercio = patrimony_data.get('CreditoComercio', default_),
-                    DeudaIndirecta = patrimony_data.get('DeudaIndirecta', default_),
-                    AnotherCredit = patrimony_data.get('AnotherCredit', default_),
-                    Deposits = patrimony_data.get('Deposits', 0)
+                    RealState=patrimony_data.get('RealState', 0),
+                    Vehicle=patrimony_data.get('Vehicle', 0),
+                    DownPayment=patrimony_data.get('DownPayment', 0),
+                    Other=patrimony_data.get('Other', 0),
+                    CreditCard=patrimony_data.get('CreditCard', default_),
+                    CreditoConsumo=patrimony_data.get('CreditoConsumo', default_),
+                    CreditoHipotecario=patrimony_data.get('CreditoHipotecario', default_),
+                    PrestamoEmpleador=patrimony_data.get('PrestamoEmpleador', default_),
+                    CreditoComercio=patrimony_data.get('CreditoComercio', default_),
+                    DeudaIndirecta=patrimony_data.get('DeudaIndirecta', default_),
+                    AnotherCredit=patrimony_data.get('AnotherCredit', default_),
+                    Deposits=patrimony_data.get('Deposits', 0)
                 )
         else:
             patrimony = None
-            
+
         if empleador_data:
             empleador = Empleador.objects.filter(ClienteID=cliente)
             if len(empleador) > 0:
                 empleador = empleador[0]
-            else:   
-               empleador = Empleador()
+            else:
+                empleador = Empleador()
             empleador.RazonSocial = razon_social_empleador
             empleador.Rut = rut_empleador
             empleador.ClienteID = cliente
             empleador.Extra = empleador_data['Extra']
             empleador.save()
         else:
-            empleador = None    
+            empleador = None
 
         if codeudor_id:
             codeudor = get_or_none(Cliente, UserID=codeudor_id)
         else:
             codeudor = None
-			
+
         if codeudor_data and codeudor:
             codeudor = save_cliente_return(codeudor_data, codeudor, current_user)
 
@@ -721,40 +722,40 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             co_empleador = Empleador.objects.filter(ClienteID=cliente)
             if len(co_empleador) > 0:
                 co_empleador = co_empleador[0]
-            else:   
-               co_empleador = Empleador()
+            else:
+                co_empleador = Empleador()
             co_empleador.RazonSocial = razon_social_co_empleador
             co_empleador.Rut = rut_co_empleador
             co_empleador.ClienteID = codeudor
             co_empleador.Extra = co_empleador_data['Extra']
             co_empleador.save()
         else:
-            co_empleador = None 
+            co_empleador = None
 
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
-        
-		#if miss_info:
+
+        # if miss_info:
         #    reserva_state = ReservaState.objects.get(
         #        Name=constants.RESERVA_STATE[0])
-        #else:
+        # else:
         #    reserva_state = ReservaState.objects.get(
         #        Name=constants.RESERVA_STATE[1])
-        
+
         folio = validated_data.get('Folio')
         if not folio:
-          with transaction.atomic():
-            counter_folio = CounterFolio.objects.get(ProyectoID=proyecto)
-            counter_folio.Count += 1
-            counter_folio.save()
-            counter_folio.Count -= 1
-          folio = proyecto.Symbol + str(counter_folio.Count)
-        
+            with transaction.atomic():
+                counter_folio = CounterFolio.objects.get(ProyectoID=proyecto)
+                counter_folio.Count += 1
+                counter_folio.save()
+                counter_folio.Count -= 1
+            folio = proyecto.Symbol + str(counter_folio.Count)
+
         reserva_data = dict(ProyectoID=proyecto,
                             ClienteID=cliente,
                             VendedorID=current_user,
                             Folio=folio,
-                            CotizacionTypeID=cotizacion_type, 
+                            CotizacionTypeID=cotizacion_type,
                             CodeudorID=codeudor,
                             EmpresaCompradoraID=empresa_compradora,
                             ReservaStateID=reserva_state,
@@ -854,12 +855,12 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         else:
             total_contado = 0
             porcentaje_contado = 0
-        
+
         if instance.AhorroPlus:
             total += instance.AhorroPlus
             porcentaje_ahorro_plus = (instance.AhorroPlus * 100) / total_uf
         else:
-            porcentaje_ahorro_plus = 0        
+            porcentaje_ahorro_plus = 0
 
         phone = get_object_or_404(ContactInfoType, Name='Phone')
         email = get_object_or_404(ContactInfoType, Name='Email')
@@ -920,7 +921,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 'total_credito': instance.PaymentInstitucionFinanciera,
                 'total_contado': total_contado,
                 'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
-                'ahorro_plus': instance.AhorroPlus, 
+                'ahorro_plus': instance.AhorroPlus,
                 'gestion': constants.COMPANY_NAME[0],
                 'patrimonio': patrimony,
                 'totals': totals,
@@ -1074,7 +1075,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
     Codeudor = CreateClienteCotizacionSerializer(
         required=False,
         allow_null=True
-    )	
+    )
     PayType = serializers.CharField(
         write_only=True,
         required=False
@@ -1211,7 +1212,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         pay_type_name = validated_data.get('PayType', False)
         date_firma_promesa = validated_data.get('DateFirmaPromesa', False)
         value_producto_financiero = validated_data.get('ValueProductoFinanciero', False)
-        
+
         empresa_compradora_data = validated_data.get('EmpresaCompradoraID', False)
         if empresa_compradora_data:
             razon_social_empresa_compradora = empresa_compradora_data['RazonSocial']
@@ -1301,20 +1302,20 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             codeudor = Cliente.objects.get(UserID=codeudor_id)
         else:
             codeudor = None
-			
+
         if 'Codeudor' in validated_data and codeudor:
             codeudor = save_cliente_return(validated_data['Codeudor'], codeudor, current_user)
             instance.CodeudorID = codeudor
-            
+
         if empresa_compradora_data:
             empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=cliente)
             if len(empresa_compradora) > 0:
                 empresa_compradora = empresa_compradora[0]
-            else:   
-               empresa_compradora = EmpresaCompradora()
+            else:
+                empresa_compradora = EmpresaCompradora()
             empresa_compradora.RazonSocial = razon_social_empresa_compradora
             empresa_compradora.Address = direccion_empresa_compradora
-            empresa_compradora.Rut=rut_empresa_compradora
+            empresa_compradora.Rut = rut_empresa_compradora
             empresa_compradora.ClienteID = cliente
             empresa_compradora.save()
         else:
@@ -1349,58 +1350,56 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             else:
                 patrimony = Patrimony.objects.create(
                     ClienteID=cliente,
-                    RealState = patrimony_data.get('RealState', 0),
-                    Vehicle = patrimony_data.get('Vehicle', 0),
-                    DownPayment = patrimony_data.get('DownPayment', 0),
-                    Other = patrimony_data.get('Other', 0),
-                    CreditCard = patrimony_data.get('CreditCard', default_),
-                    CreditoConsumo = patrimony_data.get('CreditoConsumo', default_),
-                    CreditoHipotecario = patrimony_data.get('CreditoHipotecario', default_),
-                    PrestamoEmpleador = patrimony_data.get('PrestamoEmpleador', default_),
-                    CreditoComercio = patrimony_data.get('CreditoComercio', default_),
-                    DeudaIndirecta = patrimony_data.get('DeudaIndirecta', default_),
-                    AnotherCredit = patrimony_data.get('AnotherCredit', default_),
-                    Deposits = patrimony_data.get('Deposits', 0),
-                    Rent = patrimony_data.get('Rent', 0)
+                    RealState=patrimony_data.get('RealState', 0),
+                    Vehicle=patrimony_data.get('Vehicle', 0),
+                    DownPayment=patrimony_data.get('DownPayment', 0),
+                    Other=patrimony_data.get('Other', 0),
+                    CreditCard=patrimony_data.get('CreditCard', default_),
+                    CreditoConsumo=patrimony_data.get('CreditoConsumo', default_),
+                    CreditoHipotecario=patrimony_data.get('CreditoHipotecario', default_),
+                    PrestamoEmpleador=patrimony_data.get('PrestamoEmpleador', default_),
+                    CreditoComercio=patrimony_data.get('CreditoComercio', default_),
+                    DeudaIndirecta=patrimony_data.get('DeudaIndirecta', default_),
+                    AnotherCredit=patrimony_data.get('AnotherCredit', default_),
+                    Deposits=patrimony_data.get('Deposits', 0),
+                    Rent=patrimony_data.get('Rent', 0)
                 )
         else:
             patrimony = None
 
         empleador = 0
-        #if pay_type_name == "Credito":
+        # if pay_type_name == "Credito":
         if empleador_data:
             empleador = Empleador.objects.filter(ClienteID=cliente)
             if len(empleador) > 0:
                 empleador = empleador[0]
-            else: 
+            else:
                 empleador = Empleador()
-            empleador.ClienteID = cliente        
+            empleador.ClienteID = cliente
             empleador.Rut = rut_empleador
             empleador.RazonSocial = razon_social_empleador
             empleador.Extra = extra_empleador
             empleador.save()
-          
-                
 
         if codeudor and co_empleador_data:
             co_empleador = Empleador.objects.filter(ClienteID=codeudor)
             if len(co_empleador) > 0:
                 co_empleador = co_empleador[0]
             else:
-                co_empleador = Empleador()    
+                co_empleador = Empleador()
             co_empleador.ClienteID = codeudor
             co_empleador.Rut = rut_co_empleador
             co_empleador.RazonSocial = razon_social_co_empleador
-            co_empleador.Extra = extra_co_empleador					
+            co_empleador.Extra = extra_co_empleador
             co_empleador.save()
-              
+
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
-        
-		#if miss_info:
+
+        # if miss_info:
         #    reserva_state = ReservaState.objects.get(
         #        Name=constants.RESERVA_STATE[0])
-        #else:
+        # else:
         #    reserva_state = ReservaState.objects.get(
         #        Name=constants.RESERVA_STATE[1])
 
@@ -1420,7 +1419,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         if 'PaymentInstitucionFinanciera' in validated_data:
             instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
         if 'AhorroPlus' in validated_data:
-            instance.AhorroPlus = validated_data['AhorroPlus']    
+            instance.AhorroPlus = validated_data['AhorroPlus']
         if pay_type_name is not False:
             instance.PayTypeID = pay_type
         if date_firma_promesa is not False:
@@ -1547,7 +1546,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                 porcentaje_ahorro_plus = 0
         else:
             porcentaje_ahorro_plus = 0
-        
+
         if instance.PaymentFirmaEscritura:
             total += instance.PaymentFirmaEscritura
             try:
@@ -1576,7 +1575,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         else:
             total_contado = 0
             porcentaje_contado = 0
-        
 
         phone = get_object_or_404(ContactInfoType, Name='Phone')
         email = get_object_or_404(ContactInfoType, Name='Email')
@@ -1822,12 +1820,12 @@ class ControlReservaSerializer(serializers.ModelSerializer):
         source='ReservaStateID.Name',
         read_only=True
     )
-    
+
     Comment = serializers.CharField(
         write_only=True,
         allow_blank=True
     )
-    
+
     Resolution = serializers.BooleanField(
         write_only=True
     )
@@ -1842,7 +1840,7 @@ class ControlReservaSerializer(serializers.ModelSerializer):
 
         comment = validated_data.get('comment', "")
         resolution = validated_data.pop('Resolution')
-        
+
         if resolution:
             if instance.ReservaStateID.Name == constants.RESERVA_STATE[2]:
                 raise CustomValidation(
@@ -1871,9 +1869,11 @@ class ControlReservaSerializer(serializers.ModelSerializer):
 
             eliminar_notificacion_reserva_pendiente_control(instance)
             ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
-                                  instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID, instance.ContactMethodTypeID,
+                                  instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
+                                  instance.ContactMethodTypeID,
                                   instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
-                                  instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID, instance.DateFirmaPromesa,
+                                  instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID,
+                                  instance.DateFirmaPromesa,
                                   instance.ValueProductoFinanciero, current_user)
         else:
             if instance.ReservaStateID.Name == constants.RESERVA_STATE[2]:
@@ -2017,7 +2017,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
     Folio = serializers.CharField(
         write_only=True
     )
-    
+
     DocumentCotizacion = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2072,7 +2072,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
-    
+
     DocumentCertificadoSociedad = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2085,7 +2085,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
-        
+
     Document6IVA = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2122,10 +2122,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentLiquidacion3',
             'DocumentCotizacionAFP',
             'DocumentCertificadoSociedad',
-            'DocumentCarpetaTributaria',   
+            'DocumentCarpetaTributaria',
             'DocumentBalancesTimbrados',
             'Document6IVA',
-            'Document2DAI',  
+            'Document2DAI',
             'DocumentTituloProfesional',
             'DocumentAcredittacionAhorros',
             'DocumentAcredittacionDeudas',)
@@ -2144,10 +2144,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentFichaPreAprobacion = validated_data['DocumentFichaPreAprobacion']
         if 'DocumentSimulador' in validated_data:
             documents.DocumentSimulador = validated_data['DocumentSimulador']
-        '''   
+        '''
         if 'DocumentOfertaFirmada' in validated_data:
             documents.DocumentOfertaFirmada = validated_data['DocumentOfertaFirmada']
-        
+
         if 'DocumentCertificadoMatrimonio' in validated_data:
             documents.DocumentCertificadoMatrimonio = validated_data['DocumentCertificadoMatrimonio']
         if 'DocumentConstitucionSociedad' in validated_data:
@@ -2164,7 +2164,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentLiquidacion3 = validated_data['DocumentLiquidacion3']
         if 'DocumentCotizacionAFP' in validated_data:
             documents.DocumentCotizacionAFP = validated_data['DocumentCotizacionAFP']
-            
+
         if 'DocumentCertificadoSociedad' in validated_data:
             documents.DocumentCertificadoSociedad = validated_data['DocumentCertificadoSociedad']
         if 'DocumentCarpetaTributaria' in validated_data:
@@ -2180,7 +2180,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         if 'DocumentAcredittacionAhorros' in validated_data:
             documents.DocumentAcredittacionAhorros = validated_data['DocumentAcredittacionAhorros']
         if 'DocumentAcredittacionDeudas' in validated_data:
-            documents.DocumentAcredittacionDeudas = validated_data['DocumentAcredittacionDeudas']            
+            documents.DocumentAcredittacionDeudas = validated_data['DocumentAcredittacionDeudas']
 
         documents.save()
 
