@@ -12,7 +12,9 @@ class Factura(models.Model):
         unique=True,
         default=uuid.uuid4,
         editable=False)
-    Number = models.IntegerField()
+    Number = models.IntegerField(
+        null=True,
+        blank=True)
     InmobiliariaID = models.ForeignKey(
         Inmobiliaria,
         related_name='inmobiliaria_factura',
@@ -34,6 +36,7 @@ class Factura(models.Model):
         null=True,
         blank=True)
     FacturaState = models.CharField(max_length=100)
+    Folio = models.CharField(max_length=50, null=True, blank=True)
     InmuebleID = models.ManyToManyField(
         Inmueble,
         related_name='inmuebles_factura',

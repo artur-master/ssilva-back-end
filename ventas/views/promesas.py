@@ -1,5 +1,15 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from common import constants
+from common.permissions import (
+    CheckUploadFirmaDocumentPromesaPermission,
+    CheckAdminOrVendedorOrMoniProyectosPermission,
+    CheckConfeccionaMaquetasPromesaPermission)
+from empresas_and_proyectos.models.proyectos import Proyecto
 from ventas.models.promesas import Promesa
 from ventas.serializers.promesas import (
     ListPromesaSerializer,
@@ -7,6 +17,7 @@ from ventas.serializers.promesas import (
     ApproveMaquetaPromesaSerializer,
     ControlPromesaSerializer,
     RegisterSendPromesaToInmobiliariaSerializer,
+    GenerateFacturaSerializer,
     RegisterSignatureInmobiliariaSerializer,
     LegalizePromesaSerializer,
     SendCopiesSerializer,
@@ -15,16 +26,8 @@ from ventas.serializers.promesas import (
     UploadFirmaDocumentSerializer,
     SendNegociacionJPSerializer,
     SendNegociacionINSerializer,
-    ControlNegociacionSerializer,)
-from empresas_and_proyectos.models.proyectos import Proyecto
-from rest_framework import viewsets, status
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from common.permissions import (
-  CheckUploadFirmaDocumentPromesaPermission,
-  CheckAdminOrVendedorOrMoniProyectosPermission,
-  CheckConfeccionaMaquetasPromesaPermission)
+    ControlNegociacionSerializer, )
+
 
 class PromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -88,6 +91,7 @@ class PromesaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+
 class UploadConfeccionPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated, CheckConfeccionaMaquetasPromesaPermission)
@@ -109,6 +113,7 @@ class UploadConfeccionPromesaViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
 
 class ApproveMaquetaPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -138,6 +143,7 @@ class ApproveMaquetaPromesaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+
 class UploadFirmaDocumentViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated, CheckUploadFirmaDocumentPromesaPermission)
@@ -159,6 +165,7 @@ class UploadFirmaDocumentViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
 
 class ApproveControlPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -191,7 +198,7 @@ class ApproveControlPromesaViewSet(viewsets.ModelViewSet):
 
 class RegisterSendPromesaToInmobiliariaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = RegisterSendPromesaToInmobiliariaSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
@@ -212,9 +219,32 @@ class RegisterSendPromesaToInmobiliariaViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_409_CONFLICT)
 
 
+class GenerateFacturaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = GenerateFacturaSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+
+    def partial_update(self, request, PromesaID):
+        serializer = GenerateFacturaSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                             "detail": "Generar factura con éxito"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
 class RegisterSignatureInmobiliariaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = RegisterSignatureInmobiliariaSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
@@ -237,7 +267,7 @@ class RegisterSignatureInmobiliariaViewSet(viewsets.ModelViewSet):
 
 class LegalizePromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = LegalizePromesaSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
@@ -260,7 +290,7 @@ class LegalizePromesaViewSet(viewsets.ModelViewSet):
 
 class SendCopiesViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = SendCopiesSerializer
     queryset = Promesa.objects.all()
     lookup_field = 'PromesaID'
@@ -279,6 +309,7 @@ class SendCopiesViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
 
 class NegociacionPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -302,6 +333,7 @@ class NegociacionPromesaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+
 class SendNegociacionPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -323,6 +355,7 @@ class SendNegociacionPromesaViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
 
 class ControlNegociacionPromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

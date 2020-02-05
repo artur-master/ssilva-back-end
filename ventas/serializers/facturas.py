@@ -278,6 +278,7 @@ class RetrieveFacturaSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True
     )
+
     Date = serializers.SerializerMethodField('get_date')
     DateEnvio = serializers.SerializerMethodField('get_date_envio')
     DatePayment = serializers.SerializerMethodField('get_date_payment')
@@ -287,7 +288,7 @@ class RetrieveFacturaSerializer(serializers.ModelSerializer):
         model = Factura
         fields = ('FacturaID', 'InmobiliariaID', 'Inmobiliaria',
                   'Number', 'Date', 'DateEnvio',
-                  'DatePayment', 'Value', 'Inmuebles')
+                  'DatePayment', 'Value', 'Inmuebles', 'FacturaState')
 
     def get_date(self, obj):
         try:
@@ -357,6 +358,7 @@ def download_nota_credito(instance, response):
 
     name = "NOTA_CREDITO%s" % instance.Number
     return name
+
 
 
 class RegisterSendFacturaSerializer(serializers.ModelSerializer):

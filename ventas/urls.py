@@ -1,5 +1,5 @@
-from django.urls import path
 from django.conf.urls import include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from ventas.views.begin_ventas import BeginVentaViewSet
@@ -32,6 +32,20 @@ from ventas.views.ofertas import (
     ApproveConfeccionPromesaViewSet,
     ApproveUpdateOfertaViewSet,
     CancelOfertaViewSet)
+from ventas.views.promesas import (
+    PromesaViewSet,
+    UploadConfeccionPromesaViewSet,
+    UploadFirmaDocumentViewSet,
+    ApproveMaquetaPromesaViewSet,
+    ApproveControlPromesaViewSet,
+    RegisterSendPromesaToInmobiliariaViewSet,
+    GenerateFacturaViewSet,
+    RegisterSignatureInmobiliariaViewSet,
+    LegalizePromesaViewSet,
+    SendCopiesViewSet,
+    NegociacionPromesaViewSet,
+    SendNegociacionPromesaViewSet,
+    ControlNegociacionPromesaViewSet)
 from ventas.views.reservas import (
     ReservaViewSet,
     CancelReservaViewSet,
@@ -47,19 +61,6 @@ from ventas.views.ventas_logs import (
     VentaLogViewSet,
     VentaLogClienteViewSet,
     VentaLogVendedorViewSet)
-from ventas.views.promesas import (
-    PromesaViewSet,
-    UploadConfeccionPromesaViewSet,
-    UploadFirmaDocumentViewSet,
-    ApproveMaquetaPromesaViewSet,
-    ApproveControlPromesaViewSet,
-    RegisterSendPromesaToInmobiliariaViewSet,
-    RegisterSignatureInmobiliariaViewSet,
-    LegalizePromesaViewSet,
-    SendCopiesViewSet,
-    NegociacionPromesaViewSet,
-    SendNegociacionPromesaViewSet,
-    ControlNegociacionPromesaViewSet)
 
 router = DefaultRouter()
 
@@ -114,7 +115,7 @@ router.register('ofertas-cancel', CancelOfertaViewSet)
 router.register(
     'ofertas-approve-modificar',
     ApproveUpdateOfertaViewSet)
-    
+
 router.register('logs',
                 VentaLogViewSet,
                 base_name='logs')
@@ -124,24 +125,27 @@ router.register('logs-clientes',
 router.register('logs-vendedores',
                 VentaLogVendedorViewSet,
                 base_name='logs-vendedores')
-                
+
 router.register('promesas', PromesaViewSet)
 router.register(
     'promesas-upload-confeccion-promesa',
     UploadConfeccionPromesaViewSet)
-    
+
 router.register(
     'promesas-approve-maqueta',
     ApproveMaquetaPromesaViewSet)
 router.register(
     'promesas-upload-firma-document',
-    UploadFirmaDocumentViewSet)    
+    UploadFirmaDocumentViewSet)
 router.register(
     'promesas-approve-control',
     ApproveControlPromesaViewSet)
 router.register(
     'promesas-register-send',
     RegisterSendPromesaToInmobiliariaViewSet)
+router.register(
+    'promesas-generate-factura',
+    GenerateFacturaViewSet)
 router.register(
     'promesas-register-signature',
     RegisterSignatureInmobiliariaViewSet)
@@ -160,7 +164,6 @@ router.register(
 router.register(
     'promesas-control-negociacion',
     ControlNegociacionPromesaViewSet)
-
 
 router.register('finding-types', FindingTypeViewSet)
 router.register('cotizacion-types', CotizacionTypeViewSet)
