@@ -13,7 +13,7 @@ from ventas.views.cotizaciones import (
     CotizacionTypeViewSet)
 from ventas.views.desistimiento import (
     RegisterDesistimientoViewSet,
-    ApproveDesistimientoViewSet,
+    UploadConfeccionDesistimientoViewSet,
     RegisterRefundViewSet)
 from ventas.views.facturas import (
     ComisionInmobiliariaViewSet,
@@ -173,9 +173,8 @@ router.register(
     'promesas-register-desistimiento',
     RegisterDesistimientoViewSet)
 router.register(
-    'promesas-approve-desistimiento',
-    ApproveDesistimientoViewSet)
-
+    'promesas-upload-confeccion-desistimiento',
+    UploadConfeccionDesistimientoViewSet)
 router.register(
     'promesas-refund',
     RegisterRefundViewSet)

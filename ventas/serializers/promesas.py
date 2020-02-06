@@ -322,9 +322,14 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
 
     DocumentFirmaComprador = serializers.SerializerMethodField(
         'get_document_firma_comprador_url')
-
     DocumentPaymentForm = serializers.SerializerMethodField(
         'get_document_payment_form_url')
+    DocumentResiliacion = serializers.SerializerMethodField(
+        'get_DocumentResiliacion_url')
+    DocumentResiliacionFirma = serializers.SerializerMethodField(
+        'get_DocumentResiliacionFirma_url')
+    DocumentResolucion = serializers.SerializerMethodField(
+        'get_DocumentResolucion_url')
     # Modification = serializers.SerializerMethodField('get_promesa_modified')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     Cuotas = serializers.SerializerMethodField('get_cuotas')
@@ -364,6 +369,9 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DocumentPlantaFirma',
             'DocumentFirmaComprador',
             'DocumentPaymentForm',
+            'DocumentResiliacion',
+            'DocumentResiliacionFirma',
+            'DocumentResolucion',
             'DateEnvioPromesa',
             'DateRegresoPromesa',
             'DateLegalizacionPromesa',
@@ -436,6 +444,24 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     def get_document_payment_form_url(self, obj):
         if obj.DocumentPaymentForm:
             return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPaymentForm.url
+        else:
+            return ""
+
+    def get_DocumentResiliacion_url(self, obj):
+        if obj.DocumentResiliacion:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResiliacion.url
+        else:
+            return ""
+
+    def get_DocumentResiliacionFirma_url(self, obj):
+        if obj.DocumentResiliacionFirma:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResiliacionFirma.url
+        else:
+            return ""
+
+    def get_DocumentResolucion_url(self, obj):
+        if obj.DocumentResolucion:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResolucion.url
         else:
             return ""
 

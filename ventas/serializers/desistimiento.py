@@ -23,6 +23,7 @@ from ventas.models.ventas_logs import VentaLog, VentaLogType
 
 '''
 Step 1: Register Desistimiento (for all cases) - VN / JP
+Step 2: Approve - GC / IN
 '''
 
 
@@ -35,7 +36,7 @@ def vnRegisterDesistimiento(promesa, validated_data):
     if new_promesa_state == constants.PROMESA_STATE[17]:
         promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[0]
     if new_promesa_state == constants.PROMESA_STATE[18]:
-        promesa.PromesaResolucionState = constants.PROMESA_RESLUCION_STATE[0]
+        promesa.PromesaResolucionState = constants.PROMESA_RESOLUCION_STATE[0]
 
     jefe_proyecto = UserProyecto.objects.filter(
         ProyectoID=promesa.ProyectoID,
@@ -57,19 +58,75 @@ def jpRegisterDesistimiento(promesa, validated_data):
         Name=constants.VENTA_LOG_TYPE[36])
     # Desistimiento
     if new_promesa_state == constants.PROMESA_STATE[16]:
-        if promesa.PromesaDesistimientoState and promesa.PromesaDesistimientoState != constants.PROMESA_DESISTIMIENTO_STATE[0]:
-            raise CustomValidation("Desistimiento ha aprobado", status_code=status.HTTP_409_CONFLICT)
+        if (promesa.PromesaDesistimientoState and
+                promesa.PromesaDesistimientoState != constants.PROMESA_DESISTIMIENTO_STATE[0]):
+            raise CustomValidation("Desistimiento es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
         promesa.PromesaDesistimientoState = constants.PROMESA_REFUND_STATE[0]
         promesa, venta_log_type = releaseProperties(promesa)
     # Resiliacion
     if new_promesa_state == constants.PROMESA_STATE[17]:
+        if (promesa.PromesaResiliacionState and
+                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[1]):
+            raise CustomValidation("Resiliación es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
         promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[1]
     # Resolucion
     if new_promesa_state == constants.PROMESA_STATE[18]:
-        promesa.PromesaResolucionState = constants.PROMESA_RESLUCION_STATE[1]
+        if (promesa.PromesaResolucionState and
+                promesa.PromesaResolucionState == constants.PROMESA_RESOLUCION_STATE[1]):
+            raise CustomValidation("Resolución es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResolucionState = constants.PROMESA_RESOLUCION_STATE[1]
 
     gc_users = User.objects.filter(RoleID=Role.objects.get(Name=constants.UserRole.GERENTE_COMERCIAL).RoleID)
     crear_notificacion_register_desistimiento_aprobada(promesa, gc_users)
+    return promesa, venta_log_type
+
+
+def gcRegisterDesistimiento(promesa):
+    venta_log_type = VentaLogType.objects.get(
+        Name=constants.VENTA_LOG_TYPE[36])
+    # Resiliacion
+    if promesa.PromesaState == constants.PROMESA_STATE[17]:
+        if (promesa.PromesaResiliacionState and
+                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[2]):
+            raise CustomValidation("Resiliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[2]
+    # Resolucion
+    if promesa.PromesaState == constants.PROMESA_STATE[18]:
+        if (promesa.PromesaResolucionState and
+                promesa.PromesaResolucionState == constants.PROMESA_RESOLUCION_STATE[2]):
+            raise CustomValidation("Resolución es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResolucionState = constants.PROMESA_RESOLUCION_STATE[2]
+
+    representante_users = UserProyecto.objects.filter(
+        ProyectoID=promesa.ProyectoID,
+        UserProyectoTypeID=UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[0]))
+
+    aprobador_users = UserProyecto.objects.filter(
+        ProyectoID=promesa.ProyectoID,
+        UserProyectoTypeID=UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[4]))
+
+    crear_notificacion_register_desistimiento_aprobada(promesa, representante_users | aprobador_users)
+    return promesa, venta_log_type
+
+
+def inRegisterDesistimiento(promesa):
+    venta_log_type = VentaLogType.objects.get(
+        Name=constants.VENTA_LOG_TYPE[36])
+    # Resiliacion
+    if promesa.PromesaState == constants.PROMESA_STATE[17]:
+        if (promesa.PromesaResiliacionState and
+                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[3]):
+            raise CustomValidation("Resiliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[3]
+    # Resolucion
+    if promesa.PromesaState == constants.PROMESA_STATE[18]:
+        if (promesa.PromesaResolucionState and
+                promesa.PromesaResolucionState == constants.PROMESA_RESOLUCION_STATE[3]):
+            raise CustomValidation("Resolución es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResolucionState = constants.PROMESA_RESOLUCION_STATE[3]
+
     return promesa, venta_log_type
 
 
@@ -84,16 +141,21 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
 
-        user = UserProyecto.objects.get(
-            ProyectoID=instance.ProyectoID,
-            UserID=current_user
-        )
-        if user.UserProyectoTypeID.Name == constants.USER_PROYECTO_TYPE[2]:
-            instance, venta_log_type = vnRegisterDesistimiento(instance, validated_data)
-        elif user.UserProyectoTypeID.Name == constants.USER_PROYECTO_TYPE[1]:
-            instance, venta_log_type = jpRegisterDesistimiento(instance, validated_data)
+        if current_user.RoleID.filter(Name=constants.UserRole.GERENTE_COMERCIAL).count() > 0:
+            instance, venta_log_type = gcRegisterDesistimiento(instance)
         else:
-            return instance
+            count_users = UserProyecto.objects.filter(
+                ProyectoID=instance.ProyectoID,
+                UserID=current_user
+            ).count()
+            if count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.VENDEDOR).count() > 0:
+                instance, venta_log_type = vnRegisterDesistimiento(instance, validated_data)
+            elif count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.JEFE_DE_PROYECTO).count() > 0:
+                instance, venta_log_type = jpRegisterDesistimiento(instance, validated_data)
+            elif count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.INMOBILIARIO).count() > 0:
+                instance, venta_log_type = inRegisterDesistimiento(instance)
+            else:
+                return instance
 
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
@@ -109,46 +171,47 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
 
         return instance
 
-
-# should be removed
-class ApproveDesistimientoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Promesa
-        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResiliacionState', 'PromesaResolucionState',
-                  'PromesaModificacionState')
-
-    def update(self, instance, validated_data):
-        current_user = return_current_user(self)
-
-        if instance.PromesaDesistimientoState == constants.PROMESA_DESISTIMIENTO_STATE[1]:
-            raise CustomValidation(
-                "Desistimiento ha aprobado",
-                status_code=status.HTTP_409_CONFLICT)
-        instance.PromesaDesistimientoState = constants.PROMESA_DESISTIMIENTO_STATE[1]
-        instance, venta_log_type = releaseProperties(instance)
-
-        VentaLog.objects.create(
-            VentaID=instance.PromesaID,
-            Folio=instance.Folio,
-            UserID=current_user,
-            ClienteID=instance.ClienteID,
-            ProyectoID=instance.ProyectoID,
-            VentaLogTypeID=venta_log_type,
-            Comment=validated_data.get('Comment', '')
-        )
-
-        instance.save()
-
-        return instance
-
-
-'''
-Step 2: Approve - GC / IN 
-'''
 
 '''
 Step 3: Confección - JP / Client
 '''
+
+
+class UploadConfeccionDesistimientoSerializer(serializers.ModelSerializer):
+    DocumentResiliacion = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentResiliacionFirma = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentResolucion = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+
+    class Meta:
+        model = Promesa
+        fields = ('DocumentResiliacion', 'DocumentResiliacionFirma', 'DocumentResolucion',
+                  'PromesaState', 'PromesaResiliacionState', 'PromesaResolucionState')
+
+    def update(self, instance, validated_data):
+        if instance.PromesaState == constants.PROMESA_STATE[17]:
+            if 'DocumentResiliacion' in validated_data:
+                instance.DocumentResiliacion = validated_data['DocumentResiliacion']
+                instance.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[4]
+            if 'DocumentResiliacionFirma' in validated_data:
+                instance.DocumentResiliacionFirma = validated_data['DocumentResiliacionFirma']
+                instance.PromesaResiliacionState = constants.PROMESA_REFUND_STATE[0]
+
+        if instance.PromesaState == constants.PROMESA_STATE[18]:
+            if 'DocumentResolucion' in validated_data:
+                instance.DocumentResolucion = validated_data['DocumentResolucion']
+                instance.PromesaResolucionState = constants.PROMESA_REFUND_STATE[0]
+
+        instance.save()
+        return instance
 
 
 def releaseProperties(promesa):
@@ -161,7 +224,7 @@ def releaseProperties(promesa):
             )
             inmueble.InmuebleID.InmuebleStateID = inmueble_state
             inmueble.InmuebleID.save()
-        #inmuebles.delete()
+        # inmuebles.delete()
     # notify IN & FI
     fi_proyecto_type = UserProyectoType.objects.get(
         Name=constants.USER_PROYECTO_TYPE[7])

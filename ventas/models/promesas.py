@@ -65,6 +65,14 @@ class Promesa(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentPaymentForm = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+
+    DocumentResiliacion = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentResiliacionFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentResolucion = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+
     DateEnvioPromesa = models.DateTimeField(
         null=True,
         blank=True)

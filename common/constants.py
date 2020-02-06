@@ -288,7 +288,7 @@ PROMESA_STATE = [
     "Rechazada Inmobiliaria",  # 15
     "Desistimiento",  # 16 -> PROMESA_DESISTIMIENTO_STATE + PROMESA_REFUND_STATE
     "Resiliación",  # 17 -> PROMESA_RESILIACION_STATE + PROMESA_REFUND_STATE
-    "Resolución",  # 18 -> PROMESA_RESLUCION_STATE + PROMESA_REFUND_STATE
+    "Resolución",  # 18 -> PROMESA_RESOLUCION_STATE + PROMESA_REFUND_STATE
     "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE + PROMESA_REFUND_STATE
 ]
 
@@ -304,7 +304,7 @@ PROMESA_RESILIACION_STATE = [
     "Pendiente firma de resciliación",
 ]
 
-PROMESA_RESLUCION_STATE = [
+PROMESA_RESOLUCION_STATE = [
     "Pendiente JP aprobación",
     "Pendiente GC aprobación",
     "Pendiente IN aprobación",
@@ -312,7 +312,7 @@ PROMESA_RESLUCION_STATE = [
 ]
 
 PROMESA_MODIFICACION_STATE = [
-
+    "Pendiente JP aprobación",
 ]
 
 PROMESA_REFUND_STATE = [
