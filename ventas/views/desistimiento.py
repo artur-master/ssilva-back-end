@@ -9,7 +9,9 @@ from empresas_and_proyectos.models.proyectos import Proyecto
 from ventas.models.promesas import Promesa
 from ventas.serializers.desistimiento import (
     RegisterDesistimientoSerializer,
-    ApproveDesistimientoSerializer)
+    ApproveDesistimientoSerializer,
+    RgisterRefundSerializer)
+
 
 class RegisterDesistimientoViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -49,6 +51,28 @@ class ApproveDesistimientoViewSet(viewsets.ModelViewSet):
             instance = serializer.save()
             return Response({"promesa": ApproveDesistimientoViewSet(instance, context={'request': request}).data,
                              "detail": "Register desistimiento con éxito"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
+class RegisterRefundViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = RgisterRefundSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+
+    def partial_update(self, request, PromesaID):
+        serializer = RgisterRefundSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"promesa": RgisterRefundSerializer(instance, context={'request': request}).data,
+                             "detail": "Devolución garantía con éxito"},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},

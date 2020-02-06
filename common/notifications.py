@@ -1824,7 +1824,7 @@ def crear_notificacion_register_desistimiento_aprobada(promesa, users):
         Name=constants.NOTIFICATION_TYPE[57])
 
     message = "Promesa %s proyecto %s pendiente aprobacion desistimiento" % (
-        promesa.Folio, proyecto.Name)
+        promesa.Folio, promesa.ProyectoID.Name)
 
     notification_add = Notification.objects.create(
         NotificationTypeID=notification_type,
@@ -1837,12 +1837,12 @@ def crear_notificacion_register_desistimiento_aprobada(promesa, users):
         for user in users:
             notification_add.UserID.add(user.UserID)
 
-def crear_notificacion_desistimiento_aprobada(promesa, representante_proyecto, aprobador_proyecto):
+def crear_notificacion_release_properties(promesa, users):
     notification_type = NotificationType.objects.get(
         Name=constants.NOTIFICATION_TYPE[58])
 
     message = "Promesa %s proyecto %s aprobacion desistimiento" % (
-        promesa.Folio, proyecto.Name)
+        promesa.Folio, promesa.ProyectoID.Name)
 
     notification_add = Notification.objects.create(
         NotificationTypeID=notification_type,
@@ -1851,10 +1851,6 @@ def crear_notificacion_desistimiento_aprobada(promesa, representante_proyecto, a
         RedirectRouteID=promesa.PromesaID
     )
 
-    if representante_proyecto.exists():
-        for user in representante_proyecto:
-            notification_add.UserID.add(user.UserID)
-
-    if aprobador_proyecto.exists():
-        for user in aprobador_proyecto:
+    if users.exists():
+        for user in users:
             notification_add.UserID.add(user.UserID)

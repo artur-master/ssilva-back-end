@@ -12,7 +12,7 @@ from common.notifications import crear_notificacion_promesa_creada, crear_notifi
     crear_notificacion_promesa_aprobada_negociacion, \
     crear_notificacion_promesa_rechazada_negociacion, \
     crear_notificacion_register_desistimiento_aprobada, \
-    crear_notificacion_desistimiento_aprobada
+    crear_notificacion_release_properties
 from common.services import return_current_user
 from common.validations import CustomValidation
 from empresas_and_proyectos.models.inmuebles import InmuebleState
@@ -20,6 +20,10 @@ from empresas_and_proyectos.models.proyectos import UserProyectoType, UserProyec
 from users.models import User, Permission, Role
 from ventas.models.promesas import Promesa, PromesaInmueble
 from ventas.models.ventas_logs import VentaLog, VentaLogType
+
+'''
+Step 1: Register Desistimiento (for all cases) - VN / JP
+'''
 
 
 def vnRegisterDesistimiento(promesa, validated_data):
@@ -42,7 +46,6 @@ def vnRegisterDesistimiento(promesa, validated_data):
 
     venta_log_type = VentaLogType.objects.get(
         Name=constants.VENTA_LOG_TYPE[36])
-
     return promesa, venta_log_type
 
 
@@ -54,8 +57,10 @@ def jpRegisterDesistimiento(promesa, validated_data):
         Name=constants.VENTA_LOG_TYPE[36])
     # Desistimiento
     if new_promesa_state == constants.PROMESA_STATE[16]:
-        # JP -> FI
-        promesa, venta_log_type = desistimiento(promesa)
+        if promesa.PromesaDesistimientoState and promesa.PromesaDesistimientoState != constants.PROMESA_DESISTIMIENTO_STATE[0]:
+            raise CustomValidation("Desistimiento ha aprobado", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaDesistimientoState = constants.PROMESA_REFUND_STATE[0]
+        promesa, venta_log_type = releaseProperties(promesa)
     # Resiliacion
     if new_promesa_state == constants.PROMESA_STATE[17]:
         promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[1]
@@ -63,40 +68,8 @@ def jpRegisterDesistimiento(promesa, validated_data):
     if new_promesa_state == constants.PROMESA_STATE[18]:
         promesa.PromesaResolucionState = constants.PROMESA_RESLUCION_STATE[1]
 
-    gc_users = User.objects.filter(RoleID=Role.objects.get(Name=constants.UserRole.GERENTE_COMERCIAL))
+    gc_users = User.objects.filter(RoleID=Role.objects.get(Name=constants.UserRole.GERENTE_COMERCIAL).RoleID)
     crear_notificacion_register_desistimiento_aprobada(promesa, gc_users)
-
-    return promesa, venta_log_type
-
-
-def desistimiento(promesa):
-    promesa.PromesaDesistimientoState = constants.PROMESA_DESISTIMIENTO_STATE[1]
-    # release properties
-    inmuebles = PromesaInmueble.objects.filter(PromesaID=promesa)
-    if inmuebles.exists():
-        for inmueble in inmuebles:
-            inmueble_state = InmuebleState.objects.get(
-                Name=constants.INMUEBLE_STATE[0]
-            )
-            inmueble.InmuebleID.InmuebleStateID = inmueble_state
-            inmueble.InmuebleID.save()
-        inmuebles.delete()
-    # notify IN & FI
-    representante_proyecto_type = UserProyectoType.objects.get(
-        Name=constants.USER_PROYECTO_TYPE[0])
-    aprobador_proyecto_type = UserProyectoType.objects.get(
-        Name=constants.USER_PROYECTO_TYPE[4])
-    representante_proyecto = UserProyecto.objects.filter(
-        ProyectoID=instance.ProyectoID,
-        UserProyectoTypeID=representante_proyecto_type)
-    aprobador_proyecto = UserProyecto.objects.filter(
-        ProyectoID=instance.ProyectoID,
-        UserProyectoTypeID=aprobador_proyecto_type)
-    crear_notificacion_desistimiento_aprobada(promesa, representante_proyecto, aprobador_proyecto)
-
-    venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[37])
-
     return promesa, venta_log_type
 
 
@@ -111,21 +84,13 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
 
-        desistimiento(instance)
-
         user = UserProyecto.objects.get(
             ProyectoID=instance.ProyectoID,
             UserID=current_user
         )
-
-        vendedor_type = UserProyectoType.objects.get(
-            Name=constants.USER_PROYECTO_TYPE[2])
-        jefe_proyecto_type = UserProyectoType.objects.get(
-            Name=constants.USER_PROYECTO_TYPE[1])
-
-        if user.UserProyectoTypeID == vendedor_type.UserProyectoTypeID:
+        if user.UserProyectoTypeID.Name == constants.USER_PROYECTO_TYPE[2]:
             instance, venta_log_type = vnRegisterDesistimiento(instance, validated_data)
-        elif user.UserProyectoTypeID == jefe_proyecto_type.UserProyectoTypeID:
+        elif user.UserProyectoTypeID.Name == constants.USER_PROYECTO_TYPE[1]:
             instance, venta_log_type = jpRegisterDesistimiento(instance, validated_data)
         else:
             return instance
@@ -145,6 +110,7 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
         return instance
 
 
+# should be removed
 class ApproveDesistimientoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
@@ -158,8 +124,8 @@ class ApproveDesistimientoSerializer(serializers.ModelSerializer):
             raise CustomValidation(
                 "Desistimiento ha aprobado",
                 status_code=status.HTTP_409_CONFLICT)
-
-        instance, venta_log_type = desistimiento(instance)
+        instance.PromesaDesistimientoState = constants.PROMESA_DESISTIMIENTO_STATE[1]
+        instance, venta_log_type = releaseProperties(instance)
 
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
@@ -169,6 +135,102 @@ class ApproveDesistimientoSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
             Comment=validated_data.get('Comment', '')
+        )
+
+        instance.save()
+
+        return instance
+
+
+'''
+Step 2: Approve - GC / IN 
+'''
+
+'''
+Step 3: Confección - JP / Client
+'''
+
+
+def releaseProperties(promesa):
+    # release properties
+    inmuebles = PromesaInmueble.objects.filter(PromesaID=promesa)
+    if inmuebles.exists():
+        for inmueble in inmuebles:
+            inmueble_state = InmuebleState.objects.get(
+                Name=constants.INMUEBLE_STATE[0]
+            )
+            inmueble.InmuebleID.InmuebleStateID = inmueble_state
+            inmueble.InmuebleID.save()
+        #inmuebles.delete()
+    # notify IN & FI
+    fi_proyecto_type = UserProyectoType.objects.get(
+        Name=constants.USER_PROYECTO_TYPE[7])
+    representante_proyecto_type = UserProyectoType.objects.get(
+        Name=constants.USER_PROYECTO_TYPE[0])
+    aprobador_proyecto_type = UserProyectoType.objects.get(
+        Name=constants.USER_PROYECTO_TYPE[4])
+
+    fi_proyecto = UserProyecto.objects.filter(
+        ProyectoID=promesa.ProyectoID,
+        UserProyectoTypeID=fi_proyecto_type)
+    representante_proyecto = UserProyecto.objects.filter(
+        ProyectoID=promesa.ProyectoID,
+        UserProyectoTypeID=representante_proyecto_type)
+    aprobador_proyecto = UserProyecto.objects.filter(
+        ProyectoID=promesa.ProyectoID,
+        UserProyectoTypeID=aprobador_proyecto_type)
+    crear_notificacion_release_properties(promesa, fi_proyecto | representante_proyecto | aprobador_proyecto)
+
+    venta_log_type = VentaLogType.objects.get(
+        Name=constants.VENTA_LOG_TYPE[37])
+
+    return promesa, venta_log_type
+
+
+'''
+Step 4: Refund - FI
+'''
+
+
+class RgisterRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Promesa
+        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResiliacionState', 'PromesaResolucionState',
+                  'PromesaModificacionState')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        current_state = ''
+        # Desistimiento
+        if instance.PromesaState == constants.PROMESA_STATE[16]:
+            # get current state
+            current_state = instance.PromesaDesistimientoState
+            # apply new state
+            instance.PromesaDesistimientoState = constants.PROMESA_REFUND_STATE[1]
+        # Resiliacion
+        if instance.PromesaState == constants.PROMESA_STATE[17]:
+            current_state = instance.PromesaResiliacionState
+            instance.PromesaResiliacionState = constants.PROMESA_REFUND_STATE[1]
+        # Resolucion
+        if instance.PromesaState == constants.PROMESA_STATE[18]:
+            current_state = instance.PromesaResolucionState
+            instance.PromesaResolucionState = constants.PROMESA_REFUND_STATE[1]
+
+        if current_state == '' or current_state == constants.PROMESA_REFUND_STATE[1]:
+            raise CustomValidation("Promesa garantia refund",
+                                   status_code=status.HTTP_409_CONFLICT)
+
+        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[30])
+        comment = "Promesa {0} garantia refund".format(instance.Folio)
+
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=venta_log_type,
+            Comment=comment
         )
 
         instance.save()

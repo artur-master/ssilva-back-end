@@ -286,16 +286,14 @@ PROMESA_STATE = [
     "Pendiente revisión negociación",  # 13 -> 14     send condition to JP review
     "Pendiente negociación inmobiliaria",  # 14 -> 15 or 1
     "Rechazada Inmobiliaria",  # 15
-    "Desistimiento",  # 16 -> PROMESA_DESISTIMIENTO_STATE
-    "Resiliación",  # 17 -> PROMESA_RESILIACION_STATE
-    "Resolución",  # 18 -> PROMESA_RESLUCION_STATE
-    "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE
+    "Desistimiento",  # 16 -> PROMESA_DESISTIMIENTO_STATE + PROMESA_REFUND_STATE
+    "Resiliación",  # 17 -> PROMESA_RESILIACION_STATE + PROMESA_REFUND_STATE
+    "Resolución",  # 18 -> PROMESA_RESLUCION_STATE + PROMESA_REFUND_STATE
+    "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE + PROMESA_REFUND_STATE
 ]
 
 PROMESA_DESISTIMIENTO_STATE = [
     "Pendiente aprobación",
-    "Pendiente devolución garantía",
-    "Aprobada"
 ]
 
 PROMESA_RESILIACION_STATE = [
@@ -304,8 +302,6 @@ PROMESA_RESILIACION_STATE = [
     "Pendiente IN aprobación",
     "Pendiente confección de resciliación",
     "Pendiente firma de resciliación",
-    "Pendiente devolución garantía",
-    "Aprobada"
 ]
 
 PROMESA_RESLUCION_STATE = [
@@ -313,12 +309,15 @@ PROMESA_RESLUCION_STATE = [
     "Pendiente GC aprobación",
     "Pendiente IN aprobación",
     "Pendiente confección de resolución",
-    "Pendiente devolución garantía",
-    "Aprobada"
 ]
 
 PROMESA_MODIFICACION_STATE = [
 
+]
+
+PROMESA_REFUND_STATE = [
+    "Pendiente devolución garantía",
+    "Refund"
 ]
 
 ETAPA_STATE = [

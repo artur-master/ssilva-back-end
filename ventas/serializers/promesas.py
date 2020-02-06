@@ -137,6 +137,10 @@ class ListPromesaSerializer(serializers.ModelSerializer):
         model = Promesa
         fields = ('PromesaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
                   'Cliente', 'Folio',
+                  'PromesaDesistimientoState',
+                  'PromesaResiliacionState',
+                  'PromesaResolucionState',
+                  'PromesaModificacionState',
                   'PromesaState', 'Inmuebles', 'Factura')
 
     def get_inmuebles(self, obj):
@@ -366,6 +370,10 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DateEnvioCopias',
             'Folio',
             'PromesaState',
+            'PromesaDesistimientoState',
+            'PromesaResiliacionState',
+            'PromesaResolucionState',
+            'PromesaModificacionState',
             'PayType',
             'PaymentFirmaPromesa',
             'PaymentFirmaEscritura',
