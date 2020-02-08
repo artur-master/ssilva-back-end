@@ -12,8 +12,12 @@ DEFAULT_BATCH_SIZE = 500
 DEFAULT_PRECISION = 0.1
 
 PERMISSIONS = [
-    "Administra roles", "Administra usuarios", "Administra inmobiliarias",
-    "Es representante inmobiliario", "Consulta roles", "Consulta usuarios",
+    "Administra roles",
+    "Administra usuarios",
+    "Administra inmobiliarias",
+    "Es representante inmobiliario",
+    "Consulta roles",
+    "Consulta usuarios",
     "Consulta inmobiliarias", "Es jefe de proyectos", "Es vendedor",
     "Es asistente comercial", "Consulta parámetros", "Administra parámetros",
     "Administra proyectos", "Aprueba proyectos", "Monitorea proyectos",

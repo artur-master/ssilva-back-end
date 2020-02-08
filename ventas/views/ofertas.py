@@ -3,7 +3,7 @@ from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from common import constants
 from common.permissions import (
     CheckAdminOrVendedorOrMoniOrConsProyectosPermission,
     CheckAdminOrVendedorOrMoniProyectosPermission,
@@ -52,7 +52,7 @@ class OfertaViewSet(viewsets.ModelViewSet):
     def list(self, request):
         proyecto_id = self.request.query_params.get('q', None)
         proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
-        queryset = Oferta.objects.filter(ProyectoID=proyecto)
+        queryset = Oferta.objects.filter(ProyectoID=proyecto).exclude(OfertaState=constants.OFERTA_STATE[3])
         queryset = RetrieveOfertaSerializer.setup_eager_loading(queryset)
         serializer = RetrieveOfertaSerializer(queryset, many=True, context={'request': request})
 
