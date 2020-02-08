@@ -34,7 +34,7 @@ def vnRegisterDesistimiento(promesa, validated_data):
         # V->JP
         promesa.PromesaDesistimientoState = constants.PROMESA_DESISTIMIENTO_STATE[0]
     if new_promesa_state == constants.PROMESA_STATE[17]:
-        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[0]
+        promesa.PromesaResciliacionState = constants.PROMESA_RESCILIACION_STATE[0]
     if new_promesa_state == constants.PROMESA_STATE[18]:
         promesa.PromesaResolucionState = constants.PROMESA_RESOLUCION_STATE[0]
 
@@ -63,12 +63,12 @@ def jpRegisterDesistimiento(promesa, validated_data):
             raise CustomValidation("Desistimiento es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
         promesa.PromesaDesistimientoState = constants.PROMESA_REFUND_STATE[0]
         promesa, venta_log_type = releaseProperties(promesa)
-    # Resiliacion
+    # Resciliacion
     if new_promesa_state == constants.PROMESA_STATE[17]:
-        if (promesa.PromesaResiliacionState and
-                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[1]):
-            raise CustomValidation("Resiliación es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
-        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[1]
+        if (promesa.PromesaResciliacionState and
+                promesa.PromesaResciliacionState == constants.PROMESA_RESCILIACION_STATE[1]):
+            raise CustomValidation("Resciliación es aprobado por JP", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResciliacionState = constants.PROMESA_RESCILIACION_STATE[1]
     # Resolucion
     if new_promesa_state == constants.PROMESA_STATE[18]:
         if (promesa.PromesaResolucionState and
@@ -84,12 +84,12 @@ def jpRegisterDesistimiento(promesa, validated_data):
 def gcRegisterDesistimiento(promesa):
     venta_log_type = VentaLogType.objects.get(
         Name=constants.VENTA_LOG_TYPE[36])
-    # Resiliacion
+    # Resciliacion
     if promesa.PromesaState == constants.PROMESA_STATE[17]:
-        if (promesa.PromesaResiliacionState and
-                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[2]):
-            raise CustomValidation("Resiliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
-        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[2]
+        if (promesa.PromesaResciliacionState and
+                promesa.PromesaResciliacionState == constants.PROMESA_RESCILIACION_STATE[2]):
+            raise CustomValidation("Resciliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResciliacionState = constants.PROMESA_RESCILIACION_STATE[2]
     # Resolucion
     if promesa.PromesaState == constants.PROMESA_STATE[18]:
         if (promesa.PromesaResolucionState and
@@ -114,12 +114,12 @@ def gcRegisterDesistimiento(promesa):
 def inRegisterDesistimiento(promesa):
     venta_log_type = VentaLogType.objects.get(
         Name=constants.VENTA_LOG_TYPE[36])
-    # Resiliacion
+    # Resciliacion
     if promesa.PromesaState == constants.PROMESA_STATE[17]:
-        if (promesa.PromesaResiliacionState and
-                promesa.PromesaResiliacionState == constants.PROMESA_RESILIACION_STATE[3]):
-            raise CustomValidation("Resiliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
-        promesa.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[3]
+        if (promesa.PromesaResciliacionState and
+                promesa.PromesaResciliacionState == constants.PROMESA_RESCILIACION_STATE[3]):
+            raise CustomValidation("Resciliación es aprobado por GC", status_code=status.HTTP_409_CONFLICT)
+        promesa.PromesaResciliacionState = constants.PROMESA_RESCILIACION_STATE[3]
     # Resolucion
     if promesa.PromesaState == constants.PROMESA_STATE[18]:
         if (promesa.PromesaResolucionState and
@@ -135,7 +135,7 @@ def inRegisterDesistimiento(promesa):
 class RegisterDesistimientoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResiliacionState', 'PromesaResolucionState',
+        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResciliacionState', 'PromesaResolucionState',
                   'PromesaModificacionState')
 
     def update(self, instance, validated_data):
@@ -178,11 +178,11 @@ Step 3: Confección - JP / Client
 
 
 class UploadConfeccionDesistimientoSerializer(serializers.ModelSerializer):
-    DocumentResiliacion = serializers.FileField(
+    DocumentResciliacion = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
-    DocumentResiliacionFirma = serializers.FileField(
+    DocumentResciliacionFirma = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
@@ -193,17 +193,17 @@ class UploadConfeccionDesistimientoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Promesa
-        fields = ('DocumentResiliacion', 'DocumentResiliacionFirma', 'DocumentResolucion',
-                  'PromesaState', 'PromesaResiliacionState', 'PromesaResolucionState')
+        fields = ('DocumentResciliacion', 'DocumentResciliacionFirma', 'DocumentResolucion',
+                  'PromesaState', 'PromesaResciliacionState', 'PromesaResolucionState')
 
     def update(self, instance, validated_data):
         if instance.PromesaState == constants.PROMESA_STATE[17]:
-            if 'DocumentResiliacion' in validated_data:
-                instance.DocumentResiliacion = validated_data['DocumentResiliacion']
-                instance.PromesaResiliacionState = constants.PROMESA_RESILIACION_STATE[4]
-            if 'DocumentResiliacionFirma' in validated_data:
-                instance.DocumentResiliacionFirma = validated_data['DocumentResiliacionFirma']
-                instance.PromesaResiliacionState = constants.PROMESA_REFUND_STATE[0]
+            if 'DocumentResciliacion' in validated_data:
+                instance.DocumentResciliacion = validated_data['DocumentResciliacion']
+                instance.PromesaResciliacionState = constants.PROMESA_RESCILIACION_STATE[4]
+            if 'DocumentResciliacionFirma' in validated_data:
+                instance.DocumentResciliacionFirma = validated_data['DocumentResciliacionFirma']
+                instance.PromesaResciliacionState = constants.PROMESA_REFUND_STATE[0]
 
         if instance.PromesaState == constants.PROMESA_STATE[18]:
             if 'DocumentResolucion' in validated_data:
@@ -258,7 +258,7 @@ Step 4: Refund - FI
 class RgisterRefundSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResiliacionState', 'PromesaResolucionState',
+        fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResciliacionState', 'PromesaResolucionState',
                   'PromesaModificacionState')
 
     def update(self, instance, validated_data):
@@ -270,10 +270,10 @@ class RgisterRefundSerializer(serializers.ModelSerializer):
             current_state = instance.PromesaDesistimientoState
             # apply new state
             instance.PromesaDesistimientoState = constants.PROMESA_REFUND_STATE[1]
-        # Resiliacion
+        # Resciliacion
         if instance.PromesaState == constants.PROMESA_STATE[17]:
-            current_state = instance.PromesaResiliacionState
-            instance.PromesaResiliacionState = constants.PROMESA_REFUND_STATE[1]
+            current_state = instance.PromesaResciliacionState
+            instance.PromesaResciliacionState = constants.PROMESA_REFUND_STATE[1]
         # Resolucion
         if instance.PromesaState == constants.PROMESA_STATE[18]:
             current_state = instance.PromesaResolucionState

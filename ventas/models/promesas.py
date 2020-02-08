@@ -47,7 +47,7 @@ class Promesa(models.Model):
     Folio = models.CharField(max_length=50)
     PromesaState = models.CharField(max_length=200)
     PromesaDesistimientoState = models.CharField(max_length=200, null=True, blank=True)
-    PromesaResiliacionState = models.CharField(max_length=200, null=True, blank=True)
+    PromesaResciliacionState = models.CharField(max_length=200, null=True, blank=True)
     PromesaResolucionState = models.CharField(max_length=200, null=True, blank=True)
     PromesaModificacionState = models.CharField(max_length=200, null=True, blank=True)
 
@@ -66,9 +66,9 @@ class Promesa(models.Model):
     DocumentPaymentForm = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
 
-    DocumentResiliacion = models.FileField(
+    DocumentResciliacion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
-    DocumentResiliacionFirma = models.FileField(
+    DocumentResciliacionFirma = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentResolucion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)

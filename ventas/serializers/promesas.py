@@ -138,7 +138,7 @@ class ListPromesaSerializer(serializers.ModelSerializer):
         fields = ('PromesaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
                   'Cliente', 'Folio',
                   'PromesaDesistimientoState',
-                  'PromesaResiliacionState',
+                  'PromesaResciliacionState',
                   'PromesaResolucionState',
                   'PromesaModificacionState',
                   'PromesaState', 'Inmuebles', 'Factura')
@@ -324,10 +324,10 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         'get_document_firma_comprador_url')
     DocumentPaymentForm = serializers.SerializerMethodField(
         'get_document_payment_form_url')
-    DocumentResiliacion = serializers.SerializerMethodField(
-        'get_DocumentResiliacion_url')
-    DocumentResiliacionFirma = serializers.SerializerMethodField(
-        'get_DocumentResiliacionFirma_url')
+    DocumentResciliacion = serializers.SerializerMethodField(
+        'get_DocumentResciliacion_url')
+    DocumentResciliacionFirma = serializers.SerializerMethodField(
+        'get_DocumentResciliacionFirma_url')
     DocumentResolucion = serializers.SerializerMethodField(
         'get_DocumentResolucion_url')
     # Modification = serializers.SerializerMethodField('get_promesa_modified')
@@ -369,8 +369,8 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DocumentPlantaFirma',
             'DocumentFirmaComprador',
             'DocumentPaymentForm',
-            'DocumentResiliacion',
-            'DocumentResiliacionFirma',
+            'DocumentResciliacion',
+            'DocumentResciliacionFirma',
             'DocumentResolucion',
             'DateEnvioPromesa',
             'DateRegresoPromesa',
@@ -379,7 +379,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'Folio',
             'PromesaState',
             'PromesaDesistimientoState',
-            'PromesaResiliacionState',
+            'PromesaResciliacionState',
             'PromesaResolucionState',
             'PromesaModificacionState',
             'PayType',
@@ -447,15 +447,15 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         else:
             return ""
 
-    def get_DocumentResiliacion_url(self, obj):
-        if obj.DocumentResiliacion:
-            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResiliacion.url
+    def get_DocumentResciliacion_url(self, obj):
+        if obj.DocumentResciliacion:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResciliacion.url
         else:
             return ""
 
-    def get_DocumentResiliacionFirma_url(self, obj):
-        if obj.DocumentResiliacionFirma:
-            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResiliacionFirma.url
+    def get_DocumentResciliacionFirma_url(self, obj):
+        if obj.DocumentResciliacionFirma:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentResciliacionFirma.url
         else:
             return ""
 
