@@ -298,8 +298,7 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
             instance.AprobacionInmobiliaria = aprobacion_inmobiliaria;
 
             if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
-                    UserProyectoTypeID__in=UserProyectoType.objects.filter(
-                        Name__in=['Representante', 'Aprobador', 'Autorizador']),
+                    UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
                     ProyectoID=instance.ProyectoID).count()):
                 instance.save()
                 return instance
