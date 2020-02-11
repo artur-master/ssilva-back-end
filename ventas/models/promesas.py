@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-
+from django.contrib.postgres.fields import JSONField
 from empresas_and_proyectos.models.inmuebles import Inmueble
 from empresas_and_proyectos.models.proyectos import Proyecto
 from users.models import User
@@ -46,6 +46,10 @@ class Promesa(models.Model):
     Date = models.DateTimeField(auto_now_add=True)
     Folio = models.CharField(max_length=50)
     PromesaState = models.CharField(max_length=200)
+    AprobacionInmobiliaria = JSONField(
+        default=dict,
+        blank=True,
+        null=True)
     PromesaDesistimientoState = models.CharField(max_length=200, null=True, blank=True)
     PromesaResciliacionState = models.CharField(max_length=200, null=True, blank=True)
     PromesaResolucionState = models.CharField(max_length=200, null=True, blank=True)

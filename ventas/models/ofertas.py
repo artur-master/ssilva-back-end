@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from empresas_and_proyectos.models.proyectos import Proyecto
 from ventas.models.clientes import Cliente
+from django.contrib.postgres.fields import JSONField
 from users.models import User
 from ventas.models.empresas_compradoras import EmpresaCompradora
 from ventas.models.finding_contact import ContactMethodType
@@ -47,6 +48,10 @@ class Oferta(models.Model):
     Folio = models.CharField(max_length=50)
     OfertaState = models.CharField(max_length=100)
     AprobacionInmobiliariaState = models.CharField(max_length=100)
+    AprobacionInmobiliaria = JSONField(
+        default=dict,
+        blank=True,
+        null=True)
     PreAprobacionCreditoState = models.CharField(max_length=100)
     RecepcionGarantiaState = models.CharField(max_length=100)
     ContactMethodTypeID = models.ForeignKey(
