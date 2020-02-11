@@ -1,11 +1,11 @@
-﻿## ssilva-backend
+﻿# ssilva-backend
 
-### requirements
+## requirements
 - Python 3.x.y
 - Postgres 9
 - Virtualenv https://pypi.org/project/virtualenv/
 
-### setup
+## setup
 - clone project
 ```
 > git clone https://gitlab.com/avalanchastudio/ssilva/ssilva-backend.git
@@ -17,25 +17,32 @@
 ```
 - acvite virtual environment
 ```
+For window
 > source venv/scripts/activate
+
+For MacOS or *nix 
+> source venv/bin/activate
 ```
-- download packages
+- install packages
 ```
 > pip install -r requirements.txt
 ```
 
-#### Connect database
-- open file `.env`
+### Connect database
+- copy and replace `sgi_web_back_project/.env.sample` file to `sgi_web_back_project/.env` file
 - change `DATABASE_URL` to your db connection
 
-#### Migrate & Seed/Fixture
+### Migrate & Seed/Fixture (Create database and import sample data)
 ```
 > python data.py
 ```
 
-### Start a local web server
+## Start a local web server
 Run follow commands
 ```
 > source venv/scripts/activate
 > python manage.py runserver
 ```
+
+- Base API endpoint: htp://<root app>/api
+- Admin: htp://<root app>/admin  
