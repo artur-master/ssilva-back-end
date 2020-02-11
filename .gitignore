@@ -16,3 +16,4 @@ db.sqlite3
 app.yaml
 .gcloudignore
 sgi_web_back_project/.env
+**/migrations/
