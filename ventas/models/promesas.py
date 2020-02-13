@@ -1,13 +1,14 @@
 import uuid
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
 from empresas_and_proyectos.models.inmuebles import Inmueble
 from empresas_and_proyectos.models.proyectos import Proyecto
 from users.models import User
 from ventas.models.clientes import Cliente
-from ventas.models.payment_forms import PayType
-from ventas.models.cotizaciones import CotizacionType
 from ventas.models.conditions import Condition
+from ventas.models.cotizaciones import CotizacionType
+from ventas.models.payment_forms import PayType
 
 
 class Promesa(models.Model):
@@ -24,7 +25,7 @@ class Promesa(models.Model):
         related_name='tipo_cotizacion_promesa',
         on_delete=models.CASCADE,
         null=True,
-        blank=True)     
+        blank=True)
     ClienteID = models.ForeignKey(
         Cliente,
         related_name='cliente_promesa',
@@ -57,17 +58,15 @@ class Promesa(models.Model):
 
     DocumentPromesa = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
-        
+
     DocumentPromesaFirma = models.FileField(
-        upload_to="DocumentVentas", null=True, blank=True)    
-    DocumentChequesFirma = models.FileField(
-        upload_to="DocumentVentas", null=True, blank=True)   
-    DocumentPlantaFirma = models.FileField(
-        upload_to="DocumentVentas", null=True, blank=True)    
-        
-    DocumentFirmaComprador = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
-    DocumentPaymentForm = models.FileField(
+    DocumentChequesFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentPlantaFirma = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+
+    DocumentFirmaComprador = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
 
     DocumentResciliacion = models.FileField(
@@ -104,7 +103,7 @@ class Promesa(models.Model):
         max_digits=10,
         decimal_places=2,
         null=True,
-        blank=True)     
+        blank=True)
     IsOfficial = models.BooleanField(
         default=True
     )
@@ -117,7 +116,20 @@ class Promesa(models.Model):
         related_name='promesa_modificada',
         null=True,
         blank=True,
-        on_delete=models.SET_NULL)  
+        on_delete=models.SET_NULL)
+    FechaFirmaDeEscritura = models.DateTimeField(
+        null=True,
+        blank=True)
+    FechaEntregaDeInmueble = models.DateTimeField(
+        null=True,
+        blank=True)
+    DesistimientoEspecial = models.CharField(max_length=255, null=True, blank=True)
+    ModificacionEnLaClausula = models.CharField(max_length=255, null=True, blank=True)
+    MetodoComunicacionEscrituracion = models.CharField(max_length=255, null=True, blank=True)
+    DocumentPaymentForm = models.FileField(upload_to="DocumentVentas", null=True, blank=True)
+    DatePayment = models.DateTimeField(
+        null=True,
+        blank=True)
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaState)
@@ -138,4 +150,3 @@ class PromesaInmueble(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.PromesaID, self.InmuebleID)
-

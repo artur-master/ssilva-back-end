@@ -392,7 +392,9 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'Cuotas',
             'Documents',
             'OfertaID',
-            'Factura', 'AprobacionInmobiliaria')
+            'Factura', 'AprobacionInmobiliaria',
+            'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
+            'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion', 'DatePayment')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
@@ -1169,16 +1171,38 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentPaymentForm = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
 
     class Meta:
         model = Promesa
-        fields = ('DocumentPromesa', 'PromesaState')
+        fields = ('DocumentPromesa', 'PromesaState',
+                  'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
+                  'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion',
+                  'DocumentPaymentForm', 'DatePayment')
 
     def update(self, instance, validated_data):
+        if 'FechaFirmaDeEscritura' in validated_data:
+            instance.FechaFirmaDeEscritura = validated_data['FechaFirmaDeEscritura']
+        if 'FechaEntregaDeInmueble' in validated_data:
+            instance.FechaEntregaDeInmueble = validated_data['FechaEntregaDeInmueble']
+        instance.DesistimientoEspecial = validated_data['DesistimientoEspecial']
+        instance.ModificacionEnLaClausula = validated_data['ModificacionEnLaClausula']
+        instance.MetodoComunicacionEscrituracion = validated_data['MetodoComunicacionEscrituracion']
+        if 'DatePayment' in validated_data:
+            instance.DatePayment = validated_data['DatePayment']
+        if 'DocumentPaymentForm' in validated_data:
+            instance.DocumentPaymentForm = validated_data['DocumentPaymentForm']
+
         if 'DocumentPromesa' in validated_data:
             instance.DocumentPromesa = validated_data['DocumentPromesa']
+
+        if instance.DocumentPromesa:
             instance.PromesaState = constants.PROMESA_STATE[9]
-            instance.save()
+
+        instance.save()
 
         return instance
 
