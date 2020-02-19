@@ -38,24 +38,34 @@ from ventas.serializers.documents_venta import DocumentVentaSerializer
 from ventas.serializers.facturas import RetrieveFacturaSerializer
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.reservas import CreateReservaInmuebleSerializer, ListReservaInmuebleSerializer
+from ventas.serializers.ventas_logs import VentaLogSerializer
 
 
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
-    instance = Promesa.objects.create(
-        ProyectoID=proyecto,
-        CotizacionTypeID=cotizacion_type,
-        ClienteID=cliente,
-        VendedorID=vendedor,
-        CodeudorID=codeudor,
-        Folio=folio,
-        PromesaState=constants.PROMESA_STATE[0],
-        PaymentFirmaPromesa=payment_firma_promesa,
-        PaymentFirmaEscritura=payment_firma_escritura,
-        PaymentInstitucionFinanciera=payment_firma_institucion_financiera,
-        AhorroPlus=ahorro_plus,
-        PayTypeID=paytype
-    )
+    instance = Promesa.objects.filter(Folio=folio)
+    if len(instance) > 0:
+        instance = instance[0]
+    else:
+        instance = Promesa(
+            ProyectoID=proyecto,
+            Folio=folio,
+        )
+    instance.CotizacionTypeID = cotizacion_type
+    instance.ClienteID = cliente
+    instance.VendedorID = vendedor
+    instance.CodeudorID = codeudor
+    instance.PromesaState = constants.PROMESA_STATE[0]
+    instance.PaymentFirmaPromesa = payment_firma_promesa
+    instance.PaymentFirmaEscritura = payment_firma_escritura
+    instance.PaymentInstitucionFinanciera = payment_firma_institucion_financiera
+    instance.AhorroPlus = ahorro_plus
+    instance.PayTypeID = paytype
+    instance.save()
+
+    PromesaInmueble.objects.filter(PromesaID=instance).delete()
+    FacturaInmueble.objects.filter(FolioVenta=folio).delete()
+    Factura.objects.filter(Folio=folio).delete()
 
     inmuebles_promesa = list()
 
@@ -336,6 +346,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
     OfertaID = serializers.SerializerMethodField('get_oferta_id')
     Condition = serializers.SerializerMethodField('get_conditions')
     Factura = serializers.SerializerMethodField('get_factura')
+    Logs = serializers.SerializerMethodField('get_logs')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -394,7 +405,8 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'OfertaID',
             'Factura', 'AprobacionInmobiliaria',
             'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
-            'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion', 'DatePayment')
+            'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion', 'DatePayment',
+            'Logs')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
@@ -510,6 +522,13 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_logs(self, obj):
+        venta_log = VentaLog.objects.filter(
+            VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE_PROMESA),
+            Folio=obj.Folio).order_by('-id')
+        serializer = VentaLogSerializer(instance=venta_log, many=True)
+        return serializer.data
+
 
 class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
@@ -555,7 +574,7 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
             # if AC approves, move to JP to approve
             if instance.PromesaState == constants.PROMESA_STATE[9]:
                 instance.PromesaState = constants.PROMESA_STATE[11]
-                venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
+                venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[32])
                 crear_notificacion_maqueta_jp_aprobada(instance, jefe_proyecto)
             # AC approve has approved and now JP approves, move to 'Pendiente firma comprador'
             else:
@@ -1298,7 +1317,7 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
-                Name=constants.VENTA_LOG_TYPE[32]),
+                Name=constants.VENTA_LOG_TYPE[33]),
             Comment=''
         )
 
@@ -1379,7 +1398,7 @@ class SendNegociacionINSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
-                Name=constants.VENTA_LOG_TYPE[33]),
+                Name=constants.VENTA_LOG_TYPE[34]),
             Comment=''
         )
 
@@ -1462,12 +1481,12 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
                     condition.save()
 
             instance.PromesaState = constants.PROMESA_STATE[1]
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[34])
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[35])
             crear_notificacion_promesa_aprobada_negociacion(instance, jefe_proyecto, vendedor)
         else:
             instance.PromesaState = constants.PROMESA_STATE[15]
             instance.AprobacionInmobiliaria = {};
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[35])
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[36])
             crear_notificacion_promesa_rechazada_negociacion(instance, jefe_proyecto, vendedor)
 
         VentaLog.objects.create(
@@ -1545,11 +1564,11 @@ class ApproveRejectNegociacionSerializer(serializers.ModelSerializer):
                     condition.save()
 
             instance.PromesaState = constants.PROMESA_STATE[1]
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[34])
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[35])
             crear_notificacion_promesa_aprobada_negociacion(instance, jefe_proyecto, vendedor)
         else:
             instance.PromesaState = constants.PROMESA_STATE[15]
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[35])
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[36])
             crear_notificacion_promesa_rechazada_negociacion(instance, jefe_proyecto, vendedor)
 
         VentaLog.objects.create(

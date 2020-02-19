@@ -48,8 +48,7 @@ class VentaLog(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True)
-    Comment = models.CharField(
-        max_length=150,
+    Comment = models.TextField(
         null=True,
         blank=True)
     Date = models.DateTimeField(auto_now_add=True)

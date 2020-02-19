@@ -1,5 +1,8 @@
+from users.serializers.users import UserProfileSerializer
 from ventas.models.ventas_logs import VentaLog
 from rest_framework import serializers
+
+from ventas.serializers.clientes import ClienteSerializer
 
 
 class VentaLogClienteSerializer(serializers.ModelSerializer):
@@ -81,6 +84,7 @@ class VentaLogVendedorSerializer(serializers.ModelSerializer):
 
 
 class VentaLogSerializer(serializers.ModelSerializer):
+
     ClienteName = serializers.CharField(
         source='ClienteID.Name'
     )
@@ -104,7 +108,10 @@ class VentaLogSerializer(serializers.ModelSerializer):
     )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
-
+    User = UserProfileSerializer(
+        source='UserID',
+        allow_null=True
+    )
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -115,11 +122,12 @@ class VentaLogSerializer(serializers.ModelSerializer):
         model = VentaLog
         fields = ('VentaLogID', 'ClienteName', 'ClienteLastNames',
                   'ClienteRut', 'VendedorName', 'VendedorLastNames',
-                  'VendedorRut', 'VentaLogType', 'Date', 'Comment')
+                  'VendedorRut', 'VentaLogType', 'Date', 'Comment',
+                  'User')
 
     def get_date(self, obj):
         try:
-            return obj.Date.strftime("%Y-%m-%d")
+            return obj.Date.strftime("%Y-%m-%d %H:%M:%S")
         except AttributeError:
             return ""
 

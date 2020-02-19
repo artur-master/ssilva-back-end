@@ -389,7 +389,6 @@ class RegisterSendFacturaSerializer(serializers.ModelSerializer):
 
         return instance
 
-
 class RegisterDatePagoFacturaSerializer(serializers.ModelSerializer):
     DatePayment = serializers.DateTimeField(
         write_only=True

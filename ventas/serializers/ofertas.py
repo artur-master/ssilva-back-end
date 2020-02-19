@@ -615,7 +615,7 @@ class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
                     "No Recepcion de garantia",
                     status_code=status.HTTP_409_CONFLICT)
             instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[2]
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[30])
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
             comment = "Oferta {0} garantia refund".format(instance.Folio)
 
         else:

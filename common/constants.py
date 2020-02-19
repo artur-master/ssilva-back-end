@@ -48,7 +48,8 @@ NOTIFICATION_TYPE = [
     "Envio de copias", "Promesa modificada", "Documento confirmado", "Documento rechazado",
     "Documento de actualizacion",
     "Crear comision", "Comision de actualizacion",  # 48
-    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta", "Refund garantia",  # 51
+    "Rechazo Modificacion oferta", "Aprobacion Modificacion oferta",
+    "Refund garantia",  # 51
     "Maqueta aprobada - AC",  # 52
     "Promesa requiere revisión a negociación",  # 53
     "Promesa requiere aprobacion inmobiliaria a negociación",  # 54
@@ -117,7 +118,31 @@ VENTA_LOG_TYPE = [
     "Rechazo Modificacion oferta",
     "Aprobacion Modificacion oferta",
     "Aprobacion Modificacion oferta",
-    "Refund garantia",  # 30
+    "Refund garantia",  # 31
+    "AC Aprobacion maqueta",  # 32
+    "Envio a negociación",  # 33
+    "Envio negociación a inmobiliaria",  # 34
+    "Aprobacion a negociación",  # 35
+    "Rechazo a negociación",  # 36
+    "Register Desistimiento",  # 37
+    "Aprobacion Desistimiento",  # 38
+]
+
+VENTA_LOG_TYPE_PROMESA = [
+    "Envio oferta a confeccion promesa",
+    "Aprobacion confeccion promesa",
+    "Rechazo confeccion promesa",
+    "Creacion promesa",
+    "Aprobacion maqueta",
+    "Rechazo maqueta",  # 19
+    "Aprobacion promesa",
+    "Rechazo promesa",
+    "Registro envio promesa a inmobiliaria",
+    "Registro firma de inmobiliaria",
+    "Legalizacion promesa",  # 24
+    "Envio copias",
+    "Modificacion promesa(Antes de firma comprador)",
+    "Modificacion promesa(Despues de firma comprador)",
     "AC Aprobacion maqueta",  # 31
     "Envio a negociación",  # 32
     "Envio negociación a inmobiliaria",  # 33

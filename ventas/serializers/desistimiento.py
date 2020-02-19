@@ -46,7 +46,7 @@ def vnRegisterDesistimiento(promesa, validated_data):
     crear_notificacion_register_desistimiento_aprobada(promesa, jefe_proyecto)
 
     venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[36])
+        Name=constants.VENTA_LOG_TYPE[37])
     return promesa, venta_log_type
 
 
@@ -55,7 +55,7 @@ def jpRegisterDesistimiento(promesa, validated_data):
     promesa.PromesaState = new_promesa_state
 
     venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[36])
+        Name=constants.VENTA_LOG_TYPE[37])
     # Desistimiento
     if new_promesa_state == constants.PROMESA_STATE[16]:
         if (promesa.PromesaDesistimientoState and
@@ -83,7 +83,7 @@ def jpRegisterDesistimiento(promesa, validated_data):
 
 def gcRegisterDesistimiento(promesa):
     venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[36])
+        Name=constants.VENTA_LOG_TYPE[37])
     # Resciliacion
     if promesa.PromesaState == constants.PROMESA_STATE[17]:
         if (promesa.PromesaResciliacionState and
@@ -113,7 +113,7 @@ def gcRegisterDesistimiento(promesa):
 
 def inRegisterDesistimiento(promesa):
     venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[36])
+        Name=constants.VENTA_LOG_TYPE[37])
     # Resciliacion
     if promesa.PromesaState == constants.PROMESA_STATE[17]:
         if (promesa.PromesaResciliacionState and
@@ -245,7 +245,7 @@ def releaseProperties(promesa):
     crear_notificacion_release_properties(promesa, fi_proyecto | representante_proyecto | aprobador_proyecto)
 
     venta_log_type = VentaLogType.objects.get(
-        Name=constants.VENTA_LOG_TYPE[37])
+        Name=constants.VENTA_LOG_TYPE[38])
 
     return promesa, venta_log_type
 
@@ -283,7 +283,7 @@ class RgisterRefundSerializer(serializers.ModelSerializer):
             raise CustomValidation("Promesa garantia refund",
                                    status_code=status.HTTP_409_CONFLICT)
 
-        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[30])
+        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[31])
         comment = "Promesa {0} garantia refund".format(instance.Folio)
 
         VentaLog.objects.create(
