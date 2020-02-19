@@ -407,7 +407,7 @@ class UserRole(Constant):
     ADMINISTRADOR = "Administrador"
     LEGAL = "Legal"
     ARQUITECTO = "Arquitecto"
-    FINANZAS = "Finanzas"
+    FINANZA = "Finanza"
     MARKETING = "Marketing"
 
 

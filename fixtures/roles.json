@@ -179,7 +179,7 @@
   {
     "model": "users.role",
     "fields": {
-      "Name": "Finanzas",
+      "Name": "Finanza",
       "PermissionID": [
         [
           "Aprueba inmuebles"

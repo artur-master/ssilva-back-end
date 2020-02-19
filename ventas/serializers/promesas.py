@@ -797,7 +797,7 @@ class RegisterSendPromesaToInmobiliariaSerializer(serializers.ModelSerializer):
             Comment=comment
         )
 
-        instance.PromesaState = constants.PROMESA_STATE[4]
+        instance.PromesaState = constants.PROMESA_STATE[3]
         instance.save()
 
         return instance
@@ -809,15 +809,15 @@ def generateFactura(promesa):
     if len(factura) > 0:
         factura = factura[0]
     else:
-        factura = Factura.objects.create(
+        factura = Factura(
             FacturaState=constants.FACTURA_STATE[0],
             ProyectoID=promesa.ProyectoID,
             InmobiliariaID=promesa.ProyectoID.InmobiliariaID,
-            DateEnvio=promesa.DateEnvioCopias,
             Folio=promesa.Folio
         )
     factura.Value = promesa.PaymentFirmaPromesa
     factura.Number = factura.id
+    factura.FacturaState = constants.FACTURA_STATE[0]
     factura.save()
     # update inmuebles por facturar
     FacturaInmueble.objects.filter(FolioVenta=promesa.Folio).update(
@@ -1023,7 +1023,7 @@ class SendCopiesSerializer(serializers.ModelSerializer):
 
         instance.PromesaState = promesa_state
         instance.save()
-        generateFactura(instance)
+        # generateFactura(instance)
 
         return instance
 
