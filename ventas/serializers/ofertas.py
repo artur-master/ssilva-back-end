@@ -885,6 +885,14 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
                     "Confeccion de promesa ya ha sido aprobada, no se puede rechazar",
                     status_code=status.HTTP_409_CONFLICT)
             instance.OfertaState = constants.OFERTA_STATE[2]
+            # reset oferta
+            if instance.PayTypeID.Name == constants.PAY_TYPE[0]:
+                instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[0]
+            else:
+                instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[1]
+            instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[0]
+            instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[0]
+
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[13])
 
             crear_notificacion_confeccion_promesa_rechazada(instance, jefe_proyecto, vendedor)
@@ -1191,6 +1199,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         # Modificado state
         instance.OfertaState = constants.OFERTA_STATE[5]
         instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[0]
+        instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[0]
         instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
         instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
         instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
@@ -1198,11 +1207,13 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.PayTypeID = pay_type
         instance.DateFirmaPromesa = date_firma_promesa
         instance.ValueProductoFinanciero = value_producto_financiero
-
-        if pay_type.Name == constants.PAY_TYPE[0] or empresa_compradora:
-            instance.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[0]
+        instance.IsApproveInmobiliaria = False
+        instance.AprobacionInmobiliaria = {}
+        # if pay_type.Name == constants.PAY_TYPE[0] or empresa_compradora:
+        if pay_type.Name == constants.PAY_TYPE[0]:
+            instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[0]
         else:
-            instance.PreAprobacionCreditoState == constants.PRE_APROBACION_CREDITO_STATE[1]
+            instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[1]
 
         # Crear notificaciones
         jefe_proyecto_type = UserProyectoType.objects.get(
