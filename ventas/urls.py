@@ -49,7 +49,7 @@ from ventas.views.promesas import (
     SendCopiesViewSet,
     NegociacionPromesaViewSet,
     SendNegociacionPromesaViewSet,
-    ControlNegociacionPromesaViewSet)
+    ControlNegociacionPromesaViewSet, SendPromesaToClientViewSet)
 from ventas.views.reservas import (
     ReservaViewSet,
     CancelReservaViewSet,
@@ -179,6 +179,9 @@ router.register(
 router.register(
     'promesas-refund',
     RegisterRefundViewSet)
+router.register(
+    'promesas-send-to-cliente',
+    SendPromesaToClientViewSet)
 
 router.register('finding-types', FindingTypeViewSet)
 router.register('cotizacion-types', CotizacionTypeViewSet)

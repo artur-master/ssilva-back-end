@@ -244,7 +244,7 @@ class RetrieveModifiedPromesaSerializer(serializers.ModelSerializer):
                   'ClienteRut', 'CodeudorID', 'CodeudorName',
                   'CodeudorLastNames', 'CodeudorRut', 'PayType',
                   'Inmuebles', 'PaymentFirmaPromesa', 'PaymentFirmaEscritura',
-                  'PaymentInstitucionFinanciera', 'AhorroPlus')
+                  'PaymentInstitucionFinanciera', 'AhorroPlus', 'DateEnvioPromesaToCliente')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
@@ -387,6 +387,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DateRegresoPromesa',
             'DateLegalizacionPromesa',
             'DateEnvioCopias',
+            'DateEnvioPromesaToCliente',
             'Folio',
             'PromesaState',
             'PromesaDesistimientoState',
@@ -1210,7 +1211,7 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
         instance.DesistimientoEspecial = validated_data['DesistimientoEspecial']
         instance.ModificacionEnLaClausula = validated_data['ModificacionEnLaClausula']
         instance.MetodoComunicacionEscrituracion = validated_data['MetodoComunicacionEscrituracion']
-        if 'DatePayment' in validated_data:
+        if 'DatePayment' in validated_data and validated_data['DatePayment']:
             instance.DatePayment = validated_data['DatePayment']
         if 'DocumentPaymentForm' in validated_data:
             instance.DocumentPaymentForm = validated_data['DocumentPaymentForm']
@@ -1454,20 +1455,20 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
             UserProyectoTypeID=vendedor_type)
 
         if resolution:
+            if instance.PromesaState != constants.PROMESA_STATE[13]:
+                if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[current_user.UserID]:
+                    raise CustomValidation(
+                        "Aprobada",
+                        status_code=status.HTTP_409_CONFLICT)
 
-            if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[current_user.UserID]:
-                raise CustomValidation(
-                    "Aprobada",
-                    status_code=status.HTTP_409_CONFLICT)
+                aprobacion_inmobiliaria[str(current_user.UserID)] = True;
+                instance.AprobacionInmobiliaria = aprobacion_inmobiliaria;
 
-            aprobacion_inmobiliaria[str(current_user.UserID)] = True;
-            instance.AprobacionInmobiliaria = aprobacion_inmobiliaria;
-
-            if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
-                    UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
-                    ProyectoID=instance.ProyectoID).count()):
-                instance.save()
-                return instance
+                if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
+                        UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
+                        ProyectoID=instance.ProyectoID).count()):
+                    instance.save()
+                    return instance
 
             for condition_data in conditions_data:
                 condition = Condition.objects.get(
@@ -1582,4 +1583,44 @@ class ApproveRejectNegociacionSerializer(serializers.ModelSerializer):
         )
 
         instance.save()
+        return instance
+
+
+class SendPromesaToClientSerializer(serializers.ModelSerializer):
+    PromesaState = serializers.CharField(
+        read_only=True
+    )
+    DateEnvioPromesaToCliente = serializers.DateTimeField(
+        write_only=True
+    )
+
+    class Meta:
+        model = Promesa
+        fields = ('PromesaState', 'DateEnvioPromesaToCliente')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        date = validated_data.pop('DateEnvioPromesaToCliente')
+
+        instance.DateEnvioPromesaToCliente = date
+
+        comment = "Enviado {folio} proyecto {nombre} a la cliente para firmar".format(folio=instance.Folio,
+                                                                                      nombre=instance.ProyectoID.Name)
+        venta_log_type = VentaLogType.objects.get(
+            Name=constants.VENTA_LOG_TYPE[39])
+
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=venta_log_type,
+            Comment=comment
+        )
+
+        instance.PromesaState = constants.PROMESA_STATE[20]
+        instance.save()
+        # Todo: send email
         return instance

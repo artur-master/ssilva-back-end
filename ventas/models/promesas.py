@@ -123,6 +123,9 @@ class Promesa(models.Model):
     FechaEntregaDeInmueble = models.DateTimeField(
         null=True,
         blank=True)
+    DateEnvioPromesaToCliente = models.DateTimeField(
+        null=True,
+        blank=True)
     DesistimientoEspecial = models.CharField(max_length=255, null=True, blank=True)
     ModificacionEnLaClausula = models.CharField(max_length=255, null=True, blank=True)
     MetodoComunicacionEscrituracion = models.CharField(max_length=255, null=True, blank=True)

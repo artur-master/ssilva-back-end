@@ -26,7 +26,7 @@ from ventas.serializers.promesas import (
     UploadFirmaDocumentSerializer,
     SendNegociacionJPSerializer,
     SendNegociacionINSerializer,
-    ControlNegociacionSerializer, )
+    ControlNegociacionSerializer, SendPromesaToClientSerializer)
 
 
 class PromesaViewSet(viewsets.ModelViewSet):
@@ -381,6 +381,29 @@ class ControlNegociacionPromesaViewSet(viewsets.ModelViewSet):
                 return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                                  "detail": "Rechazo negociación con éxito"},
                                 status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
+class SendPromesaToClientViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = SendPromesaToClientSerializer
+    queryset = Promesa.objects.all()
+    lookup_field = 'PromesaID'
+
+    def partial_update(self, request, PromesaID):
+        serializer = SendPromesaToClientSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
+                             "detail": "Envio promesa a cliente con éxito"},
+                            status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)

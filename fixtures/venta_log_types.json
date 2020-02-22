@@ -265,5 +265,11 @@
       "MaximunDays": 0
     }
   },
-
+  {
+    "model": "ventas.ventalogtype",
+    "fields": {
+      "Name": "Envío promesa a cliente",
+      "MaximunDays": 0
+    }
+  }
 ]

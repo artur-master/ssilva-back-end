@@ -126,6 +126,7 @@ VENTA_LOG_TYPE = [
     "Rechazo a negociación",  # 36
     "Register Desistimiento",  # 37
     "Aprobacion Desistimiento",  # 38
+    "Envío promesa a cliente", #39
 ]
 
 VENTA_LOG_TYPE_PROMESA = [
@@ -150,6 +151,7 @@ VENTA_LOG_TYPE_PROMESA = [
     "Rechazo a negociación",  # 35
     "Register Desistimiento",  # 36
     "Aprobacion Desistimiento",  # 37
+    "Envío promesa a cliente",
 ]
 
 USER_PROYECTO_TYPE = [
@@ -300,7 +302,7 @@ RESULT = [
 
 PROMESA_STATE = [
     "Pendiente confección",  # 0 -> 9
-    "Pendiente firma comprador",  # 1 -> 12 or 13
+    "Pendiente firma comprador",  # 1 -> 20 or 13
     "Pendiente envío a inmobiliaria",  # 2 -> 3
     "Pendiente factura",  # 3 -> 4
     "Pendiente firma inmobiliaria",  # 4 -> 5 or 6
@@ -319,6 +321,7 @@ PROMESA_STATE = [
     "Resciliación",  # 17 -> PROMESA_RESCILIACION_STATE + PROMESA_REFUND_STATE
     "Resolución",  # 18 -> PROMESA_RESOLUCION_STATE + PROMESA_REFUND_STATE
     "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE + PROMESA_REFUND_STATE
+    "Envío a cliente", #20 -> 12
 ]
 
 PROMESA_DESISTIMIENTO_STATE = [
