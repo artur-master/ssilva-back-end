@@ -21,7 +21,7 @@ from ventas.views.facturas import (
     FacturaInmuebleViewSet,
     FacturaViewSet,
     DownloadFacturaViewSet,
-    DownloadNotaCreditoViewSet, RegisterSendFacturaViewSet, RegisterDatePagoFacturaViewSet)
+    DownloadNotaCreditoViewSet, RegisterSendFacturaViewSet, RegisterDatePagoFacturaViewSet, RegisterNoteCreditViewSet)
 from ventas.views.finding_contact import (
     FindingTypeViewSet,
     ContactMethodTypeViewSet)
@@ -197,6 +197,8 @@ router.register('facturas-download', DownloadFacturaViewSet)
 router.register('facturas-nota-credito-download', DownloadNotaCreditoViewSet)
 router.register('facturas-register-send', RegisterSendFacturaViewSet)
 router.register('facturas-register-payment', RegisterDatePagoFacturaViewSet)
+router.register('facturas-register-nota-credito', RegisterNoteCreditViewSet)
+
 router.register('utils-payment', UtilsPaymentViewSet)
 
 urlpatterns = [

@@ -126,7 +126,7 @@ VENTA_LOG_TYPE = [
     "Rechazo a negociación",  # 36
     "Register Desistimiento",  # 37
     "Aprobacion Desistimiento",  # 38
-    "Envío promesa a cliente", #39
+    "Envío promesa a cliente",  # 39
 ]
 
 VENTA_LOG_TYPE_PROMESA = [
@@ -321,7 +321,7 @@ PROMESA_STATE = [
     "Resciliación",  # 17 -> PROMESA_RESCILIACION_STATE + PROMESA_REFUND_STATE
     "Resolución",  # 18 -> PROMESA_RESOLUCION_STATE + PROMESA_REFUND_STATE
     "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE + PROMESA_REFUND_STATE
-    "Envío a cliente", #20 -> 12
+    "Envío a cliente",  # 20 -> 12
 ]
 
 PROMESA_DESISTIMIENTO_STATE = [
@@ -374,6 +374,7 @@ FACTURA_INMUEBLE_STATE = [
 FACTURA_STATE = [
     "Pendiente pago",
     "Pagada",
+    "Nota Crédito"
 ]
 
 COMISION_STATE = [

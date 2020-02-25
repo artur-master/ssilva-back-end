@@ -410,3 +410,26 @@ class RegisterDatePagoFacturaSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class RegisterNoteCreditSerializer(serializers.ModelSerializer):
+    DatePayment = serializers.DateTimeField(
+        write_only=True
+    )
+    FacturaState = serializers.CharField(
+        read_only=True
+    )
+
+    class Meta:
+        model = Factura
+        fields = ('FacturaState', 'DatePayment')
+
+    def update(self, instance, validated_data):
+        date_payment = validated_data.get('DatePayment')
+
+        instance.DatePayment = date_payment
+        instance.FacturaState = constants.FACTURA_STATE[2]
+
+        instance.save()
+
+        return instance

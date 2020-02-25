@@ -151,7 +151,9 @@ class ListPromesaSerializer(serializers.ModelSerializer):
                   'PromesaResciliacionState',
                   'PromesaResolucionState',
                   'PromesaModificacionState',
-                  'PromesaState', 'Inmuebles', 'Factura', 'AprobacionInmobiliaria')
+                  'PromesaState', 'Inmuebles', 'Factura',
+                  'AprobacionInmobiliaria',
+                  'DateRegresoPromesa')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(

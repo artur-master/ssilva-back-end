@@ -13,7 +13,8 @@ from ventas.models.facturas import ComisionInmobiliaria, FacturaInmueble, Factur
 from ventas.serializers.facturas import (
     CreateComisionesSerializer, UpdateComisionesSerializer, ComisionesSerializer,
     FacturaInmuebleSerializer, RetrieveFacturaSerializer, ListFacturaSerializer, download_factura,
-    download_nota_credito, RegisterSendFacturaSerializer, RegisterDatePagoFacturaSerializer)
+    download_nota_credito, RegisterSendFacturaSerializer, RegisterDatePagoFacturaSerializer,
+    RegisterNoteCreditSerializer)
 
 
 class ComisionInmobiliariaViewSet(viewsets.ModelViewSet):
@@ -203,6 +204,28 @@ class RegisterDatePagoFacturaViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response({"factura": serializer.data,
                              "detail": "Registro pago de factura con éxito"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+class RegisterNoteCreditViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, )
+    serializer_class = RegisterNoteCreditSerializer
+    queryset = Factura.objects.all()
+    lookup_field = 'FacturaID'
+
+    def partial_update(self, request, FacturaID):
+        serializer = RegisterNoteCreditSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"factura": serializer.data,
+                             "detail": "Registro nota crédito con éxito"},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
