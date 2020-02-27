@@ -17,4 +17,4 @@ app.yaml
 .gcloudignore
 sgi_web_back_project/.env
 
-#**/migrations/
+**/migrations/
