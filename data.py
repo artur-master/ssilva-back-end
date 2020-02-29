@@ -1,5 +1,4 @@
 import os
-
 run_create_database = "python manage.py migrate --fake-initial"
 
 run_permissions = "python manage.py loaddata fixtures/permissions.json"
