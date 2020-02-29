@@ -1175,16 +1175,17 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             instance.save()
 
         for proyecto_user_data in proyecto_users_data:
-            user_proyecto_type = UserProyectoType.objects.get(
-                Name=proyecto_user_data['UserProyectoType'])
-            user_proyecto = User.objects.get(
-                UserID=proyecto_user_data['UserID'])
-
-            UserProyecto.objects.create(
-                UserID=user_proyecto,
-                ProyectoID=instance,
-                UserProyectoTypeID=user_proyecto_type
-            )
+            if proyecto_user_data.get('UserID'):
+                user_proyecto_type = UserProyectoType.objects.get(
+                    Name=proyecto_user_data['UserProyectoType'])
+                user_proyecto = User.objects.get(
+                    UserID=proyecto_user_data['UserID'])
+                if user_proyecto:
+                    UserProyecto.objects.create(
+                        UserID=user_proyecto,
+                        ProyectoID=instance,
+                        UserProyectoTypeID=user_proyecto_type
+                    )
 
         # Creacion de Historial del Proyecto
         counter = CounterHistory.objects.create(
@@ -1245,29 +1246,31 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             proyecto_aseguradora = None
 
         for proyecto_user_data in proyecto_users_data:
-            user_proyecto_type = UserProyectoType.objects.get(
-                Name=proyecto_user_data['UserProyectoType'])
-            user_proyecto = User.objects.get(
-                UserID=proyecto_user_data['UserID'])
-            HistoricalUserProyecto.objects.create(
-                UserID=user_proyecto,
-                ProyectoID=proyecto_hist,
-                UserProyectoTypeID=user_proyecto_type
-            )
-            if proyecto_user_data['UserProyectoType'] in (constants.USER_PROYECTO_TYPE[5],
-                                                          constants.USER_PROYECTO_TYPE[6],
-                                                          constants.USER_PROYECTO_TYPE[7]):
-                notification_type = NotificationType.objects.get(
-                    Name=constants.NOTIFICATION_TYPE[46])
-                notification = Notification.objects.create(
-                    NotificationTypeID=notification_type,
-                    TableID=instance.ProyectoID,
-                    Message="You have been assigned to project %s to upload %s documents" % (instance.Name,
-                                                                                             proyecto_user_data[
-                                                                                                 'UserProyectoType']),
-                    RedirectRouteID=instance.ProyectoID
-                )
-                notification.UserID.add(user_proyecto)
+            if proyecto_user_data.get('UserID'):
+                user_proyecto_type = UserProyectoType.objects.get(
+                    Name=proyecto_user_data['UserProyectoType'])
+                user_proyecto = User.objects.get(
+                    UserID=proyecto_user_data['UserID'])
+                if user_proyecto:    
+                    HistoricalUserProyecto.objects.create(
+                        UserID=user_proyecto,
+                        ProyectoID=proyecto_hist,
+                        UserProyectoTypeID=user_proyecto_type
+                    )
+                    if proyecto_user_data['UserProyectoType'] in (constants.USER_PROYECTO_TYPE[5],
+                                                                  constants.USER_PROYECTO_TYPE[6],
+                                                                  constants.USER_PROYECTO_TYPE[7]):
+                        notification_type = NotificationType.objects.get(
+                            Name=constants.NOTIFICATION_TYPE[46])
+                        notification = Notification.objects.create(
+                            NotificationTypeID=notification_type,
+                            TableID=instance.ProyectoID,
+                            Message="You have been assigned to project %s to upload %s documents" % (instance.Name,
+                                                                                                     proyecto_user_data[
+                                                                                                         'UserProyectoType']),
+                            RedirectRouteID=instance.ProyectoID
+                        )
+                        notification.UserID.add(user_proyecto)
 
         # Creacion de bitacora de proyecto
         proyecto_log_type = ProyectoLogType.objects.get(
