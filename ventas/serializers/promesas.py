@@ -1,4 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from rest_framework import serializers, status
 
 from common import constants
@@ -15,9 +16,10 @@ from common.services import get_full_path_x, return_current_user
 from common.validations import CustomValidation
 from empresas_and_proyectos.models.inmuebles import Inmueble, InmuebleState
 from empresas_and_proyectos.models.proyectos import UserProyectoType, UserProyecto, Proyecto
+from sgi_web_back_project import settings
 from users.models import User, Permission
 from users.serializers.users import UserProfileSerializer
-from ventas.models.clientes import Cliente
+from ventas.models.clientes import Cliente, ClienteContactInfo
 from ventas.models.conditions import Condition
 from ventas.models.documents import DocumentVenta
 from ventas.models.facturas import FacturaInmueble, ComisionInmobiliaria, Factura
@@ -1595,14 +1597,32 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
     DateEnvioPromesaToCliente = serializers.DateTimeField(
         write_only=True
     )
+    ClienteID = serializers.UUIDField(
+        source='ClienteID.UserID'
+    )
+    DocumentPromesa = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'ProyectoID',
+            'ClienteID',
+            'VendedorID',
+            'CodeudorID',
+            'PayTypeID')
+        queryset = queryset.prefetch_related('InmuebleID')
+        return queryset
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'DateEnvioPromesaToCliente')
+        fields = ('PromesaState', 'DateEnvioPromesaToCliente', 'ClienteID', 'DocumentPromesa')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
-
         date = validated_data.pop('DateEnvioPromesaToCliente')
 
         instance.DateEnvioPromesaToCliente = date
@@ -1624,5 +1644,24 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
 
         instance.PromesaState = constants.PROMESA_STATE[20]
         instance.save()
-        # Todo: send email
+
+        contact_infos = ClienteContactInfo.objects.filter(UserID=instance.ClienteID).all()
+        contact_emails = []
+        for contact_info in contact_infos:
+            if contact_info.ContactInfoTypeID == 'Email':
+                contact_emails.append(contact_info.value)
+
+        # send email to project director
+        if len(contact_emails) > 0:
+            base_url = "http://" + get_current_site(self.context.get('request')).domain
+            file_url = base_url + instance.DocumentPromesa
+            send_mail(message=file_url,
+                      subject="You are assigned to '%s'" % instance.Name,
+                      from_email=settings.EMAIL_HOST_USER,
+                      recipient_list=contact_emails,
+                      html_message="Dear client, <br/><br/>"
+                                   "Please check this.<br/><br/>"
+                                   "<a href='{file_url}'>FILE PDF</a>".format(file_url=file_url))
+        #end sending email
+
         return instance
