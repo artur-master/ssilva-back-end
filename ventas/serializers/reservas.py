@@ -81,6 +81,7 @@ from .empleadores import CreateEmpleadorSerializer
 from .empresas_compradoras import (
     EmpresaCompradoraSerializer,
     CreateEmpresaCompradoraSerializer)
+from ventas.serializers.ventas_logs import VentaLogSerializer
 
 
 class ListReservaInmuebleSerializer(serializers.ModelSerializer):
@@ -283,6 +284,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
     IsFinished = serializers.SerializerMethodField('get_state_reserva')
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
+    Logs = serializers.SerializerMethodField('get_logs')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -331,7 +333,8 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'Documents',
             'IsFinished',
             'Graph',
-            'Patrimony')
+            'Patrimony',
+            'Logs')
 
     def get_patrimony(self, obj):
         patrimonies = Patrimony.objects.filter(ClienteID=obj.ClienteID)
@@ -368,6 +371,13 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             return True
         else:
             return False
+
+    def get_logs(self, obj):
+        venta_log = VentaLog.objects.filter(
+            VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE),
+            Folio=obj.Folio).order_by('-id')
+        serializer = VentaLogSerializer(instance=venta_log, many=True)
+        return serializer.data
 
 
 class CreateReservaInmuebleSerializer(serializers.ModelSerializer):
