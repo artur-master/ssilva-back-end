@@ -170,8 +170,8 @@ class ProyectoViewSet(viewsets.ModelViewSet):
             restrictions = restrictions.filter(InmuebleAID__EtapaID__ProyectoID=proyecto_id)
 
             data = ProyectoRestrictionSerializer(restrictions).to_dict()
-            from django.db import connection
-            print(len(connection.queries))
+            # from django.db import connection
+            # print(len(connection.queries))
             return Response(data)
         except Proyecto.DoesNotExist:
             raise ValidationError('ProyectoID does not exist')

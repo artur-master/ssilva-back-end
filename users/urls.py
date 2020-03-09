@@ -5,15 +5,13 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(
-    'user-permissions',
-    UserProfilePermissionViewSet,
-    base_name='user-permissions')
+router.register('user-permissions',
+                UserProfilePermissionViewSet,
+                base_name='user-permissions')
 router.register('user-profiles', UserProfileViewSet, base_name='user-profiles')
-router.register(
-    'user-notifications',
-    UserNotificationViewSet,
-    base_name='user-notifications')
+router.register('user-notifications',
+                UserNotificationViewSet,
+                base_name='user-notifications')
 router.register('role-permissions', RolePermissionViewSet)
 router.register('inmobiliarias', InmobiliariaViewSet)
 router.register('constructoras', ConstructoraViewSet)

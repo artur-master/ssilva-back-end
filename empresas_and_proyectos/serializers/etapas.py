@@ -940,6 +940,10 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             ProyectoID=proyecto_hist,
         )
 
+        inmuebles = Inmueble.objects.filter(EtapaID=instance)
+        if inmuebles.exists():
+            inmuebles.delete()
+
         historicos = list()
         inmuebles = list()
         orientaciones_in = dict()

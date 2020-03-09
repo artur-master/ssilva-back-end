@@ -8,7 +8,7 @@ from datetime import datetime
 
 # Set local zone to america
 locale.setlocale(locale.LC_TIME, '')
-
+# locale.setlocale(locale.LC_ALL,'es_ES.UTF-8')
 
 # Funciones para generacion de cheque antiguo
 
