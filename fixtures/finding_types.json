@@ -2,7 +2,37 @@
 {
     "model": "ventas.findingtype",
     "fields": {
-        "Name": "No aplica"
+        "Name": "No aplica",
+    }
+},
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "El Mercurio",
+    }
+},
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "Posteras",
+    }
+},
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "Facebook",
+    }
+},
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "Web Orgánico",
+    }
+},
+{
+    "model": "ventas.findingtype",
+    "fields": {
+        "Name": "Web Adwords",
     }
 }
 ]
