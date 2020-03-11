@@ -138,6 +138,7 @@ class ListPromesaSerializer(serializers.ModelSerializer):
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     Factura = serializers.SerializerMethodField('get_factura')
+    Date = serializers.SerializerMethodField('get_date')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -171,6 +172,12 @@ class ListPromesaSerializer(serializers.ModelSerializer):
             return serializer.data
         else:
             return None
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
 
 
 class RetrieveModifiedPromesaSerializer(serializers.ModelSerializer):

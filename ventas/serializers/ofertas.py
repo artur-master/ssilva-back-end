@@ -429,6 +429,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
     IsFinished = serializers.SerializerMethodField('get_state_oferta')
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
+    Date = serializers.SerializerMethodField('get_date')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -533,6 +534,12 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             return True
         else:
             return False
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
 
 
 class ListInmuebleOfertaSerializer(serializers.ModelSerializer):

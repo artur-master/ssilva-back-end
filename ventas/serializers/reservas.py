@@ -166,6 +166,7 @@ class ListReservaSerializer(serializers.ModelSerializer):
         source='ClienteID.Rut'
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
+    Date = serializers.SerializerMethodField('get_date')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -184,6 +185,12 @@ class ListReservaSerializer(serializers.ModelSerializer):
             'InmuebleID__InmuebleRestrict')
         serializer = ListReservaInmuebleSerializer(instance=inmuebles_reserva, many=True)
         return serializer.data
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
 
 
 class RetrieveReservaSerializer(serializers.ModelSerializer):
