@@ -65,6 +65,7 @@ class DownloadCotizacionProyectoViewSet(viewsets.ModelViewSet):
             letter_size = serializer.validated_data.get("LetterSize")
             response = HttpResponse(content_type='application/pdf')
             pdf = download_pdf_views(cotizacion_id, letter_size, response)
+            print(pdf)
             response['Content-Disposition'] = 'attachment; filename="%s.pdf"' % (
                 pdf)
             return response

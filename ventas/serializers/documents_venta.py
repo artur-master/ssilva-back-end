@@ -22,6 +22,8 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         'get_pago_garantia_url')
     DocumentFotocopiaCarnet = serializers.SerializerMethodField(
         'get_fotocopia_carnet_url')
+    DocumentPreApprobation = serializers.SerializerMethodField(
+        'get_pre_approbation_url')
     DocumentLiquidacion1 = serializers.SerializerMethodField(
         'get_liquidacion_1_url')
     DocumentLiquidacion2 = serializers.SerializerMethodField(
@@ -53,7 +55,7 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         model = DocumentVenta
         fields = ('DocumentCotizacion', 'DocumentOferta', 'DocumentOfertaFirmada', 'DocumentFichaPreAprobacion',
                   'DocumentSimulador', 'DocumentCertificadoMatrimonio', 'DocumentConstitucionSociedad',
-                  'DocumentPagoGarantia', 'DocumentFotocopiaCarnet', 'DocumentLiquidacion1',
+                  'DocumentPagoGarantia', 'DocumentFotocopiaCarnet', 'DocumentPreApprobation', 'DocumentLiquidacion1',
                   'DocumentLiquidacion2', 'DocumentLiquidacion3', 'DocumentCotizacionAFP',
                   'DocumentCertificadoSociedad', 'DocumentCarpetaTributaria', 'DocumentBalancesTimbrados',
                   'Document6IVA', 'Document2DAI', 'DocumentTituloProfesional', 
@@ -137,6 +139,15 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
             return "%s%s" % (absolute_url, obj.DocumentFotocopiaCarnet.url)
+        else:
+            return ""
+
+    def get_pre_approbation_url(self, obj):
+        if obj.DocumentPreApprobation and hasattr(
+                obj.DocumentPreApprobation, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentPreApprobation.url)
         else:
             return ""
 

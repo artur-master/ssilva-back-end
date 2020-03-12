@@ -25,7 +25,12 @@ from empresas_and_proyectos.models.proyectos import (
 from ventas.models.cotizaciones import (
     Cotizacion,
     CotizacionInmueble)
-from .generate_pdf import render_create_cotizacion_to_pdf
+from ventas.models.clientes import Cliente
+from ventas.models.reservas import Reserva
+from ventas.models.empleadores import Empleador
+from ventas.models.empresas_compradoras import EmpresaCompradora
+from ventas.models.patrimonies import Patrimony
+from .generate_pdf import render_create_cotizacion_to_pdf, render_create_pre_approbation_to_pdf
 from common import validations
 from rest_framework import status
 
@@ -380,6 +385,42 @@ def download_pdf_views(cotizacion_id, letter_size, response):
     name = "%s_COT_%s" % (cotizacion.Folio, cotizacion.ClienteID)
     return name
 
+def download_pre_approbation_views(reserva_id, letter_size, response):
+    reserva = Reserva.objects.get(ReservaID=reserva_id)
+    empleador = Empleador.objects.filter(ClienteID=reserva.ClienteID)
+    if len(empleador) > 0:
+        empleador = empleador[0]
+    else:
+        empleador = Empleador()
+    empresa_compradora = EmpresaCompradora.objects.filter(ClienteID=reserva.ClienteID)
+    if len(empresa_compradora) > 0:
+        empresa_compradora = empresa_compradora[0]
+    else:
+        empresa_compradora = EmpresaCompradora()
+    client = Cliente.objects.filter(UserID=reserva.ClienteID.UserID)
+    if len(client) > 0:
+        client = client[0]
+    else:
+        client = Cliente()
+    total_liquid = client.Extra['Values'][
+                           'LiquidIncome'] + client.Extra['Values']['VariableSalary'] + client.Extra['Values']['Honoraries']
+    patrimony = Patrimony.objects.get(ClienteID=reserva.ClienteID)
+    total_activos = patrimony.RealState + patrimony.CreditoHipotecario['PagosMensuales'] + patrimony.Vehicle + patrimony.DownPayment + patrimony.Other
+    total_pasivos = patrimony.CreditCard['Pasivos'] + patrimony.CreditoConsumo['Pasivos'] + patrimony.PrestamoEmpleador['Pasivos'] + patrimony.DeudaIndirecta['Pasivos'] + patrimony.AnotherCredit['Pasivos'] + patrimony.CreditoComercio['Pasivos']
+    context_dict = {
+        'reserva': reserva,
+        'empleador': empleador,
+        'empresa_compradora': empresa_compradora,
+        'client': client,
+        'total_liquid': total_liquid,
+        'total_activos': total_activos,
+        'total_pasivos': total_pasivos,
+        'patrimony': patrimony,
+        'tamaño_letra': letter_size
+    }
+    pdf = render_create_pre_approbation_to_pdf(context_dict, response)
+    name = "%s_COT_%s" % (reserva.Folio, reserva.ClienteID)
+    return name
 
 # Funcion para crear relacion entre inmueble y orientacion
 def crear_relacion(_ThroughModel, orientation_lab, orientacion,

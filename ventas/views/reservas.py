@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from empresas_and_proyectos.models.proyectos import Proyecto
 from common.notifications import (
@@ -8,6 +9,7 @@ from common.permissions import (
     CheckVendedorPermission,
     CheckAdminOrVendedorOrMoniProyectosPermission,
     CheckAsistenteComercialPermission)
+from common.services import download_pre_approbation_views
 from ventas.models.reservas import Reserva
 from ventas.serializers.reservas import (
     RetrieveReservaSerializer,
@@ -17,7 +19,9 @@ from ventas.serializers.reservas import (
     SendControlReservaSerializer,
     ControlReservaSerializer,
     CancelReservaSerializer,
-    UploadDocumentsReservaSerializer)
+    UploadDocumentsReservaSerializer,
+    DownloadPreApprobationSerializer
+)
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -192,6 +196,30 @@ class UploadDocumentsReservaViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Documentos subidos con éxito",
                              "Documentos": DocumentVentaSerializer(instance,context={'url': request}).data},
                             status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
+class DownloadPreApprobationViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = DownloadPreApprobationSerializer
+    queryset = Reserva.objects.all()
+    lookup_field = 'ReservaID'
+
+    def create(self, request):
+        data = request.data
+        serializer = DownloadPreApprobationSerializer(data=data)
+
+        if serializer.is_valid():
+            reserva_id = serializer.validated_data.get("ReservaID")
+            letter_size = serializer.validated_data.get("LetterSize")
+            response = HttpResponse(content_type='application/pdf')
+            pdf = download_pre_approbation_views(reserva_id, letter_size, response)
+            response['Content-Disposition'] = 'attachment; filename="%s.pdf"' % (
+                pdf)
+            return response
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
