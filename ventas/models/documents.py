@@ -26,6 +26,8 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentFotocopiaCarnet = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentPreApprobation = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
     DocumentLiquidacion1 = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentLiquidacion2 = models.FileField(

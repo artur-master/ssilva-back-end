@@ -2066,6 +2066,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentPreApprobation = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     DocumentLiquidacion1 = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2127,6 +2131,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentConstitucionSociedad',
             'DocumentPagoGarantia',
             'DocumentFotocopiaCarnet',
+            'DocumentPreApprobation',
             'DocumentLiquidacion1',
             'DocumentLiquidacion2',
             'DocumentLiquidacion3',
@@ -2166,6 +2171,8 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentPagoGarantia = validated_data['DocumentPagoGarantia']
         if 'DocumentFotocopiaCarnet' in validated_data:
             documents.DocumentFotocopiaCarnet = validated_data['DocumentFotocopiaCarnet']
+        if 'DocumentPreApprobation' in validated_data:
+            documents.DocumentPreApprobation = validated_data['DocumentPreApprobation']
         if 'DocumentLiquidacion1' in validated_data:
             documents.DocumentLiquidacion1 = validated_data['DocumentLiquidacion1']
         if 'DocumentLiquidacion2' in validated_data:
@@ -2195,3 +2202,15 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         documents.save()
 
         return documents
+
+class DownloadPreApprobationSerializer(serializers.ModelSerializer):
+    ReservaID = serializers.UUIDField(
+        write_only=True
+    )
+    LetterSize = serializers.IntegerField(
+        write_only=True
+    )
+
+    class Meta:
+        model = Reserva
+        fields = ('ReservaID', 'LetterSize')
