@@ -12,14 +12,13 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
 class ClienteViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = ClienteSerializer
     queryset = Cliente.objects.all()
     lookup_field = 'UserID'
-
+       
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
@@ -58,7 +57,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
             self.get_object(), data=request.data, partial=True,
             context={'request': request}
         )
-
+        
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"cliente": ListClienteSerializer(instance).data,
@@ -67,3 +66,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
+
+    def destroy(self, request, UserID):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response({"cliente": UserID, "detail": "Cliente eliminada"},
+                             status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
