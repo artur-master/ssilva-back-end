@@ -65,7 +65,7 @@ def return_graph(reserva):
     result = list()
 
     # Nodos
-    node_v_cr = add_node('V', 'Crear reserva')
+    node_v_cr = add_node('V, JP', 'Crear reserva')
     node_v_pi_r = add_node('V', 'Pendiente información/Rechazada ')
     node_ac_pc = add_node('AC', 'Pendiente control')
     node_ac_ofe = add_node('AC', 'Oferta')
