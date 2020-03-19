@@ -2315,7 +2315,7 @@ class ReviewProjectDocumentSerializer(UploadFileSerialier):
 
     def review(self, instance, initial_data):
         for doc_type in initial_data:
-            data = initial_data.get(doc_type).split(":",1)[0]
+            data = "rejected" if initial_data.get(doc_type).startswith("rejected") else initial_data.get(doc_type)
             try:
                 if data not in constants.DocumentState.values():
                     raise ValidationError(
