@@ -2315,8 +2315,9 @@ class ReviewProjectDocumentSerializer(UploadFileSerialier):
 
     def review(self, instance, initial_data):
         for doc_type in initial_data:
+            data = initial_data.get(doc_type).split(":",1)[0]
             try:
-                if initial_data.get(doc_type) not in constants.DocumentState.values():
+                if data not in constants.DocumentState.values():
                     raise ValidationError(
                         "Status %s for document %s is not valid" % (initial_data.get(doc_type), doc_type))
                 document = ProjectDocument.objects.get(ProjectID=instance.ProyectoID, DocumentType=doc_type)
