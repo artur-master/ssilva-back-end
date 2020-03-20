@@ -100,6 +100,7 @@ class HistoricalProyecto(models.Model):
     )
     CotizacionDuration = models.IntegerField(null=True, blank=True)
     GuaranteeAmount = models.IntegerField(null=True, blank=True)
+    GuaranteePercent = models.IntegerField(null=True, blank=True)
     MoreThanOneEtapa = models.BooleanField(default=False)
     PlanMediosState = models.ForeignKey(
         PlanMediosState,

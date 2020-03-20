@@ -25,6 +25,7 @@
         ],
         "CotizacionDuration": 4,
         "GuaranteeAmount": 500000,
+        "GuaranteePercent": 20,
         "MoreThanOneEtapa": false,
         "PlanMediosState": [
             "Pendiente"
@@ -63,6 +64,7 @@
         ],
         "CotizacionDuration": 2,
         "GuaranteeAmount": 300000,
+        "GuaranteePercent": 20,
         "MoreThanOneEtapa": false,
         "PlanMediosState": [
             "Pendiente"
@@ -101,6 +103,7 @@
         ],
         "CotizacionDuration": 1,
         "GuaranteeAmount": 100000,
+        "GuaranteePercent": 20,
         "MoreThanOneEtapa": false,
         "PlanMediosState": [
             "Pendiente"

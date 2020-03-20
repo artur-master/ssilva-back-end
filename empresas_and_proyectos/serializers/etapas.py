@@ -251,6 +251,7 @@ class EtapaSerializer(serializers.ModelSerializer):
             ConstructoraID=proyecto.ConstructoraID,
             CotizacionDuration=proyecto.CotizacionDuration,
             GuaranteeAmount=proyecto.GuaranteeAmount,
+            GuaranteePercent=proyecto.GuaranteePercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
             IngresoComisionesState=proyecto.IngresoComisionesState
@@ -614,6 +615,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             ConstructoraID=proyecto.ConstructoraID,
             CotizacionDuration=proyecto.CotizacionDuration,
             GuaranteeAmount=proyecto.GuaranteeAmount,
+            GuaranteePercent=proyecto.GuaranteePercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
             IngresoComisionesState=proyecto.IngresoComisionesState
@@ -929,6 +931,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             ConstructoraID=proyecto.ConstructoraID,
             CotizacionDuration=proyecto.CotizacionDuration,
             GuaranteeAmount=proyecto.GuaranteeAmount,
+            GuaranteePercent=proyecto.GuaranteePercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
             IngresoComisionesState=proyecto.IngresoComisionesState
@@ -1242,6 +1245,7 @@ class UpdateEtapaSerializer(serializers.ModelSerializer):
             ConstructoraID=proyecto.ConstructoraID,
             CotizacionDuration=proyecto.CotizacionDuration,
             GuaranteeAmount=proyecto.GuaranteeAmount,
+            GuaranteePercent=proyecto.GuaranteePercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
             IngresoComisionesState=proyecto.IngresoComisionesState
