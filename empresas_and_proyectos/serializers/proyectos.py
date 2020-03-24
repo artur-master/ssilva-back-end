@@ -554,6 +554,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'CotizacionDuration',
             'GuaranteeAmount',
             'GuaranteePercent',
+            'DiscountMaxPercent',
             'Aseguradora',
             'UsersProyecto',
             'Notifications',
@@ -1054,6 +1055,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    DiscountMaxPercent = serializers.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        required=False,
+        allow_null=True
+    )
     EntregaInmediata = serializers.BooleanField(required=False, write_only=True)
 
     class Meta:
@@ -1081,6 +1088,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'CotizacionDuration',
             'GuaranteeAmount',
             'GuaranteePercent',
+            'DiscountMaxPercent',
             'UsersProyecto',
             'Aseguradora',
             'MoreThanOneEtapa',
@@ -1136,6 +1144,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             CotizacionDuration=validated_data.get('CotizacionDuration', 0),
             GuaranteeAmount=validated_data.get('GuaranteeAmount', 0),
             GuaranteePercent=validated_data.get('GuaranteePercent', 20),
+            DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
             MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
             PlanMediosState=plan_medios,
             BorradorPromesaState=borrador_promesa,
@@ -1212,6 +1221,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
                                   CotizacionDuration=validated_data.get('CotizacionDuration', 0),
                                   GuaranteeAmount=validated_data.get('GuaranteeAmount', 0),
                                   GuaranteePercent=validated_data.get('GuaranteePercent', 20),
+                                  DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
                                   MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
                                   PlanMediosState=plan_medios,
                                   BorradorPromesaState=borrador_promesa,
@@ -1523,6 +1533,10 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
     CotizacionDuration = serializers.CharField(required=False, allow_null=True)
     GuaranteeAmount = serializers.IntegerField(required=False, allow_null=True)
     GuaranteePercent = serializers.IntegerField(required=False, allow_null=True)
+    DiscountMaxPercent = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=False, allow_null=True
+    )
     EntregaInmediata = serializers.BooleanField(required=False)
 
     class Meta:
@@ -1548,6 +1562,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'CotizacionDuration',
             'GuaranteeAmount',
             'GuaranteePercent',
+            'DiscountMaxPercent',
             'UsersProyecto',
             'Aseguradora',
             'MoreThanOneEtapa',
@@ -1606,6 +1621,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
                                   CotizacionDuration=validated_data.get('CotizacionDuration', 0),
                                   GuaranteeAmount=validated_data.get('GuaranteeAmount', 0),
                                   GuaranteePercent=validated_data.get('GuaranteePercent', 20),
+                                  DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
                                   MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
                                   PlanMediosState=instance.PlanMediosState,
                                   BorradorPromesaState=instance.BorradorPromesaState,
@@ -1873,6 +1889,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.GuaranteeAmount = validated_data.get('GuaranteeAmount')
         if 'GuaranteePercent' in validated_data:
             instance.GuaranteePercent = validated_data.get('GuaranteePercent')
+        if 'DiscountMaxPercent' in validated_data:
+            instance.DiscountMaxPercent = validated_data.get('DiscountMaxPercent')
         if 'MoreThanOneEtapa' in validated_data:
             instance.MoreThanOneEtapa = validated_data.get('MoreThanOneEtapa')
         if etapa_state_id is not False:
