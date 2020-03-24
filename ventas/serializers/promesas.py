@@ -1284,12 +1284,13 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'Condition')
+        fields = ('PromesaState', 'Condition', 'NewCondition')
 
-    def update(self, instance, validated_data):
+    def update(self, instance, data):
         current_user = return_current_user(self)
-        conditions_data = validated_data.pop('Condition')
-
+        conditions_data = data.pop('Condition')
+        va_comment = ('Comentario: ' + data.get('NewCondition', '')) if (data.get('NewCondition')) else ''
+    
         # Usuarios
         jefe_proyecto_type = UserProyectoType.objects.get(
             Name=constants.USER_PROYECTO_TYPE[1])
@@ -1330,7 +1331,7 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
                 Name=constants.VENTA_LOG_TYPE[33]),
-            Comment=''
+            Comment=va_comment
         )
 
         instance.PromesaState = constants.PROMESA_STATE[13]

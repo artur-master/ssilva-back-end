@@ -133,6 +133,8 @@ class Promesa(models.Model):
     DatePayment = models.DateTimeField(
         null=True,
         blank=True)
+    Comment = models.CharField(max_length=255, null=True, blank=True)
+    NewCondition = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaState)
