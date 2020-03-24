@@ -136,11 +136,11 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promesa
         fields = ('PromesaState', 'PromesaDesistimientoState', 'PromesaResciliacionState', 'PromesaResolucionState',
-                  'PromesaModificacionState')
+                  'PromesaModificacionState', 'Comment')
 
-    def update(self, instance, validated_data):
+    def update(self, instance, data):
         current_user = return_current_user(self)
-
+        va_comment = ('Comentario: ' + data.get('Comment', '')) if (data.get('Comment')) else ''
         if current_user.RoleID.filter(Name=constants.UserRole.GERENTE_COMERCIAL).count() > 0:
             instance, venta_log_type = gcRegisterDesistimiento(instance)
         else:
@@ -149,9 +149,9 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
                 UserID=current_user
             ).count()
             if count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.VENDEDOR).count() > 0:
-                instance, venta_log_type = vnRegisterDesistimiento(instance, validated_data)
+                instance, venta_log_type = vnRegisterDesistimiento(instance, data)
             elif count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.JEFE_DE_PROYECTO).count() > 0:
-                instance, venta_log_type = jpRegisterDesistimiento(instance, validated_data)
+                instance, venta_log_type = jpRegisterDesistimiento(instance, data)
             elif count_users > 0 and current_user.RoleID.filter(Name=constants.UserRole.INMOBILIARIO).count() > 0:
                 instance, venta_log_type = inRegisterDesistimiento(instance)
             else:
@@ -164,7 +164,7 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
-            Comment=validated_data.get('Comment', '')
+            Comment=va_comment
         )
 
         instance.save()
