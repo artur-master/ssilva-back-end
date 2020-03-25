@@ -381,7 +381,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
 
     def get_logs(self, obj):
         venta_log = VentaLog.objects.filter(
-            VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE),
+            # VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE),
             Folio=obj.Folio).order_by('-id')
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data

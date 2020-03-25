@@ -156,7 +156,6 @@ class RegisterDesistimientoSerializer(serializers.ModelSerializer):
                 instance, venta_log_type = inRegisterDesistimiento(instance)
             else:
                 return instance
-
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
             Folio=instance.Folio,
