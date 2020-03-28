@@ -16,8 +16,11 @@ def index(List, i):
 
 @register.filter
 def numberformat(value):
-    if value:
-        return "{:,}".format(value).replace(',', '.')
+    try:
+        if value:
+            return "{:,}".format(value).replace(',', '.')
+    except:
+        return str(value)
     return str()
 
 

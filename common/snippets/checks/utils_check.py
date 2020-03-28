@@ -3,7 +3,7 @@
 def convert_number_to_words(numero):
     indicador = [("", ""), ("MIL", "MIL"), ("MILLON", "MILLONES"), ("MIL", "MIL"), ("BILLON", "BILLONES")]
     entero = int(numero)
-    decimal = int(round((numero - entero) * 100))
+    decimal = int(round((float(numero) - entero) * 100))
     contador = 0
     numero_letras = ""
     while entero > 0:
