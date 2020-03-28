@@ -20,7 +20,7 @@ class VentaLogClienteSerializer(serializers.ModelSerializer):
     )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
-
+    
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -57,19 +57,25 @@ class VentaLogVendedorSerializer(serializers.ModelSerializer):
     VentaLogType = serializers.CharField(
         source='VentaLogTypeID.Name'
     )
+    Folio = serializers.CharField(
+        source='ProyectoID.Name'
+    )
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
-
+    
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
-            'ClienteID', 'VentaLogTypeID')
+            'ClienteID', 'VentaLogTypeID', 'ProyectoID')
         return queryset
 
     class Meta:
         model = VentaLog
-        fields = ('VentaLogID', 'ClienteName', 'ClienteLastNames',
-                  'ClienteRut', 'VentaLogType', 'Date', 'Comment')
+        fields = ('VentaLogID', 'VentaID', 'ProyectoID', 'ClienteName', 'ClienteLastNames',
+                  'ClienteRut', 'VentaLogType', 'Date', 'Comment', 'Folio')
 
     def get_date(self, obj):
         try:
