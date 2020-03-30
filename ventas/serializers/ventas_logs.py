@@ -20,7 +20,7 @@ class VentaLogClienteSerializer(serializers.ModelSerializer):
     )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
-    
+
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -65,7 +65,7 @@ class VentaLogVendedorSerializer(serializers.ModelSerializer):
     )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
-    
+
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(

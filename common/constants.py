@@ -355,7 +355,7 @@ PROMESA_REFUND_STATE = [
 ETAPA_STATE = [
     "En blanco",
     "En verde",
-    "Entrega inmediata",
+    "En escrituración",
     "Vendido",
     "Iniciando escrituración",
 ]

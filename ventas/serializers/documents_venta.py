@@ -6,6 +6,10 @@ from common.services import get_full_path_x
 class DocumentVentaSerializer(serializers.ModelSerializer):
     DocumentCotizacion = serializers.SerializerMethodField(
         'get_cotizacion_url')
+    DocumentFirmadoCheques = serializers.SerializerMethodField(
+        'get_firmadocheques_url')
+    DocumentFirmadoSimulador = serializers.SerializerMethodField(
+        'get_firmadosimulador_url')
     DocumentOferta = serializers.SerializerMethodField(
         'get_oferta_url')
     DocumentOfertaFirmada = serializers.SerializerMethodField(
@@ -94,7 +98,7 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DocumentVenta
-        fields = ('DocumentCotizacion', 'DocumentOferta', 'DocumentOfertaFirmada', 'DocumentFichaPreAprobacion',
+        fields = ('DocumentCotizacion', 'DocumentFirmadoCheques', 'DocumentFirmadoSimulador', 'DocumentOferta', 'DocumentOfertaFirmada', 'DocumentFichaPreAprobacion',
                   'DocumentSimulador', 'DocumentCertificadoMatrimonio', 'DocumentConstitucionSociedad',
                   'DocumentPagoGarantia', 'DocumentFotocopiaCarnet', 'DocumentPreApprobation', 'DocumentLiquidacion1',
                   'DocumentLiquidacion2', 'DocumentLiquidacion3', 'DocumentCotizacionAFP',
@@ -118,6 +122,24 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
             return "%s%s" % (absolute_url, obj.DocumentCotizacion.url)
+        else:
+            return ""
+
+    def get_firmadocheques_url(self, obj):
+        if obj.DocumentFirmadoCheques and hasattr(
+                obj.DocumentFirmadoCheques, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentFirmadoCheques.url)
+        else:
+            return ""
+
+    def get_firmadosimulador_url(self, obj):
+        if obj.DocumentFirmadoSimulador and hasattr(
+                obj.DocumentFirmadoSimulador, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentFirmadoSimulador.url)
         else:
             return ""
 

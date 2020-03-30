@@ -491,12 +491,10 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
-
     CoEmpleador = CreateEmpleadorSerializer(
         write_only=True,
         required=False
     )
-
     Patrimony = PatrimonySerializer(
         required=False,
         allow_null=True
@@ -2039,6 +2037,14 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentFirmadoCheques = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentFirmadoSimulador = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     DocumentOfertaFirmada = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2211,6 +2217,8 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'Folio',
             'DocumentOfertaFirmada',
             'DocumentCotizacion',
+            'DocumentFirmadoCheques',
+            'DocumentFirmadoSimulador',
             'DocumentCertificadoMatrimonio',
             'DocumentConstitucionSociedad',
             'DocumentPagoGarantia',
@@ -2256,6 +2264,11 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
 
         if 'DocumentCotizacion' in validated_data:
             documents.DocumentCotizacion = validated_data['DocumentCotizacion']
+        if 'DocumentFirmadoCheques' in validated_data:
+            documents.DocumentFirmadoCheques = validated_data['DocumentFirmadoCheques']
+        if 'DocumentFirmadoSimulador' in validated_data:
+            documents.DocumentFirmadoSimulador = validated_data['DocumentFirmadoSimulador']
+        
         '''   
         if 'DocumentOferta' in validated_data:
             documents.DocumentOferta = validated_data['DocumentOferta']

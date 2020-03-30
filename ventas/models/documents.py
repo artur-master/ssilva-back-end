@@ -8,6 +8,11 @@ class DocumentVenta(models.Model):
         blank=True)
     DocumentCotizacion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentFirmadoCheques = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+        
+    DocumentFirmadoSimulador = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
     
     DocumentOferta = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
@@ -36,7 +41,7 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentCotizacionAFP = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
-           
+        
     DocumentCertificadoSociedad = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentCarpetaTributaria = models.FileField(

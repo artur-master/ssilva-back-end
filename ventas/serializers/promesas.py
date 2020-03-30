@@ -418,7 +418,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'Factura', 'AprobacionInmobiliaria',
             'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
             'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion', 'DatePayment',
-            'Logs')
+            'Logs', 'Comment')
 
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
@@ -752,13 +752,19 @@ class RegisterSendPromesaToInmobiliariaSerializer(serializers.ModelSerializer):
     DateEnvioPromesa = serializers.DateTimeField(
         write_only=True
     )
+    Comment = serializers.CharField(
+        write_only=True,
+        allow_blank=True
+    )
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'DateEnvioPromesa')
+        fields = ('PromesaState', 'DateEnvioPromesa', 'Comment')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
+        
+        instance.Comment = validated_data.pop('Comment')
 
         date = validated_data.pop('DateEnvioPromesa')
 

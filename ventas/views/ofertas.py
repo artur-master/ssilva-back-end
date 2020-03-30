@@ -47,6 +47,7 @@ class OfertaViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsAuthenticated,
                                   CheckAdminOrVendedorOrMoniProyectosPermission, ]
+
         return [permission() for permission in permission_classes]
 
     def list(self, request):

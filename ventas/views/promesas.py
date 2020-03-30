@@ -64,6 +64,7 @@ class PromesaViewSet(viewsets.ModelViewSet):
         # current_user = request.user
         serializer = RetrievePromesaSerializer(
             instance, context={'request': request})
+
         return Response(serializer.data)
 
     def partial_update(self, request, PromesaID):
