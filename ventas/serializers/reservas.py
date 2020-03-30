@@ -2127,6 +2127,83 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    # Coduedor
+    DocumentCodeudorFirmadoCheques = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorFichaPreAprobacion = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorSimulador = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorCotizacion = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorCertificadoMatrimonio = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorFirmadoSimulador = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorConstitucionSociedad = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorCertificadoSociedad = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorCarpetaTributaria = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorBalancesTimbrados = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    Document6IVACodeudor = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    Document2DAICodeudor = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorTituloProfesional = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorAcredittacionAhorros = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorAcredittacionDeudas = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorFotocopiaCarnet = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorLiquidacion1 = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorLiquidacion2 = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorLiquidacion3 = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
 
     class Meta:
         model = Reserva
@@ -2150,7 +2227,27 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'Document2DAI',
             'DocumentTituloProfesional',
             'DocumentAcredittacionAhorros',
-            'DocumentAcredittacionDeudas',)
+            'DocumentAcredittacionDeudas',
+            'DocumentCodeudorFirmadoCheques',
+            'DocumentCodeudorFichaPreAprobacion',
+            'DocumentCodeudorSimulador',
+            'DocumentCodeudorCotizacion',
+            'DocumentCodeudorCertificadoMatrimonio',
+            'DocumentCodeudorFirmadoSimulador',
+            'DocumentCodeudorConstitucionSociedad',
+            'DocumentCodeudorCertificadoSociedad',
+            'DocumentCodeudorCarpetaTributaria',
+            'DocumentCodeudorBalancesTimbrados',
+            'Document6IVACodeudor',
+            'Document2DAICodeudor',
+            'DocumentCodeudorTituloProfesional',
+            'DocumentCodeudorAcredittacionAhorros',
+            'DocumentCodeudorAcredittacionDeudas',
+            'DocumentCodeudorFotocopiaCarnet',
+            'DocumentCodeudorLiquidacion1',
+            'DocumentCodeudorLiquidacion2',
+            'DocumentCodeudorLiquidacion3',
+            )
 
     def create(self, validated_data):
         folio = validated_data['Folio']
@@ -2205,7 +2302,47 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentAcredittacionAhorros = validated_data['DocumentAcredittacionAhorros']
         if 'DocumentAcredittacionDeudas' in validated_data:
             documents.DocumentAcredittacionDeudas = validated_data['DocumentAcredittacionDeudas']
-
+        
+        #Codeudor
+        if 'DocumentCodeudorFirmadoCheques' in validated_data:
+            documents.DocumentCodeudorFirmadoCheques = validated_data['DocumentCodeudorFirmadoCheques']
+        if 'DocumentCodeudorFichaPreAprobacion' in validated_data:
+            documents.DocumentCodeudorFichaPreAprobacion = validated_data['DocumentCodeudorFichaPreAprobacion']
+        if 'DocumentCodeudorSimulador' in validated_data:
+            documents.DocumentCodeudorSimulador = validated_data['DocumentCodeudorSimulador']
+        if 'DocumentCodeudorCotizacion' in validated_data:
+            documents.DocumentCodeudorCotizacion = validated_data['DocumentCodeudorCotizacion']
+        if 'DocumentCodeudorCertificadoMatrimonio' in validated_data:
+            documents.DocumentCodeudorCertificadoMatrimonio = validated_data['DocumentCodeudorCertificadoMatrimonio']
+        if 'DocumentCodeudorFirmadoSimulador' in validated_data:
+            documents.DocumentCodeudorFirmadoSimulador = validated_data['DocumentCodeudorFirmadoSimulador']
+        if 'DocumentCodeudorConstitucionSociedad' in validated_data:
+            documents.DocumentCodeudorConstitucionSociedad = validated_data['DocumentCodeudorConstitucionSociedad']
+        if 'DocumentCodeudorCertificadoSociedad' in validated_data:
+            documents.DocumentCodeudorCertificadoSociedad = validated_data['DocumentCodeudorCertificadoSociedad']
+        if 'DocumentCodeudorCarpetaTributaria' in validated_data:
+            documents.DocumentCodeudorCarpetaTributaria = validated_data['DocumentCodeudorCarpetaTributaria']
+        if 'DocumentCodeudorBalancesTimbrados' in validated_data:
+            documents.DocumentCodeudorBalancesTimbrados = validated_data['DocumentCodeudorBalancesTimbrados']
+        if 'Document6IVACodeudor' in validated_data:
+            documents.Document6IVACodeudor = validated_data['Document6IVACodeudor']
+        if 'Document2DAICodeudor' in validated_data:
+            documents.Document2DAICodeudor = validated_data['Document2DAICodeudor']
+        if 'DocumentCodeudorTituloProfesional' in validated_data:
+            documents.DocumentCodeudorTituloProfesional = validated_data['DocumentCodeudorTituloProfesional']
+        if 'DocumentCodeudorAcredittacionAhorros' in validated_data:
+            documents.DocumentCodeudorAcredittacionAhorros = validated_data['DocumentCodeudorAcredittacionAhorros']
+        if 'DocumentCodeudorAcredittacionDeudas' in validated_data:
+            documents.DocumentCodeudorAcredittacionDeudas = validated_data['DocumentCodeudorAcredittacionDeudas']
+        if 'DocumentCodeudorFotocopiaCarnet' in validated_data:
+            documents.DocumentCodeudorFotocopiaCarnet = validated_data['DocumentCodeudorFotocopiaCarnet']
+        if 'DocumentCodeudorLiquidacion1' in validated_data:
+            documents.DocumentCodeudorLiquidacion1 = validated_data['DocumentCodeudorLiquidacion1']
+        if 'DocumentCodeudorLiquidacion2' in validated_data:
+            documents.DocumentCodeudorLiquidacion2 = validated_data['DocumentCodeudorLiquidacion2']
+        if 'DocumentCodeudorLiquidacion3' in validated_data:
+            documents.DocumentCodeudorLiquidacion3 = validated_data['DocumentCodeudorLiquidacion3']
+                
         documents.save()
 
         return documents
