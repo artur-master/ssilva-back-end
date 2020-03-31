@@ -40,6 +40,7 @@ class PromesaViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
+        global permission_classes
         if self.action == 'retrieve' or self.action == 'list':
             permission_classes = [IsAuthenticated, ]
         if self.action == 'create':
