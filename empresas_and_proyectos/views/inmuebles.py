@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.decorators import action
 from common.permissions import (
     CheckAdminOrConsParamPermission,
     CheckAdminParamPermission)
@@ -12,7 +13,7 @@ from empresas_and_proyectos.serializers.inmuebles import (
     TipologiaSerializer,
     InmuebleSerializer,
     ListOrientationSerializer, InmuebleStateSerializer)
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -81,6 +82,25 @@ class InmuebleViewSet(viewsets.ModelViewSet):
     serializer_class = InmuebleSerializer
     queryset = Inmueble.objects.all()
     lookup_field = 'InmuebleID'
+    
+    def create(self, request):
+        datas = request.FILES
+        for data in datas:
+            default={'Up_Print': datas[data]}
+            try:
+                up_file = Inmueble.objects.get(InmuebleID=data)
+                if up_file.Up_Print:
+                    up_file.Up_Print.delete()
+                for key, value in default.items():
+                    setattr(up_file, key, value)
+                up_file.save()
+            except:
+                print('error')
+        Inmueble_ID = list(datas)[0]
+        etapaID = Inmueble.objects.get(InmuebleID=Inmueble_ID).EtapaID
+        queryset = Inmueble.objects.filter(EtapaID=etapaID)
+        serializer = InmuebleSerializer(queryset, many=True)
+        return Response({"entities":serializer.data, "message": "success uploaded"}, status=status.HTTP_200_OK)
 
 
 class UpdateInmueblesViewSet(APIView):
