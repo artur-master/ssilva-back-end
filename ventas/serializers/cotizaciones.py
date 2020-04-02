@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.core.mail import send_mail
 from rest_framework import serializers, status
 
 from common import constants
@@ -33,7 +34,7 @@ from .cuotas import (
     CreateCuotaSerializer)
 from .empresas_compradoras import (EmpresaCompradoraSerializer)
 from ventas.models.empresas_compradoras import EmpresaCompradora
-
+from sgi_web_back_project import settings
 
 class CotizacionTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -672,6 +673,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         operaciones punto flotante que se hacen con javascript en el FE
         y otras con Python en el BE
         '''
+        
         if not abs(total_uf - total) <= constants.DEFAULT_PRECISION:
             raise CustomValidation(
                 "Monto por pagar debe ser igual a monto total a pagar",
@@ -689,5 +691,19 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             ProyectoID=proyecto,
             VentaLogTypeID=venta_log_type,
         )
+
+        # send email to client        
+        contact_emails = []
+        for contact_info in cliente_data.get('Contact'):
+            if contact_info.get('ContactInfoType') == 'Email':
+                contact_emails.append(contact_info.get('Value'))
+
+        send_mail(message="To Clente",
+                  subject="creating new Cotizacion",
+                  from_email=settings.EMAIL_HOST_USER,
+                  recipient_list=contact_emails,
+                  html_message="message")
+
+        # end sending email
 
         return instance

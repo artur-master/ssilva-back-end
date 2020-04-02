@@ -63,7 +63,7 @@ class VentaLogVendedorViewSet(viewsets.ModelViewSet):
                 data["dis_state"] = "Oferta"
             elif (self.get_state(Cotizaciones, ventaId)):
                 data["state"] = "Cotizacion"
-                data["dis_state"] = "Cotización"
+                data["dis_state"] = "Cotizacion"
             elif (self.get_state(Promesas, ventaId)):
                 data["state"] = "Promesa"
                 data["dis_state"] = "Promesa"

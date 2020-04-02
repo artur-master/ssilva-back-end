@@ -1,4 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from rest_framework import serializers, status
 
 from common import constants
@@ -20,6 +21,7 @@ from empresas_and_proyectos.models.proyectos import UserProyectoType, UserProyec
 from users.models import User, Permission, Role
 from ventas.models.promesas import Promesa, PromesaInmueble
 from ventas.models.ventas_logs import VentaLog, VentaLogType
+from sgi_web_back_project import settings
 
 '''
 Step 1: Register Desistimiento (for all cases) - VN / JP

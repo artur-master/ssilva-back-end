@@ -3,6 +3,9 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
+from django.core.mail import send_mail
+from sgi_web_back_project import settings
+from users.models import User
 
 from common import constants
 from common.generate_pdf import (
@@ -1025,6 +1028,14 @@ class CreateReservaSerializer(serializers.ModelSerializer):
 
             crear_notificacion_reserva_pendiente_control(
                 instance, jefe_proyecto, asistente_comercial)
+        
+        # send email to AC
+        send_mail(message="To Asistente Comercial",
+                  subject="creating new Reservation",
+                  from_email=settings.EMAIL_HOST_USER,
+                  recipient_list=[user.UserID.Email for user in asistente_comercial],
+                  html_message=message
+        # end sending email
 
         # Registro Bitacora de Ventas
         venta_log_type = VentaLogType.objects.get(
