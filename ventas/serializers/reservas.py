@@ -1034,7 +1034,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                   subject="creating new Reservation",
                   from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[user.UserID.Email for user in asistente_comercial],
-                  html_message=message
+                  html_message="message")
         # end sending email
 
         # Registro Bitacora de Ventas
