@@ -237,7 +237,8 @@ def import_excel_inmuebles(file):
         'Precio',
         'DescuentoMaximo',
         'Orientacion',
-        'Estado']
+        'Estado',
+        'Cianotipo']
     return data
 
 

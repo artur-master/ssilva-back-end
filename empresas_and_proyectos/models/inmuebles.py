@@ -175,6 +175,8 @@ class Inmueble(models.Model):
         through_fields=(
             'InmuebleAID',
             'InmuebleBID'))
+    BluePrint = models.CharField(max_length=100, null=True)
+    Up_Print = models.FileField(upload_to="ProyectoDocuments/Inmueble", null=True, blank=True,)
 
     def __str__(self):
         return '%s - %s, %s,%s' % (self.InmuebleTypeID,
