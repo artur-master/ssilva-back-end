@@ -1159,9 +1159,12 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
                 bedrooms_quantity = None
 
             #blueprint
-            if not is_nan(inmueble.Cianotipo):
-                cianotipo = inmueble.Cianotipo
-            else:
+            try:
+                if not is_nan(inmueble.Planta):
+                    cianotipo = inmueble.Planta
+                else:
+                    cianotipo = None
+            except:
                 cianotipo = None
 
             util_square_meters = inmueble.MetrosCuadradosInterior
