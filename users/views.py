@@ -1,8 +1,11 @@
 import datetime
+import json
+import requests
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User as UserDjango
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from .models import *
 from empresas_and_proyectos.models.constructoras import Constructora
@@ -577,6 +580,107 @@ class UFAPIView(APIView):
             return Response(
                 {"detail": "El valor de la UF no está disponible en la fecha indicada o no se ha ingresado fecha."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UFDeAPIView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UFSerializer
+
+    def post(self, request):
+        data = request.data
+        date = datetime.datetime.now()
+        now = date.date()
+        auth_key = settings.UF_AUTH_KEY
+        r = requests.get(
+            'https://api.desarrolladores.datos.gob.cl/indicadores-financieros/v1/uf/hoy.json/?auth_key={}'.format(auth_key))
+        uf_data = r.json()
+        if 'monto' in data:
+            monto = data['monto']
+        else:
+            monto = 1
+        response = {
+            'fecha': now,
+            'valor': uf_data['uf']['valor'] * float(monto),
+            'monto': monto
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class UFSimuladorAPIView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UFSerializer
+
+    def post(self, request):
+        data = request.data
+
+        if 'monto' in data:
+            monto = float(data['monto'])
+        else:
+            monto = 1
+
+        if 'porcentaje' in data:
+            porcentaje = float(data['porcentaje'])
+        else:
+            porcentaje = 80
+
+        if 'tasa' in data:
+            tasa = float(data['tasa'])
+        else:
+            tasa = 3.2
+
+        if 'plazo' in data:
+            plazo = float(data['plazo'])
+        else:
+            plazo = 20
+
+        if 'titular' in data:
+            titular = float(data['titular'])
+        else:
+            titular = 0
+
+        seguro_desgravamen = monto * porcentaje / 100 * 0.00028
+        if titular == 1:
+            seguro_desgravamen = seguro_desgravamen * 2
+
+        seguro_incendio = monto * porcentaje / 100 * 0.000245
+
+        dividendo = monto * porcentaje / 100 * (((1 + (tasa / 100)) ** (1/12)) - 1) * (((1 + (tasa / 100)) ** plazo) / (((1 + (tasa / 100)) ** plazo) - 1 ))
+
+        seguros = seguro_desgravamen + seguro_incendio
+        renta = 4 * (dividendo + seguros)
+
+        response = {
+            'dividendo': dividendo,
+            'renta': renta,
+            'monto': monto,
+            'porcentaje': porcentaje,
+            'tasa': tasa,
+            'plazo': plazo,
+            'titular': titular
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class UFDeDateAPIView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UFSerializer
+
+    def get(request, self, monto, date):
+        date = datetime.datetime.now()
+        now = date.date()
+        auth_key = settings.UF_AUTH_KEY
+        r = requests.get(
+            'https://api.desarrolladores.datos.gob.cl/indicadores-financieros/v1/uf/hoy.json/?auth_key={}'.format(auth_key))
+        uf_data = r.json()
+        response = {
+            'fecha': now,
+            'valor': uf_data['uf']['valor'] * monto,
+            'monto': monto
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class ConstantNumericViewSet(viewsets.ModelViewSet):
