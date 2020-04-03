@@ -988,6 +988,8 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             price = inmueble.get('Precio')
 
             max_discount = inmueble.get('DescuentoMaximo')
+            #BluePrint
+            blueprint = inmueble.get('BluePrint')
 
             try:
                 inmueble_type = InmuebleType.objects.get(Name=inmueble.get('TipoInmueble'))
@@ -1042,6 +1044,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             inmueble_creado.Price = price
             inmueble_creado.MaximunDiscount = max_discount
             inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
+            inmueble_creado.BluePrint = blueprint
 
             orientaciones_in[inmueble_creado.InmuebleID] = orientacion
 
@@ -1064,6 +1067,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             inmueble_hist.Price = price
             inmueble_hist.MaximunDiscount = max_discount
             inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
+            inmueble_hist.BluePrint = blueprint
 
             orientaciones_in[inmueble_creado.InmuebleID] = orientacion
 
@@ -1154,6 +1158,15 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             else:
                 bedrooms_quantity = None
 
+            #blueprint
+            try:
+                if not is_nan(inmueble.Planta):
+                    cianotipo = inmueble.Planta
+                else:
+                    cianotipo = None
+            except:
+                cianotipo = None
+
             util_square_meters = inmueble.MetrosCuadradosInterior
             terrace_square_meters = inmueble.MetrosCuadradosTerraza
             lodge_square_meters = inmueble.MetrosCuadradosLogia
@@ -1206,6 +1219,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             inmueble_creado['DescuentoMaximo'] = max_discount
             inmueble_creado['CotizacionDuration'] = proyecto.CotizacionDuration
             inmueble_creado['Orientacion'] = orientacion
+            inmueble_creado['BluePrint'] = cianotipo
             inmuebles.append(inmueble_creado)
         return inmuebles
 

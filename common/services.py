@@ -221,8 +221,8 @@ def import_excel_inmuebles(file):
     file = pd.ExcelFile(file, header=None)
 
     data = file.parse(sheet_name='Inmuebles')
-
-    data.columns = [
+    
+    columns = [
         'TipoInmueble',
         'Tipologia',
         'Edificio',
@@ -238,6 +238,9 @@ def import_excel_inmuebles(file):
         'DescuentoMaximo',
         'Orientacion',
         'Estado']
+    if "Cargar img de la Planta" in data.columns:
+        columns.append('Planta')
+    data.columns=columns
     return data
 
 

@@ -143,6 +143,8 @@ class InmuebleSerializer(serializers.ModelSerializer):
             'MaximunDiscount',
             'CotizacionDuration',
             'InmuebleStateID',
+            'BluePrint',
+            'Up_Print',
             'InmuebleState')
 
 
