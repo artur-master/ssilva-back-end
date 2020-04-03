@@ -11,7 +11,8 @@ from common.notifications import crear_notificacion_promesa_creada, crear_notifi
     crear_notificacion_promesa_envio_a_negociacion, \
     crear_notificacion_promesa_control_negociacion, \
     crear_notificacion_promesa_aprobada_negociacion, \
-    crear_notificacion_promesa_rechazada_negociacion
+    crear_notificacion_promesa_rechazada_negociacion, \
+    crear_notificacion_promesa_a_asistentes_comerciales    
 from common.services import get_full_path_x, return_current_user
 from common.validations import CustomValidation
 from empresas_and_proyectos.models.inmuebles import Inmueble, InmuebleState
@@ -764,7 +765,10 @@ class RegisterSendPromesaToInmobiliariaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         
-        instance.Comment = validated_data.pop('Comment')
+        try:
+            instance.Comment = validated_data.pop('Comment')
+        except:
+            pass
 
         date = validated_data.pop('DateEnvioPromesa')
 
@@ -1273,6 +1277,24 @@ class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
 
         instance.PromesaState = constants.PROMESA_STATE[12]
         instance.save()
+        
+        # notification VN -> AC
+        vendedor_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+        vendedor_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_proyecto_type)
+
+        asistente_comercial_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[3])
+        asistente_comercial = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=asistente_comercial_type)
+
+        crear_notificacion_promesa_a_asistentes_comerciales(
+            instance.ProyectoID, vendedor_proyecto, asistente_comercial )
+        # end
+        
         return instance
 
 
