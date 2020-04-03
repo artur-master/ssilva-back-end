@@ -1400,7 +1400,33 @@ def crear_notificacion_promesa_enviada_a_inmobiliaria(
     if vendedor_proyecto.exists():
         for vendedor in vendedor_proyecto:
             notification_add.UserID.add(vendedor.UserID)
+#Alek
+def crear_notificacion_promesa_a_asistentes_comerciales(
+        proyecto,
+        vendedor_proyecto,
+        asistente_comercial):
+    # Tipo de notificacion a crear en constants.py se encuentra los nombres de estas notificaciones
+    notification_type = NotificationType.objects.get(
+        Name=constants.NOTIFICATION_TYPE[3])
 
+    notification_add = Notification.objects.create(
+        TableID=proyecto.ProyectoID, NotificationTypeID=notification_type)
+
+    message = "Proyecto %s asistente comercial" % (proyecto.Name)
+    
+    notification_add = Notification.objects.create(
+        NotificationTypeID=notification_type,
+        TableID=proyecto.ProyectoID,
+        Message=message
+    )
+
+    if vendedor_proyecto.exists():
+        for vendedor in vendedor_proyecto:
+            notification_add.UserID.add(vendedor.UserID)
+
+    if asistente_comercial.exists():
+        for asistente in asistente_comercial:
+            notification_add.UserID.add(asistente.UserID)
 
 def crear_notificacion_copias_enviadas(
         promesa,
