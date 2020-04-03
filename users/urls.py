@@ -53,7 +53,18 @@ urlpatterns = [
     path(
         'uf/',
         UFNowAPIView.as_view()),
+    path(
+        'uf-de/',
+        UFDeAPIView.as_view()),
+    path(
+        'uf-simulador/',
+        UFSimuladorAPIView.as_view()),
     re_path(
         r'^uf/(?P<date>[0-9]{4}-?[0-9]{2}-?[0-9]{2})/$',
         UFAPIView.as_view(),
-        name='uf')]
+        name='uf'),
+    re_path(
+      r'^uf-de/<int:monto>/(?P<date>[0-9]{4}-?[0-9]{2}-?[0-9]{2})/$',
+        UFDeDateAPIView.as_view(),
+      name='uf-de')
+]
