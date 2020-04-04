@@ -31,17 +31,17 @@ SECRET_KEY = 'rxfor9jl7ve_eo1kza%ct%=6_1f&!le%omehmrtjqp0@6=k4du'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', ]
-# Email settings
 
+# Email settings
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', True)
 EMAIL_HOST = env.str('EMAIL_HOST')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env.int('EMAIL_PORT')
 EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT')
-UF_AUTH_KEY = env('UF_AUTH_KEY')
-# Application definition
+UF_AUTH_KEY = env.str('UF_AUTH_KEY')
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

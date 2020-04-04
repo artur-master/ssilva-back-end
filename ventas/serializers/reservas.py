@@ -191,7 +191,7 @@ class ListReservaSerializer(serializers.ModelSerializer):
 
     def get_date(self, obj):
         try:
-            return obj.Date.strftime("%Y-%m-%d")
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
         except AttributeError:
             return ""
 
