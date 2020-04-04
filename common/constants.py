@@ -313,7 +313,7 @@ PROMESA_STATE = [
     "Pendiente AC aprobación de maqueta",  # 9 -> 11
     "Promesa modificada",  # 10 -> PROMESA_MODIFICADA_STATE
     "Pendiente JP aprobación de maqueta",  # 11 -> 1
-    "Pendiente aprobación de firma comprador",  # 12 -> 2
+    "Pendiente aprobación AC",  # 12 -> 2
     "Pendiente revisión negociación",  # 13 -> 14     send condition to JP review
     "Pendiente negociación inmobiliaria",  # 14 -> 15 or 1
     "Rechazada Inmobiliaria",  # 15
