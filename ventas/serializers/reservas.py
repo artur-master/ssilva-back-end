@@ -1863,7 +1863,7 @@ class ControlReservaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
 
-        comment = validated_data.get('comment', "")
+        comment = validated_data.get('Comment', "")
         resolution = validated_data.pop('Resolution')
 
         if resolution:
