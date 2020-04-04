@@ -18,6 +18,8 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentOfertaFirmada = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentPlanoFirmada = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
         
     DocumentFichaPreAprobacion = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)

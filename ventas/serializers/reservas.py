@@ -2059,6 +2059,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentPlanoFirmada = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     '''
     DocumentOferta = serializers.FileField(
         allow_empty_file=True,
@@ -2226,6 +2230,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         fields = (
             'Folio',
             'DocumentOfertaFirmada',
+            'DocumentPlanoFirmada',
             'DocumentCotizacion',
             'DocumentFirmadoCheques',
             'DocumentFirmadoSimulador',
@@ -2289,6 +2294,8 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         '''
         if 'DocumentOfertaFirmada' in validated_data:
             documents.DocumentOfertaFirmada = validated_data['DocumentOfertaFirmada']
+        if 'DocumentPlanoFirmada' in validated_data:
+            documents.DocumentPlanoFirmada = validated_data['DocumentPlanoFirmada']
 
         if 'DocumentCertificadoMatrimonio' in validated_data:
             documents.DocumentCertificadoMatrimonio = validated_data['DocumentCertificadoMatrimonio']
