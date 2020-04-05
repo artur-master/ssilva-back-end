@@ -1131,7 +1131,24 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
 
-        if (instance.PromesaState == constants.PROMESA_STATE[0] or
+        if(instance.PromesaState == constants.PROMESA_STATE[0] and
+            'Comment' in self.context['request'].data):
+            oferta = Oferta.objects.get(Folio=instance.Folio)
+            oferta.OfertaState = constants.OFERTA_STATE[0]
+            oferta.Comment = self.context['request'].data['Comment']
+            oferta.save()
+            inmuebles = PromesaInmueble.objects.filter(PromesaID=instance)
+
+            if inmuebles.exists():
+                inmuebles.delete()
+
+            venta_log_type = VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[26])
+
+            comment = "Rechazar promesa {folio} proyecto {nombre} antes de la firma comprador".format(
+                folio=instance.Folio,
+                nombre=instance.ProyectoID.Name)                
+        elif (instance.PromesaState == constants.PROMESA_STATE[0] or
                 instance.PromesaState == constants.PROMESA_STATE[1] or
                 instance.PromesaState == constants.PROMESA_STATE[9] or
                 instance.PromesaState == constants.PROMESA_STATE[11]):

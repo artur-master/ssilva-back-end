@@ -27,7 +27,7 @@ from ventas.serializers.promesas import (
     SendNegociacionJPSerializer,
     SendNegociacionINSerializer,
     ControlNegociacionSerializer, SendPromesaToClientSerializer)
-
+from ventas.models.ofertas import Oferta
 
 class PromesaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -77,6 +77,17 @@ class PromesaViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             promesa = self.get_object()
+
+            if (promesa.PromesaState == constants.PROMESA_STATE[0] and
+                    'Comment' in request.data):
+
+                message = "Rechazada por LG, dirijase a modificar Oferta {folio} para continuar el " \
+                          "flujo".format(folio=promesa.Folio)
+                promesa.delete()
+                oferta = Oferta.objects.get(Folio=instance.Folio)
+                return Response({"OfertaID":oferta.OfertaID, "detail": message},
+                            status=status.HTTP_200_OK)
+
             if (promesa.PromesaState == constants.PROMESA_STATE[0] or
                     promesa.PromesaState == constants.PROMESA_STATE[1] or
                     promesa.PromesaState == constants.PROMESA_STATE[9]):
