@@ -122,7 +122,17 @@ class Proyecto(models.Model):
     )
     CotizacionDuration = models.IntegerField(blank=True, null=True)
     GuaranteeAmount = models.IntegerField(null=True, blank=True)
-    GuaranteePercent = models.IntegerField(null=True, blank=True)
+    
+    ContadoMontoPromesa = models.IntegerField(null=True, blank=True)
+    ContadoMontoCuotas = models.IntegerField(null=True, blank=True)
+    ContadoMontoEscrituraContado = models.IntegerField(null=True, blank=True)
+    ContadoAhorroPlus = models.IntegerField(null=True, blank=True)
+    
+    CreditoMontoPromesa = models.IntegerField(null=True, blank=True)
+    CreditoMontoCuotas = models.IntegerField(null=True, blank=True)
+    CreditoMontoEscrituraContado = models.IntegerField(null=True, blank=True)
+    CreditoAhorroPlus = models.IntegerField(null=True, blank=True)
+
     DiscountMaxPercent = models.DecimalField(        
         max_digits=10, decimal_places=2,
         null=True, blank=True
