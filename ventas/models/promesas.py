@@ -85,6 +85,8 @@ class Promesa(models.Model):
     DateLegalizacionPromesa = models.DateTimeField(
         null=True,
         blank=True)
+    FileLegalizacionPromesa = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
     DateEnvioCopias = models.DateTimeField(
         null=True,
         blank=True)
@@ -138,7 +140,6 @@ class Promesa(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaState)
-
 
 class PromesaInmueble(models.Model):
     PromesaID = models.ForeignKey(
