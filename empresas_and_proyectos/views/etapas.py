@@ -89,7 +89,8 @@ class CreateMassiveEtapaViewSet(viewsets.ModelViewSet):
         serializer = CreateMassiveEtapaInmueblesSerializer(
             self.get_object(), data=request.data,
             partial=True, context={'request': request})
-
+        if 'AuthFile' in request.data:
+            return Response({"detail": "Autorización exitosa", "isauth": True}, status=status.HTTP_200_OK)
         if serializer.is_valid():
             inmuebles = serializer.upload(self.get_object(), serializer.initial_data)
             return Response({"detail": "Inmuebles agregados con éxito",

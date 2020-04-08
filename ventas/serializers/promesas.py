@@ -398,6 +398,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DateEnvioPromesa',
             'DateRegresoPromesa',
             'DateLegalizacionPromesa',
+            'FileLegalizacionPromesa',
             'DateEnvioCopias',
             'DateEnvioPromesaToCliente',
             'Folio',
@@ -942,10 +943,14 @@ class LegalizePromesaSerializer(serializers.ModelSerializer):
     DateLegalizacionPromesa = serializers.DateTimeField(
         write_only=True
     )
+    FileLegalizacionPromesa = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'DateLegalizacionPromesa')
+        fields = ('PromesaState', 'DateLegalizacionPromesa', 'FileLegalizacionPromesa')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
@@ -964,6 +969,8 @@ class LegalizePromesaSerializer(serializers.ModelSerializer):
             Name=constants.VENTA_LOG_TYPE[24])
 
         instance.DateLegalizacionPromesa = date
+        if 'FileLegalizacionPromesa' in validated_data:
+            instance.FileLegalizacionPromesa = validated_data['FileLegalizacionPromesa']
 
         comment = "Registro fecha legalizacion promesa {folio} proyecto {nombre}".format(
             folio=instance.Folio,
@@ -1143,7 +1150,7 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
                 inmuebles.delete()
 
             venta_log_type = VentaLogType.objects.get(
-                Name=constants.VENTA_LOG_TYPE[21])
+                Name=constants.VENTA_LOG_TYPE[26])
 
             comment = "Rechazar promesa {folio} proyecto {nombre} antes de la firma comprador".format(
                 folio=instance.Folio,
