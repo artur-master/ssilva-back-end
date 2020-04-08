@@ -1143,7 +1143,7 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
                 inmuebles.delete()
 
             venta_log_type = VentaLogType.objects.get(
-                Name=constants.VENTA_LOG_TYPE[26])
+                Name=constants.VENTA_LOG_TYPE[21])
 
             comment = "Rechazar promesa {folio} proyecto {nombre} antes de la firma comprador".format(
                 folio=instance.Folio,
@@ -1259,6 +1259,20 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
 
         if instance.DocumentPromesa:
             instance.PromesaState = constants.PROMESA_STATE[9]
+        
+        current_user = return_current_user(self)
+        
+        VentaLog.objects.create(
+            VentaID=instance.PromesaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[22]),
+            Comment=''
+        )
+
 
         instance.save()
 
@@ -1294,7 +1308,6 @@ class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
 
         instance.PromesaState = constants.PROMESA_STATE[12]
         instance.save()
-        
         # notification VN -> AC
         vendedor_proyecto_type = UserProyectoType.objects.get(
             Name=constants.USER_PROYECTO_TYPE[2])
