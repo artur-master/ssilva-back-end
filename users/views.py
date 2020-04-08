@@ -589,19 +589,27 @@ class UFDeAPIView(APIView):
 
     def post(self, request):
         data = request.data
-        date = datetime.datetime.now()
-        now = date.date()
-        auth_key = settings.UF_AUTH_KEY
+
+        if 'fecha' in data:
+            fecha = data['fecha']
+            date = datetime.datetime.strptime(fecha, '%Y-%m-%d').strftime('%d-%m-%Y')
+        else:
+            now = datetime.datetime.now()
+            date = now.date().strftime('%d-%m-%Y')
+            fecha = now.date().strftime('%Y-%m-%d')
+
         r = requests.get(
-            'https://api.desarrolladores.datos.gob.cl/indicadores-financieros/v1/uf/hoy.json/?auth_key={}'.format(auth_key))
+            'https://mindicador.cl/api/uf/{}'.format(date))
         uf_data = r.json()
+
         if 'monto' in data:
             monto = data['monto']
         else:
             monto = 1
+
         response = {
-            'fecha': now,
-            'valor': uf_data['uf']['valor'] * float(monto),
+            'fecha': fecha,
+            'valor': uf_data['serie'][0]['valor'] * float(monto),
             'monto': monto
         }
         return Response(response, status=status.HTTP_200_OK)
