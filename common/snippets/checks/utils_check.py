@@ -2,6 +2,8 @@
 # Funciones de utilidad para conventir un numero a palabra
 def convert_number_to_words(numero):
     indicador = [("", ""), ("MIL", "MIL"), ("MILLON", "MILLONES"), ("MIL", "MIL"), ("BILLON", "BILLONES")]
+    if(numero == None):
+        return ""
     entero = int(numero)
     decimal = int(round((float(numero) - entero) * 100))
     contador = 0
