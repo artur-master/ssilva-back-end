@@ -294,12 +294,22 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                     "Aprobada",
                     status_code=status.HTTP_409_CONFLICT)
 
-            aprobacion_inmobiliaria[str(current_user.UserID)] = True;
-            instance.AprobacionInmobiliaria = aprobacion_inmobiliaria;
+            aprobacion_inmobiliaria[str(current_user.UserID)] = True
+            instance.AprobacionInmobiliaria = aprobacion_inmobiliaria
+            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[8])
 
             if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
                     UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
                     ProyectoID=instance.ProyectoID).count()):
+                VentaLog.objects.create(
+                    VentaID=instance.OfertaID,
+                    Folio=instance.Folio,
+                    UserID=current_user,
+                    ClienteID=instance.ClienteID,
+                    ProyectoID=instance.ProyectoID,
+                    VentaLogTypeID=venta_log_type,
+                    Comment='',
+                )
                 instance.save()
                 return instance
 
@@ -316,12 +326,11 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
 
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[2]
             instance.IsApproveInmobiliaria = True
-            venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[8])
 
             crear_notificacion_oferta_aprobada(instance, jefe_proyecto, vendedor)
         else:
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[3]
-            instance.AprobacionInmobiliaria = {};
+            instance.AprobacionInmobiliaria = {}
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[9])
 
             crear_notificacion_oferta_rechazada(instance, jefe_proyecto, vendedor)
