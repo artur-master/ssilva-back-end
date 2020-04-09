@@ -57,7 +57,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
             self.get_object(), data=request.data, partial=True,
             context={'request': request}
         )
-        
+
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"cliente": ListClienteSerializer(instance).data,
