@@ -70,88 +70,93 @@ def print_date(pdf, date, has_year):
 
 
 def print_beneficiary(pdf, beneficiary):
-    pdf.drawString(407, 332, beneficiary.upper())
+    try:
+        pdf.drawString(407, 332, beneficiary.upper())
+    except:
+        pass
 
 
 def print_number_words(pdf, words):
     phrase = words.split()
     number = len(phrase)
-
-    if number == 1:
-        pdf.drawString(407, 315, phrase[0])
-    elif number == 2:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1])
-    elif number == 3:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2])
-    elif number == 4:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3])
-    elif number == 5:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4])
-    elif number == 6:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-    elif number == 7:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6])
-    elif number == 8:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7])
-    elif number == 9:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8])
-    elif number == 10:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
-                      " " + phrase[9])
-    elif number == 11:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
-                      " " + phrase[9] + " " + phrase[10])
-    elif number == 12:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
-                      " " + phrase[9] + " " + phrase[10] + " " + phrase[11])
-    elif number == 13:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
-                      " " + phrase[9] + " " + phrase[10] + " " + phrase[11] +
-                      " " + phrase[12])
-    else:
-        pdf.drawString(
-            407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
-                      " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
-        pdf.drawString(
-            362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
-                      " " + phrase[9] + " " + phrase[10] + " " + phrase[11] +
-                      " " + phrase[12] + " " + phrase[13])
+    try:
+        if number == 1:
+            pdf.drawString(407, 315, phrase[0])
+        elif number == 2:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1])
+        elif number == 3:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2])
+        elif number == 4:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3])
+        elif number == 5:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4])
+        elif number == 6:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+        elif number == 7:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6])
+        elif number == 8:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7])
+        elif number == 9:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8])
+        elif number == 10:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
+                        " " + phrase[9])
+        elif number == 11:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
+                        " " + phrase[9] + " " + phrase[10])
+        elif number == 12:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
+                        " " + phrase[9] + " " + phrase[10] + " " + phrase[11])
+        elif number == 13:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
+                        " " + phrase[9] + " " + phrase[10] + " " + phrase[11] +
+                        " " + phrase[12])
+        else:
+            pdf.drawString(
+                407, 315, phrase[0] + " " + phrase[1] + " " + phrase[2] +
+                        " " + phrase[3] + " " + phrase[4] + " " + phrase[5])
+            pdf.drawString(
+                362, 299, phrase[6] + " " + phrase[7] + " " + phrase[8] +
+                        " " + phrase[9] + " " + phrase[10] + " " + phrase[11] +
+                        " " + phrase[12] + " " + phrase[13])
+    except:
+        pass
 
 
 def print_crossed(pdf):
