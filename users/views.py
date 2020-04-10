@@ -599,20 +599,29 @@ class UFDeAPIView(APIView):
             fecha = now.date().strftime('%Y-%m-%d')
 
         r = requests.get(
-            'https://mindicador.cl/api/uf/{}'.format(date))
+            'https://mindicador.cl/api/uf/')
         uf_data = r.json()
 
         if 'monto' in data:
             monto = data['monto']
         else:
             monto = 1
+        if len(uf_data['serie']) > 0:
+            response = {
+                'fecha': fecha,
+                'valor': uf_data['serie'][0]['valor'] * float(monto),
+                'monto': monto
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            response = {
+                'fecha': fecha,
+                'valor': 0,
+                'monto': monto
+            }
+            return Response(response, status=status.HTTP_200_OK)
 
-        response = {
-            'fecha': fecha,
-            'valor': uf_data['serie'][0]['valor'] * float(monto),
-            'monto': monto
-        }
-        return Response(response, status=status.HTTP_200_OK)
+
 
 
 class UFSimuladorAPIView(APIView):
