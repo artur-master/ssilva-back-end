@@ -56,14 +56,14 @@
     </table>
     </br>
     <table>
-        <tr style="height:15px;">
+        <tr style="font-size: 22px;">
             <th style="text-align: left">
                 <b> PRE APROBACIÓN DE CRÉDITO </b>
             </th>
         </tr>
     </table>
     <table>
-        <tr style="height:15px;">
+        <tr style="font-size: 20px;">
             <th style="text-align: left">
                 <b>Antecedentes Laborales</b>
             </th>
@@ -91,7 +91,7 @@
             <td style="text-align: left;">
                 ¿DURANTE CUANTO TIEMPO?
             </td>
-            <td style="text-align: left;">Antigüedad Laboral:  {{ reserva.Client.Antiguedad }}</td>
+            <td style="text-align: left;font-size: {{ tamaño_letra }}%;">Antigüedad Laboral:  {{ reserva.Client.Antiguedad }}</td>
         </tr>
         {% endif %}
         </tbody>
@@ -103,15 +103,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr style="">
-            <td style="text-align: left;"><b>Nombre Empleador</b><span>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">Nombre Empleador: <span>
                 {% if reserva.Client.IsCompany %}
                     {{ empresa_compradora.RazonSocial }}
                 {% else %}
                     {{ empleador.RazonSocial }}
                 {% endif %}
             </span></td>
-            <td style="text-align: left;"><b>RUT Empleador</b><span>
+            <td style="text-align: left;">RUT Empleador: <span>
                 {% if reserva.Client.IsCompany %}
                     {{ empresa_compradora.Rut }}
                 {% else %}
@@ -120,14 +120,14 @@
             </span></td>
         </tr>
         <tr style="">
-            <td style="text-align: left;"><b>Teléfono Empleador</b><span>
+            <td style="text-align: left;">Teléfono Empleador: <span>
                 {% if reserva.Client.IsCompany %}
                     {{ empresa_compradora.Extra.Phone }}
                 {% else %}
                     {{ empleador.Extra.Phone }}
                 {% endif %}
             </span></td>
-            <td style="text-align: left;"><b>Dirección Empleador</b><span>
+            <td style="text-align: left;">Dirección Empleador: <span>
                 {% if reserva.Client.IsCompany %}
                     {{ empresa_compradora.Extra.Address }}
                 {% else %}
@@ -137,8 +137,8 @@
         </tr>
         </tbody>
     </table>
-    <table style="height: 20px">
-        <tr style="">
+    <table style="">
+        <tr style="font-size: 20px;">
             <th style="text-align: left">
                 <b>Renta</b>
             </th>
@@ -151,12 +151,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr style="">
-            <td style="text-align: left;"><b>Sueldo Fijo Líquido</b><span>${{ client.Extra.Values.LiquidIncome }}</span></td>
-            <td style="text-align: left;"><b>Sueldo Variable</b><span>${{ client.Extra.Values.VariableSalary }}</span></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">Sueldo Fijo Líquido: <span>${{ client.Extra.Values.LiquidIncome }}</span></td>
+            <td style="text-align: left;">Sueldo Variable: <span>${{ client.Extra.Values.VariableSalary }}</span></td>
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>Honorarios Bruto</span><span>${{ client.Extra.Values.Honoraries }}</span></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">Honorarios Bruto: </span><span>${{ client.Extra.Values.Honoraries }}</span></td>
         </tr>
         </tbody>
     </table>
@@ -167,22 +167,21 @@
         </tr>
         </thead>
         <tbody>
-        <tr style="">
-            <td style="text-align: left;" colspan="2"><b>Arriendo Bienes Raíces</b>-{{ client.Extra.Values.RealStateLeasing }}</td>
-            <td style="text-align: left;" colspan="2"><b>Retiros</b>-{{ client.Extra.Values.Retirements }}</td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;" colspan="2">Arriendo Bienes Raíces -{{ client.Extra.Values.RealStateLeasing }}</td>
+            <td style="text-align: left;" colspan="2">Retiros -{{ client.Extra.Values.Retirements }}</td>
         </tr>
-        <tr style="">
-            <td style="text-align: left;" colspan="4"><b>Pensión</b>-{{ client.Extra.Values.Pension }}</td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;" colspan="4">Pensión -{{ client.Extra.Values.Pension }}</td>
         </tr>
-        <tr class="align-middle-group">
+        <tr class="align-middle-group" style="font-size: 14px;">
             <td><span class="">Renta Líquida</span></td>
             <td><span class=""><b>${{ total_liquid }}</b></span></td>
-            <td><i class="icon icon-check color-success-icon"></i></td>
-            <td class=""><b>La Renta Cumple con los Requisitos</b></td>
+            <td colspan="2"><span class="">La Renta Cumple con los Requisitos</span></td>
         </tr>
         </tbody>
     </table>
-    <table style="height: 20px">
+    <table style="font-size:20px">
         <tr style="">
             <th style="text-align: left">
                 <b>Vivienda Actual</b>
@@ -191,16 +190,16 @@
     </table>
     <table style="height: 20px">
         <tbody>
-        <tr style="">
+        <tr style="font-size: 12px;">
             {% if reserva.Client.IsOwner %}
-                <td style="text-align: left;"><b>Propietario</b></td>
+                <td style="text-align: left;">Arriendo</td>
             {% else %}
-                <td style="text-align: left;"><b>Arriendo</b></td>
+                <td style="text-align: left;">Propietario</td>
             {% endif %}
         </tr>
         </tbody>
     </table>
-    <table style="height: 20px">
+    <table style="font-size: 20px">
         <tr style="">
             <th style="text-align: left">
                 <b>Patrimonio Activos</b>
@@ -209,40 +208,40 @@
     </table>
     <table style="height: 20px">
         <tbody>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE BIENES RAÍCES?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE BIENES RAÍCES?</td>
              {% if patrimony.RealState %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE CRÉDITO HIPOTECARIO?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE CRÉDITO HIPOTECARIO?</td>
             {% if patrimony.CreditoHipotecario.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE VEHÍCULO?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE VEHÍCULO?</td>
            {% if patrimony.Vehicle %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE DEPÓSITOS / ACCIONES?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE DEPÓSITOS / ACCIONES?</td>
             {% if patrimony.DownPayment %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE OTROS PATRIMONIOS?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE OTROS PATRIMONIOS?</td>
             {% if patrimony.Other %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
@@ -255,7 +254,7 @@
         </tr>
         </tbody>
     </table>
-    <table style="height: 20px">
+    <table style="font-size: 20px">
         <tr style="">
             <th style="text-align: left">
                 <b>Patrimonio Pasivol</b>
@@ -264,48 +263,48 @@
     </table>
     <table style="height: 20px">
         <tbody>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE TARJETA DE CRÉDITO?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE TARJETA DE CRÉDITO?</td>
             {% if patrimony.CreditCard.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE CRÉDITOS DE CONSUMO?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE CRÉDITOS DE CONSUMO?</td>
             {% if patrimony.CreditoConsumo.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿TIENE PRÉSTAMOS CON SU EMPLEADOR?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿TIENE PRÉSTAMOS CON SU EMPLEADOR?</td>
             {% if patrimony.PrestamoEmpleador.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿ES AVAL DE ALGUNA DEUDA?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿ES AVAL DE ALGUNA DEUDA?</td>
             {% if patrimony.DeudaIndirecta.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿Otro crédito?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿Otro crédito?</td>
             {% if patrimony.CreditCard.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
                 <td style="text-align: left;"><b>No</b></td>
             {% endif %}
         </tr>
-        <tr style="">
-            <td style="text-align: left;"><b>¿CREDITO COMERCIO?</b></td>
+        <tr style="font-size: 12px;">
+            <td style="text-align: left;">¿CREDITO COMERCIO?</td>
             {% if patrimony.AnotherCredit.PagosMensuales %}
                 <td style="text-align: left;"><b>Si</b></td>
             {% else %}
