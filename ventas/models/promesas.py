@@ -131,10 +131,6 @@ class Promesa(models.Model):
     DesistimientoEspecial = models.CharField(max_length=255, null=True, blank=True)
     ModificacionEnLaClausula = models.CharField(max_length=255, null=True, blank=True)
     MetodoComunicacionEscrituracion = models.CharField(max_length=255, null=True, blank=True)
-    DocumentPaymentForm = models.FileField(upload_to="DocumentVentas", null=True, blank=True)
-    DatePayment = models.DateTimeField(
-        null=True,
-        blank=True)
     Comment = models.CharField(max_length=255, null=True, blank=True)
     NewCondition = models.CharField(max_length=255, null=True, blank=True)
 
@@ -156,3 +152,16 @@ class PromesaInmueble(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.PromesaID, self.InmuebleID)
+
+class PaymentInstruction(models.Model):
+    PromesaID = models.ForeignKey(
+        Promesa,
+        on_delete=models.CASCADE)
+    Date = models.DateField(
+        null=True,
+        blank=True)
+    Document = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.Date, self.Document)

@@ -10,7 +10,7 @@ from common.permissions import (
     CheckAdminOrVendedorOrMoniProyectosPermission,
     CheckConfeccionaMaquetasPromesaPermission)
 from empresas_and_proyectos.models.proyectos import Proyecto
-from ventas.models.promesas import Promesa
+from ventas.models.promesas import (Promesa, PaymentInstruction)
 from ventas.serializers.promesas import (
     ListPromesaSerializer,
     RetrievePromesaSerializer,
@@ -97,7 +97,7 @@ class PromesaViewSet(viewsets.ModelViewSet):
                 promesa.delete()
             else:
                 message = "Modificación realizada con éxito, en espera de aprobación ".format(folio=promesa.Folio)
-            return Response({"promesa": RetrievePromesaSerializer(instance).data,
+            return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,
                              "detail": message},
                             status=status.HTTP_200_OK)
         else:
@@ -113,15 +113,33 @@ class UploadConfeccionPromesaViewSet(viewsets.ModelViewSet):
     lookup_field = 'PromesaID'
 
     def partial_update(self, request, PromesaID):
+        data = request.data
+
+        many = isinstance(data, list)
         serializer = UploadConfeccionPromesaSerializer(
-            self.get_object(), data=request.data,
-            partial=True, context={'request': request}
+            self.get_object(), data=data, partial=True,
+            context={'request': request}
         )
 
         if serializer.is_valid():
             instance = serializer.save()
+            instructions = PaymentInstruction.objects.filter(PromesaID=instance)
+            if instructions.exists():
+                instructions.delete()
+
+            paymentNumber = int(data.get("PaymentNumber"))
+            instruction_list = list()
+            for i in range(paymentNumber):
+                instruction = PaymentInstruction(
+                    Date = data.get("PaymentInstructions.{}.Date".format(i)),
+                    Document = data.get("PaymentInstructions.{}.Document".format(i)),
+                    PromesaID = instance)
+                instruction_list.append(instruction)
+            if instruction_list:
+                PaymentInstruction.objects.bulk_create(instruction_list)
+
             return Response({"detail": "Documentos subidos con éxito",
-                             "promesa": UploadConfeccionPromesaSerializer(instance).data},
+                             "promesa": RetrievePromesaSerializer(instance, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},

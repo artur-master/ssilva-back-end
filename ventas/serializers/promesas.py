@@ -27,7 +27,7 @@ from ventas.models.facturas import FacturaInmueble, ComisionInmobiliaria, Factur
 from ventas.models.ofertas import Oferta
 from ventas.models.patrimonies import Patrimony
 from ventas.models.payment_forms import PayType
-from ventas.models.promesas import Promesa, PromesaInmueble
+from ventas.models.promesas import Promesa, PromesaInmueble, PaymentInstruction
 from ventas.models.reservas import Reserva
 from ventas.models.ventas_logs import VentaLog, VentaLogType
 from ventas.serializers.clientes import ClienteSerializer
@@ -122,6 +122,40 @@ def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, coti
         instance, proyecto, jefe_proyecto, vendedor,
         usuarios_confecciona_maquetas)
 
+
+class CreatePaymentInstructionSerializer(serializers.ModelSerializer):
+    Date = serializers.DateField()
+    Document = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+
+    class Meta:
+        model = PaymentInstruction
+        fields = ('Date', 'Document')
+
+class ListPaymentInstructionSerializer(serializers.ModelSerializer):
+    Date = serializers.SerializerMethodField('get_date')
+    Document = serializers.SerializerMethodField('get_document_url')
+
+    class Meta:
+        model = PaymentInstruction
+        fields = ('Date', 'Document')
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+
+    def get_document_url(self, obj):
+        if obj.Document and hasattr(
+                obj.Document, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.Document.url)
+        else:
+            return ""
 
 class ListPromesaSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
@@ -344,8 +378,10 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
 
     DocumentFirmaComprador = serializers.SerializerMethodField(
         'get_document_firma_comprador_url')
-    DocumentPaymentForm = serializers.SerializerMethodField(
-        'get_document_payment_form_url')
+    # DocumentPaymentForm = serializers.SerializerMethodField(
+    #     'get_document_payment_form_url')
+    PaymentInstructions = serializers.SerializerMethodField(
+        'get_payment_instructions')
     DocumentResciliacion = serializers.SerializerMethodField(
         'get_DocumentResciliacion_url')
     DocumentResciliacionFirma = serializers.SerializerMethodField(
@@ -391,7 +427,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'DocumentChequesFirma',
             'DocumentPlantaFirma',
             'DocumentFirmaComprador',
-            'DocumentPaymentForm',
+            'PaymentInstructions',
             'DocumentResciliacion',
             'DocumentResciliacionFirma',
             'DocumentResolucion',
@@ -419,7 +455,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             'OfertaID',
             'Factura', 'AprobacionInmobiliaria',
             'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
-            'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion', 'DatePayment',
+            'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion',
             'Logs', 'Comment')
 
     def get_inmuebles(self, obj):
@@ -469,11 +505,18 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         else:
             return ""
 
-    def get_document_payment_form_url(self, obj):
-        if obj.DocumentPaymentForm:
-            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPaymentForm.url
-        else:
-            return ""
+    def get_payment_instructions(self, obj):
+        paymentInstructions = PaymentInstruction.objects.filter(PromesaID = obj)
+        try:
+            if paymentInstructions:
+                serializer = ListPaymentInstructionSerializer(
+                        instance=paymentInstructions, many=True,
+                        context={'url': self.context['request']}
+                    )
+                return serializer.data
+            return [{'Date': None, 'Document': None}]
+        except AttributeError:
+            return [{'Date': None, 'Document': None}]
 
     def get_DocumentResciliacion_url(self, obj):
         if obj.DocumentResciliacion:
@@ -1236,8 +1279,8 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
-    DocumentPaymentForm = serializers.FileField(
-        allow_empty_file=True,
+    PaymentInstructions = CreatePaymentInstructionSerializer(
+        many=True,
         required=False
     )
 
@@ -1246,29 +1289,41 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
         fields = ('DocumentPromesa', 'PromesaState',
                   'FechaFirmaDeEscritura', 'FechaEntregaDeInmueble',
                   'DesistimientoEspecial', 'ModificacionEnLaClausula', 'MetodoComunicacionEscrituracion',
-                  'DocumentPaymentForm', 'DatePayment')
+                  'PaymentInstructions')
 
     def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        
         if 'FechaFirmaDeEscritura' in validated_data:
             instance.FechaFirmaDeEscritura = validated_data['FechaFirmaDeEscritura']
         if 'FechaEntregaDeInmueble' in validated_data:
             instance.FechaEntregaDeInmueble = validated_data['FechaEntregaDeInmueble']
+        if 'ModificacionEnLaClausula' in validated_data:
+            instance.ModificacionEnLaClausula = validated_data['ModificacionEnLaClausula']
         instance.DesistimientoEspecial = validated_data['DesistimientoEspecial']
-        instance.ModificacionEnLaClausula = validated_data['ModificacionEnLaClausula']
         instance.MetodoComunicacionEscrituracion = validated_data['MetodoComunicacionEscrituracion']
-        if 'DatePayment' in validated_data and validated_data['DatePayment']:
-            instance.DatePayment = validated_data['DatePayment']
-        if 'DocumentPaymentForm' in validated_data:
-            instance.DocumentPaymentForm = validated_data['DocumentPaymentForm']
 
         if 'DocumentPromesa' in validated_data:
             instance.DocumentPromesa = validated_data['DocumentPromesa']
 
         if instance.DocumentPromesa:
             instance.PromesaState = constants.PROMESA_STATE[9]
+
+        # if 'PaymentInstructions' in validated_data:
+        #     instructions = PaymentInstruction.objects.filter(PromesaID=instance)
+        #     if instructions.exists():
+        #         instructions.delete()
+
+        # instance.PaymentInstructions = validated_data.get('PaymentInstructions', [])
         
-        current_user = return_current_user(self)
-        
+
+        venta_log_type = VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[39]
+                )
+        comment = "Firma promesa {folio} proyecto {nombre}".format(
+                folio=instance.Folio,
+                nombre=instance.ProyectoID.Name)
+
         VentaLog.objects.create(
             VentaID=instance.PromesaID,
             Folio=instance.Folio,
@@ -1277,12 +1332,10 @@ class UploadConfeccionPromesaSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
                 Name=constants.VENTA_LOG_TYPE[22]),
-            Comment=''
+            Comment=comment
         )
 
-
         instance.save()
-
         return instance
 
 
@@ -1315,6 +1368,7 @@ class UploadFirmaDocumentSerializer(serializers.ModelSerializer):
 
         instance.PromesaState = constants.PROMESA_STATE[12]
         instance.save()
+        
         # notification VN -> AC
         vendedor_proyecto_type = UserProyectoType.objects.get(
             Name=constants.USER_PROYECTO_TYPE[2])
@@ -1574,7 +1628,7 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
-            Comment=comment,
+            Comment='',
         )
 
         instance.save()

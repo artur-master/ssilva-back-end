@@ -55,8 +55,8 @@ class ComisionVendedor(models.Model):
         on_delete=models.CASCADE)
     Date = models.DateTimeField(auto_now_add=True)
     DatePayment = models.DateTimeField(
-    null=True,
-    blank=True)
+        null=True,
+        blank=True)
     State = models.CharField(max_length=50)
     # Mes de meta a ingresar
     DateMeta = models.DateTimeField(
