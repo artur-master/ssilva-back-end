@@ -518,7 +518,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         inmuebles_reserva = ReservaInmueble.objects.filter(
             ReservaID=reserva)
         serializer = reservas.ListReservaInmuebleSerializer(
-            instance=inmuebles_reserva, many=True)
+            instance=inmuebles_reserva, context={'url': self.context['request']}, many=True)
         return serializer.data
 
     def get_documents(self, obj):

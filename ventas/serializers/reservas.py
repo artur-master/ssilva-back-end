@@ -8,6 +8,7 @@ from sgi_web_back_project import settings
 from users.models import User
 
 from common import constants
+from common.services import get_full_path_x
 from common.generate_pdf import (
     render_create_oferta_to_pdf,
     render_create_ficha_to_pdf,
@@ -130,13 +131,15 @@ class ListReservaInmuebleSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
+    BluePrint = serializers.SerializerMethodField(
+        'get_blueprint_url')
     Restrictions = serializers.SerializerMethodField('get_restrictions')
 
     class Meta:
         model = ReservaInmueble
         fields = ('InmuebleID', 'InmuebleType',
                   'Number', 'Floor', 'Tipologia', 'Price', 'BedroomsQuantity',
-                  'BathroomQuantity', 'Orientation', 'Discount', 'Restrictions')
+                  'BathroomQuantity', 'Orientation', 'Discount', 'Restrictions','BluePrint')
 
     def get_restrictions(self, obj):
         restrictions = InmuebleInmueble.objects.filter(InmuebleAID=obj.InmuebleID).select_related('InmuebleAID',
@@ -144,7 +147,14 @@ class ListReservaInmuebleSerializer(serializers.ModelSerializer):
                                                                                                   'InmuebleInmuebleTypeID')
         data = [RestrictionSerializer(restriction).to_dict() for restriction in restrictions]
         return data
-
+    def get_blueprint_url(self, obj):
+        if obj.InmuebleID.Up_Print and hasattr(
+                obj.InmuebleID.Up_Print, 'url'):
+            url = self.context['url']
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.InmuebleID.Up_Print.url)
+        else:
+            return ""
 
 class ListReservaSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
@@ -186,7 +196,8 @@ class ListReservaSerializer(serializers.ModelSerializer):
     def get_inmuebles(self, obj):
         inmuebles_reserva = ReservaInmueble.objects.filter(ReservaID=obj).prefetch_related(
             'InmuebleID__InmuebleRestrict')
-        serializer = ListReservaInmuebleSerializer(instance=inmuebles_reserva, many=True)
+        serializer = ListReservaInmuebleSerializer(instance=inmuebles_reserva,
+                                                   context={'url': self.context['request']}, many=True)
         return serializer.data
 
     def get_date(self, obj):
@@ -356,7 +367,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         inmuebles_reserva = ReservaInmueble.objects.filter(
             ReservaID=obj)
         serializer = ListReservaInmuebleSerializer(
-            instance=inmuebles_reserva, many=True)
+            instance=inmuebles_reserva, context={'url': self.context['request']}, many=True)
         return serializer.data
 
     def get_documents(self, obj):

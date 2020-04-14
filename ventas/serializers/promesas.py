@@ -197,7 +197,7 @@ class ListPromesaSerializer(serializers.ModelSerializer):
         inmuebles_promesa = PromesaInmueble.objects.filter(
             PromesaID=obj)
         serializer = ListReservaInmuebleSerializer(
-            instance=inmuebles_promesa, many=True)
+            instance=inmuebles_promesa, context={'url': self.context['request']}, many=True)
         return serializer.data
 
     def get_factura(self, obj):
@@ -462,7 +462,7 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
         inmuebles_promesa = PromesaInmueble.objects.filter(
             PromesaID=obj)
         serializer = ListReservaInmuebleSerializer(
-            instance=inmuebles_promesa, many=True)
+            instance=inmuebles_promesa, context={'url': self.context['request']}, many=True)
         return serializer.data
 
     def get_documents(self, obj):
