@@ -57,7 +57,7 @@ class ReservaViewSet(viewsets.ModelViewSet):
         proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
         queryset = Reserva.objects.filter(ProyectoID=proyecto)
         queryset = ListReservaSerializer.setup_eager_loading(queryset)
-        serializer = ListReservaSerializer(queryset, many=True)
+        serializer = ListReservaSerializer(queryset, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
