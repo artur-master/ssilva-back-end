@@ -65,6 +65,10 @@ class VentaLogVendedorSerializer(serializers.ModelSerializer):
     )
     Date = serializers.SerializerMethodField('get_date')
     Comment = serializers.SerializerMethodField('get_comment')
+    User = UserProfileSerializer(
+        source='UserID',
+        allow_null=True
+    )
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -75,7 +79,7 @@ class VentaLogVendedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = VentaLog
         fields = ('VentaLogID', 'VentaID', 'ProyectoID', 'ClienteName', 'ClienteLastNames',
-                  'ClienteRut', 'VentaLogType', 'Date', 'Comment', 'Folio')
+                  'ClienteRut', 'VentaLogType', 'Date', 'Comment', 'Folio', 'User')
 
     def get_date(self, obj):
         try:
