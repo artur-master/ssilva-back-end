@@ -2,6 +2,13 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from rest_framework import serializers, status
 
+from datetime import datetime
+from PyPDF2 import PdfFileWriter, PdfFileReader
+import io
+
+from reportlab.pdfgen import canvas
+from django.core.files import File
+
 from common import constants
 from common.notifications import crear_notificacion_promesa_creada, crear_notificacion_maqueta_jp_aprobada, \
     crear_notificacion_maqueta_aprobada, \
@@ -1732,7 +1739,6 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
         required=False
     )
 
-
     @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
@@ -1751,7 +1757,40 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         date = validated_data.pop('DateEnvioPromesaToCliente')
+        
+        day = datetime.strftime(date, '%d')
+        month = datetime.strftime(date, '%B')
+        year = datetime.strftime(date, '%Y')
+        print(day + " de " + month + " del " + year)
 
+        existing_pdf = PdfFileReader(instance.DocumentPromesa.open('rb'))
+        page = existing_pdf.getPage(0)
+
+        packet = io.BytesIO()
+        can = canvas.Canvas(packet, pagesize=page.mediaBox)
+        can.drawString(210, 585, day)
+        can.drawString(290, 585, month)
+        can.drawString(410, 585, year)
+        can.save()
+        packet.seek(0)
+
+        new_pdf = PdfFileReader(packet)
+        page.mergePage(new_pdf.getPage(0))
+
+        output = PdfFileWriter()
+        output.addPage(page)
+        for i in range(0, existing_pdf.getNumPages()):
+            output.addPage(existing_pdf.getPage(i))
+
+        new_name = instance.DocumentPromesa.name[15:-4] + "_firma.pdf"
+        new_url = settings.MEDIA_URL[1:]+"DocumentVentas/"+new_name
+
+        outputStream = open(new_url, "wb")
+        output.write(outputStream)
+        outputStream.close()
+        instance.DocumentPromesa = 'DocumentVentas/'+new_name
+        instance.DocumentPromesa.close()
+        
         instance.DateEnvioPromesaToCliente = date
 
         comment = "Enviado {folio} proyecto {nombre} a la cliente para firmar".format(folio=instance.Folio,

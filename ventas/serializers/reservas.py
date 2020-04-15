@@ -147,6 +147,7 @@ class ListReservaInmuebleSerializer(serializers.ModelSerializer):
                                                                                                   'InmuebleInmuebleTypeID')
         data = [RestrictionSerializer(restriction).to_dict() for restriction in restrictions]
         return data
+
     def get_blueprint_url(self, obj):
         if obj.InmuebleID.Up_Print and hasattr(
                 obj.InmuebleID.Up_Print, 'url'):
