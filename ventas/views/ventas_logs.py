@@ -89,3 +89,16 @@ class VentaLogViewSet(viewsets.ModelViewSet):
         serializer = VentaLogSerializer(queryset, many=True)
 
         return Response(serializer.data)
+
+class VentaLogUserViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = VentaLogSerializer
+    queryset = VentaLog.objects.all()
+
+    def list(self, request):
+        queryset = VentaLog.objects.filter(UserID=request.user.id).order_by('-Date')
+        queryset = VentaLogVendedorSerializer.setup_eager_loading(queryset)
+        serializer = VentaLogVendedorSerializer(queryset, many=True)
+
+        return Response({"logs": serializer.data})
