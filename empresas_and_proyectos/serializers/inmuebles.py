@@ -5,6 +5,7 @@ from empresas_and_proyectos.models.inmuebles import (
     Inmueble,
     InmuebleState)
 from rest_framework import serializers
+from common.services import get_full_path_x
 
 
 class ListOrientationSerializer(serializers.ModelSerializer):
@@ -120,6 +121,8 @@ class InmuebleSerializer(serializers.ModelSerializer):
         decimal_places=2,
         coerce_to_string=False
     )
+    Up_Print = serializers.SerializerMethodField(
+        'get_blueprint_url')
 
     class Meta:
         model = Inmueble
@@ -146,7 +149,15 @@ class InmuebleSerializer(serializers.ModelSerializer):
             'BluePrint',
             'Up_Print',
             'InmuebleState')
-
+    
+    def get_blueprint_url(self, obj):
+        if obj.Up_Print and hasattr(
+                obj.Up_Print, 'url'):
+            url = self.context['url']
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.Up_Print.url)
+        else:
+            return ""
 
 class CreateInmuebleSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.UUIDField(

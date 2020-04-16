@@ -172,7 +172,7 @@ INMUEBLE_TYPE = [
 
 INMUEBLE_STATE = [
     "Disponible", "Bloqueado por inmobiliaria",
-    "Reservado", "Promesado", "Vendido",
+    "Bloqueado por ssilva", "Reservado", "Promesado", "Vendido",
 ]
 
 COTIZATION_TYPE = [

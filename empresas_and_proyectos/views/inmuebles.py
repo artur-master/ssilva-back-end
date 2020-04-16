@@ -99,7 +99,7 @@ class InmuebleViewSet(viewsets.ModelViewSet):
         Inmueble_ID = list(datas)[0]
         etapaID = Inmueble.objects.get(InmuebleID=Inmueble_ID).EtapaID
         queryset = Inmueble.objects.filter(EtapaID=etapaID)
-        serializer = InmuebleSerializer(queryset, many=True)
+        serializer = InmuebleSerializer(queryset, context={'url': request}, many=True)
         return Response({"entities":serializer.data, "message": "success uploaded"}, status=status.HTTP_200_OK)
 
 
