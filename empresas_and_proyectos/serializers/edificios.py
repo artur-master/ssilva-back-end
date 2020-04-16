@@ -28,5 +28,5 @@ class ListEdificioSerializer(serializers.ModelSerializer):
     def get_inmuebles_edificio(self, obj):
         inmuebles_edificio = Inmueble.objects.filter(EdificioID=obj)
         serializer = InmuebleSerializer(
-            instance=inmuebles_edificio, many=True)
+            instance=inmuebles_edificio, context={'url': request}, many=True)
         return serializer.data

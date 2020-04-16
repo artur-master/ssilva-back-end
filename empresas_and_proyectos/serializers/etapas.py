@@ -100,7 +100,7 @@ class ListEtapaSerializer(serializers.ModelSerializer):
     def get_inmuebles_etapa(self, obj):
         inmuebles_etapa = Inmueble.objects.filter(EtapaID=obj, EdificioID=None)
         serializer = InmuebleSerializer(
-            instance=inmuebles_etapa, many=True)
+            instance=inmuebles_etapa, context={'url': self.context['request']}, many=True)
         return serializer.data
 
 
