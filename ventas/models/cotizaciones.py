@@ -7,7 +7,6 @@ from users.models import User
 from ventas.models.finding_contact import ContactMethodType
 from ventas.models.payment_forms import Cuota, PayType
 
-
 class CotizacionType(models.Model):
     CotizacionTypeID = models.UUIDField(
         unique=True,
@@ -17,7 +16,6 @@ class CotizacionType(models.Model):
 
     def __str__(self):
         return self.Name
-
 
 class CotizacionState(models.Model):
     CotizacionStateID = models.UUIDField(
@@ -68,7 +66,7 @@ class Cotizacion(models.Model):
         ContactMethodType,
         related_name='medio_contacto_cotizacion',
         on_delete=models.CASCADE)
-    IsNot_Investment = models.BooleanField(default=False)
+    IsNotInvestment = models.BooleanField(default=False)
     DateFirmaPromesa = models.DateTimeField(
         null=True,
         blank=True)

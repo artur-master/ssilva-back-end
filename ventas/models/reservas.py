@@ -97,7 +97,7 @@ class Reserva(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True)
-    IsNot_Investment = models.BooleanField(default=False)
+    IsNotInvestment = models.BooleanField(default=False)
     PaymentFirmaPromesa = models.DecimalField(
         max_digits=10,
         decimal_places=2,
