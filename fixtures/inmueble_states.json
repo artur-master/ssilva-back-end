@@ -14,6 +14,12 @@
     {
         "model": "empresas_and_proyectos.inmueblestate",
         "fields": {
+            "Name": "Bloqueado por ssilva"
+        }
+    },
+    {
+        "model": "empresas_and_proyectos.inmueblestate",
+        "fields": {
             "Name": "Reservado"
         }
     },
@@ -23,7 +29,7 @@
             "Name": "Promesado"
         }
     },
-        {
+    {
         "model": "empresas_and_proyectos.inmueblestate",
         "fields": {
             "Name": "Vendido"

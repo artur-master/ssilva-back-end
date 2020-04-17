@@ -1779,7 +1779,7 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
 
         output = PdfFileWriter()
         output.addPage(page)
-        for i in range(0, existing_pdf.getNumPages()):
+        for i in range(1, existing_pdf.getNumPages()):
             output.addPage(existing_pdf.getPage(i))
 
         new_name = instance.DocumentPromesa.name[15:-4] + "_firma.pdf"

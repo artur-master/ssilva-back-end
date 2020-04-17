@@ -51,7 +51,7 @@ class EtapaViewSet(viewsets.ModelViewSet):
         proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
         queryset = Etapa.objects.filter(ProyectoID=proyecto)
         queryset = ListEtapaSerializer.setup_eager_loading(queryset)
-        serializer = ListEtapaSerializer(queryset, many=True)
+        serializer = ListEtapaSerializer(queryset, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
@@ -60,7 +60,7 @@ class EtapaViewSet(viewsets.ModelViewSet):
         queryset = ListEtapaSerializer.setup_eager_loading(queryset)
         instance = get_object_or_404(queryset, EtapaID=EtapaID)
 
-        serializer = ListEtapaSerializer(instance)
+        serializer = ListEtapaSerializer(instance, context={'request': request})
         return Response(serializer.data)
 
     def create(self, request):
@@ -70,7 +70,7 @@ class EtapaViewSet(viewsets.ModelViewSet):
             data=data, context={'request': request}, many=many)
         if serializer.is_valid():
             instance = serializer.save()
-            etapa_serializer = ListEtapaSerializer(instance, many=many)
+            etapa_serializer = ListEtapaSerializer(instance, context={'request': request}, many=many)
             return Response({"detail": "Inmuebles modificados con éxito",
                              "etapa": etapa_serializer.data},
                             status=status.HTTP_200_OK)
@@ -127,7 +127,7 @@ class CreateEtapaViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Etapa agregados con éxito",
-                             "etapas": ListEtapaSerializer(instance, many=many).data},
+                             "etapas": ListEtapaSerializer(instance, context={'request': request}, many=many).data},
                             status=status.HTTP_201_CREATED)
         return Response({"detail": serializer.errors},
                         status=status.HTTP_409_CONFLICT)
@@ -140,7 +140,7 @@ class CreateEtapaViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             return Response({"detail": "Etapa modificada con éxito",
-                             "etapas": ListEtapaSerializer(instance).data},
+                             "etapas": ListEtapaSerializer(instance, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},

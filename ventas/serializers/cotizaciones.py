@@ -242,7 +242,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'PaymentInstitucionFinanciera',
             'PaymentCuotas',
             'AhorroPlus',
-            'IsNotInvestment',
+            'IsNot_Investment',
             'Cuotas',
             'Inmuebles',
             'Vendedor',
@@ -515,7 +515,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
-            'IsNotInvestment',
+            'IsNot_Investment',
             'VendedorID',
             'PayType'
         )
@@ -605,7 +605,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             CotizacionTypeID=cotizacion_type,
             ContactMethodTypeID=contact_method_type,
             PayType=paytype,
-            IsNotInvestment=validated_data['IsNotInvestment'],
+            IsNot_Investment=validated_data['IsNot_Investment'],
             DateFirmaPromesa=validated_data['DateFirmaPromesa'],
             PaymentFirmaPromesa=validated_data['PaymentFirmaPromesa'],
             PaymentFirmaEscritura=validated_data['PaymentFirmaEscritura'],
