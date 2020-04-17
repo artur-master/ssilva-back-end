@@ -385,7 +385,7 @@ def download_pdf_views(cotizacion_id, letter_size, response):
 
     pdf = render_create_cotizacion_to_pdf(context_dict, response)
 
-    name = "%s_COT_%s" % (cotizacion.Folio, cotizacion.ClienteID)
+    name = "%s_COT" % (cotizacion.Folio)
     return name
 
 def download_pre_approbation_views(reserva_id, letter_size, response):
