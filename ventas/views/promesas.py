@@ -51,8 +51,11 @@ class PromesaViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         proyecto_id = self.request.query_params.get('q', None)
-        proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
-        queryset = Promesa.objects.filter(ProyectoID=proyecto, IsOfficial=True)
+        if(proyecto_id):
+            proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
+            queryset = Promesa.objects.filter(ProyectoID=proyecto, IsOfficial=True)
+        else:
+            queryset = Promesa.objects.filter(IsOfficial=True)
         queryset = ListPromesaSerializer.setup_eager_loading(queryset)
         serializer = ListPromesaSerializer(queryset, context={'request': request}, many=True)
 

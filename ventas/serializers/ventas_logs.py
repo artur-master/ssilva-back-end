@@ -145,3 +145,34 @@ class VentaLogSerializer(serializers.ModelSerializer):
         if obj.Comment:
             return obj.Comment
         return ""
+class VentaLogUserSerializer(serializers.ModelSerializer):
+    VentaLogType = serializers.CharField(
+        source='VentaLogTypeID.Name'
+    )
+    Folio = serializers.CharField(
+        source='ProyectoID.Name'
+    )
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+    User = UserProfileSerializer(
+        source='UserID',
+        allow_null=True
+    )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+           'VentaLogTypeID', 'ProyectoID')
+        return queryset
+
+    class Meta:
+        model = VentaLog
+        fields = ('VentaLogID', 'VentaID', 'ProyectoID', 'User',
+                  'VentaLogType', 'Date', 'Comment', 'Folio')
+
+    def get_comment(self, obj):
+        if obj.Comment:
+            return obj.Comment
+        return ""
+
