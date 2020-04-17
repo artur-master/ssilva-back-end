@@ -595,6 +595,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         vendedor = get_or_none(User, UserID=validated_data['VendedorID'])
         paytype = get_or_none(PayType, PayTypeID=validated_data.get('PayType'))
         folio = proyecto.Symbol + str(counter_folio.Count)
+        
         instance = Cotizacion.objects.create(
             ProyectoID=proyecto,
             ClienteID=cliente,
@@ -605,7 +606,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             CotizacionTypeID=cotizacion_type,
             ContactMethodTypeID=contact_method_type,
             PayType=paytype,
-            IsNotInvestment=validated_data['IsNotInvestment'],
+            IsNotInvestment=validated_data.get('IsNotInvestment', False),
             DateFirmaPromesa=validated_data['DateFirmaPromesa'],
             PaymentFirmaPromesa=validated_data['PaymentFirmaPromesa'],
             PaymentFirmaEscritura=validated_data['PaymentFirmaEscritura'],

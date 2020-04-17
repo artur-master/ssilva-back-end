@@ -66,7 +66,7 @@ class Cotizacion(models.Model):
         ContactMethodType,
         related_name='medio_contacto_cotizacion',
         on_delete=models.CASCADE)
-    IsNotInvestment = models.BooleanField(default=False)
+    IsNotInvestment = models.NullBooleanField(default=False)
     DateFirmaPromesa = models.DateTimeField(
         null=True,
         blank=True)
