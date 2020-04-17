@@ -405,8 +405,11 @@ def download_pre_approbation_views(reserva_id, letter_size, response):
         client = client[0]
     else:
         client = Cliente()
-    total_liquid = client.Extra['Values'][
-                           'LiquidIncome'] + client.Extra['Values']['VariableSalary'] + client.Extra['Values']['Honoraries']
+    if 'VariableSalary' in client.Extra['Values']:
+        variableSalary = client.Extra['Values']['VariableSalary']
+    else:
+        variableSalary = 0
+    total_liquid = int(client.Extra['Values']['LiquidIncome']) + int(variableSalary) + int(client.Extra['Values']['Honoraries'])
     patrimony = Patrimony.objects.get(ClienteID=reserva.ClienteID)
     total_activos = patrimony.RealState + patrimony.CreditoHipotecario['PagosMensuales'] + patrimony.Vehicle + patrimony.DownPayment + patrimony.Other
     total_pasivos = patrimony.CreditCard['Pasivos'] + patrimony.CreditoConsumo['Pasivos'] + patrimony.PrestamoEmpleador['Pasivos'] + patrimony.DeudaIndirecta['Pasivos'] + patrimony.AnotherCredit['Pasivos'] + patrimony.CreditoComercio['Pasivos']
@@ -422,7 +425,7 @@ def download_pre_approbation_views(reserva_id, letter_size, response):
         'tamaño_letra': letter_size
     }
     pdf = render_create_pre_approbation_to_pdf(context_dict, response)
-    name = "%s_COT_%s" % (reserva.Folio, reserva.ClienteID)
+    name = "%s_COT" % (reserva.Folio)
     return name
 
 # Funcion para crear relacion entre inmueble y orientacion
