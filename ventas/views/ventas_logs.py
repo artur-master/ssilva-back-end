@@ -97,8 +97,8 @@ class VentaLogUserViewSet(viewsets.ModelViewSet):
     queryset = VentaLog.objects.all()
 
     def list(self, request):
-        queryset = VentaLog.objects.filter(UserID=request.user.id).order_by('-Date')
-        queryset = VentaLogVendedorSerializer.setup_eager_loading(queryset)
-        serializer = VentaLogVendedorSerializer(queryset, many=True)
+        log_queryset = VentaLog.objects.all().order_by('-Date')
+        queryset = VentaLogUserSerializer.setup_eager_loading(log_queryset)
+        log_serializer = VentaLogUserSerializer(queryset, many=True)
 
         return Response({"logs": serializer.data})
