@@ -67,6 +67,8 @@ from ventas.views.ventas_logs import (
     VentaLogClienteViewSet,
     VentaLogVendedorViewSet,
     VentaLogUserViewSet)
+from ventas.views.escrituras import (
+    EscrituraViewSet)
 
 router = DefaultRouter()
 
@@ -205,6 +207,8 @@ router.register('facturas-register-nota-credito', RegisterNoteCreditViewSet)
 router.register('utils-payment', UtilsPaymentViewSet)
 
 router.register('logs-dashboard',VentaLogUserViewSet)
+
+router.register('escritura', EscrituraViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

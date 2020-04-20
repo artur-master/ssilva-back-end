@@ -127,7 +127,6 @@ class ListCotizacionInmuebleSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class CotizacionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'

@@ -30,7 +30,8 @@ from ventas.models.empleadores import Empleador
 from ventas.models.empresas_compradoras import EmpresaCompradora
 from ventas.models.ofertas import Oferta
 from ventas.models.patrimonies import Patrimony
-from ventas.models.promesas import Promesa, PromesaInmueble
+from ventas.models.promesas import Promesa, PromesaInmueble, PaymentInstruction
+from ventas.models.escrituras import Escritura, TitleReports, ReportsObservations
 
 
 class FindingTypeAdmin(admin.ModelAdmin):
@@ -113,6 +114,9 @@ class ComisionInmobiliariaAdmin(admin.ModelAdmin):
     list_display = ('ProyectoID', 'PromesaFirmada', 'EscrituraFirmada', 'CierreGestion',
                     'pk')
 
+class EscrituraAdmin(admin.ModelAdmin):
+    list_display = ('ProyectoID', 'EscrituraState',
+                    'pk',)
 
 admin.site.register(Cliente, ClienteAdmin)
 admin.site.register(FindingType, FindingTypeAdmin)
@@ -140,6 +144,10 @@ admin.site.register(DocumentVenta)
 admin.site.register(Patrimony)
 admin.site.register(Promesa, PromesaAdmin)
 admin.site.register(PromesaInmueble)
+admin.site.register(PaymentInstruction)
 admin.site.register(Factura, FacturaAdmin)
 admin.site.register(FacturaInmueble, FacturaInmuebleAdmin)
 admin.site.register(ComisionInmobiliaria, ComisionInmobiliariaAdmin)
+admin.site.register(Escritura, EscrituraAdmin)
+admin.site.register(TitleReports)
+admin.site.register(ReportsObservations)
