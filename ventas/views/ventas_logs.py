@@ -5,7 +5,7 @@ from ventas.models.reservas import Reserva
 from ventas.models.promesas import Promesa
 from ventas.models.cotizaciones import Cotizacion
 from ventas.models.ofertas import Oferta
-from ventas.serializers.ventas_logs import VentaLogClienteSerializer, VentaLogVendedorSerializer, VentaLogSerializer
+from ventas.serializers.ventas_logs import VentaLogClienteSerializer, VentaLogVendedorSerializer, VentaLogSerializer, VentaLogUserSerializer
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -101,4 +101,27 @@ class VentaLogUserViewSet(viewsets.ModelViewSet):
         queryset = VentaLogUserSerializer.setup_eager_loading(log_queryset)
         log_serializer = VentaLogUserSerializer(queryset, many=True)
 
-        return Response({"logs": serializer.data})
+        cotizacion_data = Cotizacion.objects.all()
+
+        reserva_data = Reserva.objects.all()
+        reserva_pending_data = reserva_data.exclude(
+            ReservaStateID__Name='Oferta')     
+
+        oferta_data = Oferta.objects.all()
+        oferta_pending_data = oferta_data.exclude(OfertaState='Promesa')
+
+        promesa_data = Promesa.objects.all()
+        promesa_pending_data = promesa_data.exclude(
+            PromesaState='Pendiente firma inmobiliaria')
+        
+        counter = [("Reservas" , {'total': reserva_data.count(),
+                                  'Pending': reserva_pending_data.count()}),
+                   ("Ofertas", {'total': oferta_data.count(),
+                                'Pending': oferta_pending_data.count()}),
+                   ("Promesas", {'total': promesa_data.count(),
+                                 'Pending': promesa_pending_data.count()}),
+                   ("Escrituras", {'total': oferta_data.count(),
+                                  'Pending': oferta_pending_data.count()})]
+        
+        return Response({"logs": log_serializer.data, 
+                         "count": counter})
