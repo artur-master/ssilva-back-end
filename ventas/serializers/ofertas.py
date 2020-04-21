@@ -1269,3 +1269,36 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ListOfertaActionSerializer(serializers.ModelSerializer):
+
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    Date = serializers.SerializerMethodField('get_date')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+
+    class Meta:
+        model = Oferta
+        fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
+                  'Date', 'ApprovedUserInfo', 'SaleState')
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
+        user = getattr(venta_log, 'UserID')
+        UserProFileSerializer = UserProfileSerializer(instance=user)
+        return UserProFileSerializer.data
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_state(self, obj):
+        try:
+            return obj.OfertaState+" oferta"
+        except AttributeError:
+            return ""
