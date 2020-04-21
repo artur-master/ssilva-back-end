@@ -19,6 +19,17 @@ class EscrituraSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True)
     SubmissionDate = serializers.SerializerMethodField('get_submission_date')
+    CustomerCheckingAccount = serializers.SerializerMethodField('get_customer_url')
+    PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')
+    ReceptionDate = serializers.SerializerMethodField('get_reception_date')
+    RealEstateLawDate = serializers.SerializerMethodField('get_realestatelaw_date')
+    RealEstateLawFile = serializers.SerializerMethodField('get_realestate_url')
+    PlansConservatorDate = serializers.SerializerMethodField('get_plansconservator_date')
+    PlansConservatorFile = serializers.SerializerMethodField('get_plans_url')
+    DeedStartDate = serializers.SerializerMethodField('get_deedstart_date')        
+    MatrixDeed = serializers.SerializerMethodField('get_matrix_deed_url')
+    MatrixInstructions = serializers.SerializerMethodField('get_matrix_instructions_url')
+    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -35,6 +46,28 @@ class EscrituraSerializer(serializers.ModelSerializer):
             'Proyecto',
             'EscrituraState',
             'SubmissionDate',
+            'CarepetaFisicaState',
+            'PromesaInstructions',
+            'AgreedDeedDate',
+            'DepartmentDeliveryDate',
+            'SpecialWithdrawalClause',     
+            'ModificationFinesClause',     
+            'SpecialCommunication',
+            'HasPromotion',
+            'CustomerCheckingAccount',
+            'PowersCharacteristics',
+            'ReceptionDate',
+            'RealEstateLawDate',
+            'RealEstateLawFile',
+            'PlansConservatorDate',
+            'PlansConservatorFile',
+            'DeedStartDate',
+            'AprobacionCreditoState',
+            'DeclarePhysicalFolderState',                
+            'MatrixDeed',
+            'MatrixInstructions',
+            'PromesaDeed',
+            'PromesaCoinciden',
         )
 
     def get_submission_date(self, obj):
@@ -42,7 +75,77 @@ class EscrituraSerializer(serializers.ModelSerializer):
             return obj.SubmissionDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
-    
+    def get_reception_date(self, obj):
+        try:
+            return obj.ReceptionDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_realestatelaw_date(self, obj):
+        try:
+            return obj.RealEstateLawDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_plansconservator_date(self, obj):
+        try:
+            return obj.PlansConservatorDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_deedstart_date(self, obj):
+        try:
+            return obj.DeedStartDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+
+    def get_customer_url(self, obj):
+        if obj.CustomerCheckingAccount and hasattr(
+                obj.CustomerCheckingAccount, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            print(absolute_url, "asdfasd")
+            return "%s%s" % (absolute_url, obj.CustomerCheckingAccount.url)
+        else:
+            return ""
+    def get_powers_url(self, obj):
+        if obj.PowersCharacteristics and hasattr(
+                obj.PowersCharacteristics, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PowersCharacteristics.url)
+        else:
+            return ""
+    def get_realestate_url(self, obj):
+        if obj.RealEstateLawFile and hasattr(
+                obj.RealEstateLawFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RealEstateLawFile.url)
+        else:
+            return ""
+    def get_plans_url(self, obj):
+        if obj.PlansConservatorFile and hasattr(
+                obj.PlansConservatorFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PlansConservatorFile.url)
+        else:
+            return ""
+    def get_matrix_deed_url(self, obj):
+        if obj.MatrixDeed and hasattr(
+                obj.MatrixDeed, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.MatrixDeed.url)
+        else:
+            return ""
+    def get_matrix_instructions_url(self, obj):
+        if obj.MatrixInstructions and hasattr(
+                obj.MatrixInstructions, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.MatrixInstructions.url)
+        else:
+            return ""
+    def get_promesa_url(self, obj):
+        if obj.PromesaDeed and hasattr(
+                obj.PromesaDeed, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PromesaDeed.url)
+        else:
+            return ""
 
 class CreateEscrituraSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.UUIDField(
@@ -85,6 +188,16 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'EscrituraID',
             'EscrituraState',
             'SubmissionDate',
+            'CarepetaFisicaState',
+            'PromesaInstructions',
+            'AgreedDeedDate',
+            'DepartmentDeliveryDate',
+            'SpecialWithdrawalClause',
+            'ModificationFinesClause',
+            'SpecialCommunication',
+            'HasPromotion',
+            'CustomerCheckingAccount',
+            'PowersCharacteristics',
         )
     
     def update(self, instance, validated_data):
@@ -94,6 +207,26 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         instance.EscrituraState = validated_data['EscrituraState']
         if 'SubmissionDate' in validated_data:
             instance.SubmissionDate = validated_data['SubmissionDate']
+        if 'CarepetaFisicaState' in validated_data:
+            instance.CarepetaFisicaState = validated_data['CarepetaFisicaState']
+        if 'PromesaInstructions' in validated_data:
+            instance.PromesaInstructions = validated_data['PromesaInstructions']
+        if 'AgreedDeedDate' in validated_data:
+            instance.AgreedDeedDate = validated_data['AgreedDeedDate']
+        if 'DepartmentDeliveryDate' in validated_data:
+            instance.DepartmentDeliveryDate = validated_data['DepartmentDeliveryDate']
+        if 'SpecialWithdrawalClause' in validated_data:
+            instance.SpecialWithdrawalClause = validated_data['SpecialWithdrawalClause']
+        if 'ModificationFinesClause' in validated_data:
+            instance.ModificationFinesClause = validated_data['ModificationFinesClause']
+        if 'SpecialCommunication' in validated_data:
+            instance.SpecialCommunication = validated_data['SpecialCommunication']
+        if 'HasPromotion' in validated_data:
+            instance.HasPromotion = validated_data['HasPromotion']
+        if 'CustomerCheckingAccount' in validated_data:
+            instance.CustomerCheckingAccount = validated_data['CustomerCheckingAccount']
+        if 'PowersCharacteristics' in validated_data:
+            instance.PowersCharacteristics = validated_data['PowersCharacteristics']
         
         instance.save()
 
