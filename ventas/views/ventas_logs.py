@@ -92,7 +92,7 @@ class VentaLogViewSet(viewsets.ModelViewSet):
         serializer = VentaLogSerializer(queryset, many=True)
 
         return Response(serializer.data)
-<<<<<<< HEAD
+
 
 class VentaLogUserViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -253,5 +253,4 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
         return Response({
             "logs": "ok",
         })
-=======
->>>>>>> 906c3409eb37e21c5c677fc9fe689c111c7946e6
+
