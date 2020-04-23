@@ -11,6 +11,8 @@ class DocumentVenta(models.Model):
     DocumentFirmadoCheques = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
         
+    DocumentFirmadoCotizacion = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
     DocumentFirmadoSimulador = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentFirmadoFichaPreAprobacion = models.FileField(

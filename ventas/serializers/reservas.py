@@ -1,4 +1,5 @@
 import decimal
+from django.http import HttpResponse
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -8,7 +9,9 @@ from sgi_web_back_project import settings
 from users.models import User
 
 from common import constants
-from common.services import get_full_path_x
+from common.services import (
+    get_full_path_x,
+    download_pdf_views)
 from common.generate_pdf import (
     render_create_oferta_to_pdf,
     render_create_ficha_to_pdf,
@@ -1061,12 +1064,18 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             ProyectoID=proyecto,
             VentaLogTypeID=venta_log_type,
         )
+        
+        cotizacion_pdf = download_pdf_views(cotizacion_id, 80, HttpResponse(content_type='application/pdf'))
+        filename = "%s_CDC_%s.pdf" % (instance.Folio, cliente)
+        cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
+        cotizacion_pdf_generated.name = filename
 
         try:
             documents = get_object_or_404(DocumentVenta, Folio=instance.Folio)
             documents.DocumentOferta = oferta_pdf_generated
             documents.DocumentFichaPreAprobacion = ficha_pdf_generated
             documents.DocumentSimulador = simulador_pdf_generated
+            documents.DocumentCotizacion = cotizacion_pdf_generated
             documents.save()
         except:
             DocumentVenta.objects.create(
@@ -1074,6 +1083,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 DocumentOferta=oferta_pdf_generated,
                 DocumentFichaPreAprobacion=ficha_pdf_generated,
                 DocumentSimulador=simulador_pdf_generated,
+                DocumentCotizacion = cotizacion_pdf_generated,
             )
         return instance
 
@@ -2055,7 +2065,11 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
-    DocumentCotizacion = serializers.FileField(
+    # DocumentCotizacion = serializers.FileField(
+    #     allow_empty_file=True,
+    #     required=False
+    # )
+    DocumentFirmadoCotizacion = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
@@ -2247,7 +2261,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'Folio',
             'DocumentOfertaFirmada',
             'DocumentPlanoFirmada',
-            'DocumentCotizacion',
+            'DocumentFirmadoCotizacion',
             'DocumentFirmadoCheques',
             'DocumentFirmadoSimulador',
             'DocumentFirmadoFichaPreAprobacion',
@@ -2294,10 +2308,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
 
         documents, aux = DocumentVenta.objects.get_or_create(Folio=folio)  # noqa
 
-        if 'DocumentCotizacion' in validated_data:
-            documents.DocumentCotizacion = validated_data['DocumentCotizacion']
-        if 'DocumentFirmadoCheques' in validated_data:
-            documents.DocumentFirmadoCheques = validated_data['DocumentFirmadoCheques']
+        if 'DocumentFirmadoCotizacion' in validated_data:
+            documents.DocumentFirmadoCotizacion = validated_data['DocumentFirmadoCotizacion']
+        # if 'DocumentFirmadoCheques' in validated_data:
+        #     documents.DocumentFirmadoCheques = validated_data['DocumentFirmadoCheques']
         if 'DocumentFirmadoSimulador' in validated_data:
             documents.DocumentFirmadoSimulador = validated_data['DocumentFirmadoSimulador']
         if 'DocumentFirmadoFichaPreAprobacion' in validated_data:
@@ -2311,6 +2325,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         if 'DocumentSimulador' in validated_data:
             documents.DocumentSimulador = validated_data['DocumentSimulador']
         '''
+
         if 'DocumentOfertaFirmada' in validated_data:
             documents.DocumentOfertaFirmada = validated_data['DocumentOfertaFirmada']
         if 'DocumentPlanoFirmada' in validated_data:

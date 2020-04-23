@@ -6,6 +6,8 @@ from common.services import get_full_path_x
 class DocumentVentaSerializer(serializers.ModelSerializer):
     DocumentCotizacion = serializers.SerializerMethodField(
         'get_cotizacion_url')
+    DocumentFirmadoCotizacion = serializers.SerializerMethodField(
+        'get_firmadocotizacion_url')
     DocumentFirmadoCheques = serializers.SerializerMethodField(
         'get_firmadocheques_url')
     DocumentFirmadoSimulador = serializers.SerializerMethodField(
@@ -102,7 +104,8 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DocumentVenta
-        fields = ('DocumentCotizacion', 'DocumentFirmadoCheques', 'DocumentFirmadoSimulador','DocumentFirmadoFichaPreAprobacion', 
+        fields = ('DocumentCotizacion', 'DocumentFirmdaoCotizacion', 'DocumentFirmadoCheques',
+                  'DocumentFirmadoSimulador', 'DocumentFirmadoFichaPreAprobacion', 
                   'DocumentOferta', 'DocumentOfertaFirmada', 'DocumentPlanoFirmada', 'DocumentFichaPreAprobacion',
                   'DocumentSimulador', 'DocumentCertificadoMatrimonio', 'DocumentConstitucionSociedad',
                   'DocumentPagoGarantia', 'DocumentFotocopiaCarnet', 'DocumentPreApprobation', 'DocumentLiquidacion1',
@@ -127,6 +130,15 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
             return "%s%s" % (absolute_url, obj.DocumentCotizacion.url)
+        else:
+            return ""
+
+    def get_firmadocotizacion_url(self, obj):
+        if obj.DocumentFirmdoCotizacion and hasattr(
+                obj.DocumentFirmdoCotizacion, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentFirmdoCotizacion.url)
         else:
             return ""
 

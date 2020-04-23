@@ -100,7 +100,6 @@ class EscrituraSerializer(serializers.ModelSerializer):
         if obj.CustomerCheckingAccount and hasattr(
                 obj.CustomerCheckingAccount, 'url'):
             absolute_url = get_full_path_x(self.context['request'])
-            print(absolute_url, "asdfasd")
             return "%s%s" % (absolute_url, obj.CustomerCheckingAccount.url)
         else:
             return ""
