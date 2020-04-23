@@ -65,10 +65,13 @@ from ventas.views.utils import (
 from ventas.views.ventas_logs import (
     VentaLogViewSet,
     VentaLogClienteViewSet,
-    VentaLogVendedorViewSet,
-    VentaLogUserViewSet)
+    VentaLogVendedorViewSet)
 from ventas.views.escrituras import (
     EscrituraViewSet)
+from ventas.views.dashboard import (
+    PendingActionsViewSet,
+    AllLogsViewSet,
+    AllUserViewSet)
 
 router = DefaultRouter()
 
@@ -206,7 +209,9 @@ router.register('facturas-register-nota-credito', RegisterNoteCreditViewSet)
 
 router.register('utils-payment', UtilsPaymentViewSet)
 
-router.register('logs-dashboard',VentaLogUserViewSet)
+router.register('dashboard-pending-actions', PendingActionsViewSet)
+router.register('all-users', AllUserViewSet)
+router.register('all-logs-dashboard', AllLogsViewSet)
 
 router.register('escritura', EscrituraViewSet)
 
