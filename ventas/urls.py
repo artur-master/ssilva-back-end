@@ -66,7 +66,6 @@ from ventas.views.ventas_logs import (
     VentaLogViewSet,
     VentaLogClienteViewSet,
     VentaLogVendedorViewSet,
-    VentaLogUserViewSet,
     UserSummaryViewSet)
 
 from ventas.views.escrituras import (
