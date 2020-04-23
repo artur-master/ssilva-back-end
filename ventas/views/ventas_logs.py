@@ -14,7 +14,6 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from common import constants
 
 class VentaLogClienteViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -93,6 +92,7 @@ class VentaLogViewSet(viewsets.ModelViewSet):
         serializer = VentaLogSerializer(queryset, many=True)
 
         return Response(serializer.data)
+<<<<<<< HEAD
 
 class VentaLogUserViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -253,3 +253,5 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
         return Response({
             "logs": "ok",
         })
+=======
+>>>>>>> 906c3409eb37e21c5c677fc9fe689c111c7946e6
