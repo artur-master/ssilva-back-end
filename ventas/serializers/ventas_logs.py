@@ -1,5 +1,7 @@
 from users.serializers.users import UserProfileSerializer
+from users.serializers.roles import RoleNameIDSerializer, RoleIDSerializer
 from ventas.models.ventas_logs import VentaLog
+from users.models import User, Role
 from rest_framework import serializers
 
 from ventas.serializers.clientes import ClienteSerializer
@@ -176,3 +178,19 @@ class VentaLogUserSerializer(serializers.ModelSerializer):
             return obj.Comment
         return ""
 
+
+class UserSummarySerializer(serializers.ModelSerializer):
+    Tipo = RoleIDSerializer(
+        source='RoleID',
+        many=True
+    )
+
+    Nombre = serializers.SerializerMethodField('get_nombre')
+
+
+    class Meta:
+        model = User
+        fields = ('id', 'Nombre', 'Tipo')
+
+    def get_nombre(self, obj):
+        return obj.Name + ' ' + obj.LastNames

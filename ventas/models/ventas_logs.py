@@ -55,3 +55,17 @@ class VentaLog(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.VentaLogTypeID.Name, self.UserID)
+
+
+class UserSummary(models.Model):
+    Nombre = models.CharField(max_length=50)
+    UserId = models.IntegerField()
+    Tipo = models.CharField(max_length=50)
+    UltimaActividad = models.TextField()
+    Pendientes = models.TextField()
+    TotalUFMes = models.IntegerField()
+    TotalUFAno = models.IntegerField()
+    ProyectosAsignados = models.TextField()
+
+    class Meta:
+        db_table = 'ventas_user_summary'
