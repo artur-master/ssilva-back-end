@@ -14,6 +14,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from common import constants
 
 class VentaLogClienteViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -239,16 +240,16 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
                     ProyectosAsignados=proyectos_asignados
                 )
                 user_summary.save()
-            else:
-                user_summary.Nombre = nombre,
-                user_summary.UserId = user_id,
-                user_summary.Tipo = tipo_field,
-                user_summary.UltimaActividad = ultima_actividad,
-                user_summary.Pendientes = pendientes,
-                user_summary.TotalUFMes = total_uf_mes,
-                user_summary.TotalUFAno = total_uf_ano,
-                user_summary.ProyectosAsignados = proyectos_asignados
-                user_summary.save()
+            # else:
+                # user_summary.Nombre = nombre,
+                # user_summary.UserId = user_id,
+                # user_summary.Tipo = tipo_field,
+                # user_summary.UltimaActividad = ultima_actividad,
+                # user_summary.Pendientes = pendientes,
+                # user_summary.TotalUFMes = total_uf_mes,
+                # user_summary.TotalUFAno = total_uf_ano,
+                # user_summary.ProyectosAsignados = proyectos_asignados
+                # user_summary.save()
 
         return Response({
             "logs": "ok",
