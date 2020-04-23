@@ -2458,3 +2458,43 @@ class ListReservaActionSerializer(serializers.ModelSerializer):
             return obj.ReservaStateID.Name+" reserva"
         except AttributeError:
             return ""
+
+
+class UserReservaActionSerializer(serializers.ModelSerializer):
+    Date = serializers.SerializerMethodField('get_date')
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related('ReservaStateID')
+        return queryset
+
+    class Meta:
+        model = Reserva
+        fields = ('ReservaID', 'Date', 'Folio', 'ProyectoID',
+                  'SaleState', 'ApprovedUserInfo')
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.ReservaID).order_by('-Date').first()
+        if venta_log:
+            user = getattr(venta_log, 'UserID')
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        else:
+            return None
+
+    def get_state(self, obj):
+        try:
+            return obj.ReservaStateID.Name + " reserva"
+        except AttributeError:
+            return ""

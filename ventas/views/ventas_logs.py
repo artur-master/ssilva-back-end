@@ -1,3 +1,4 @@
+import datetime
 from ventas.models.clientes import Cliente
 from ventas.models.ventas_logs import VentaLog, UserSummary
 from users.models import User
@@ -6,15 +7,16 @@ from ventas.models.promesas import Promesa
 from ventas.models.cotizaciones import Cotizacion
 from ventas.models.ofertas import Oferta
 from ventas.serializers.ventas_logs import VentaLogClienteSerializer, VentaLogVendedorSerializer, VentaLogSerializer, VentaLogUserSerializer, UserSummarySerializer
-from ventas.serializers.reservas import ListReservaSerializer, ListReservaActionSerializer
-from ventas.serializers.cotizaciones import ListCotizacionActionSerializer
-from ventas.serializers.ofertas import ListOfertaActionSerializer
-from ventas.serializers.promesas import ListPromesaActionSerializer
+from ventas.serializers.reservas import ListReservaSerializer, ListReservaActionSerializer, UserReservaActionSerializer
+from ventas.serializers.cotizaciones import ListCotizacionActionSerializer, UserCotizacionActionSerializer
+from ventas.serializers.ofertas import ListOfertaActionSerializer, UserOfertaActionSerializer
+from ventas.serializers.promesas import ListPromesaActionSerializer, UserPromesaActionSerializer
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from common import constants
+from empresas_and_proyectos.models.proyectos import Proyecto
 
 class VentaLogClienteViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -113,32 +115,55 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
             user_id = user['id']
             nombre = user['Nombre']
             tipos = user['Tipo']
-            tipo_field = ''
-            for tipo in tipos:
-                tipo_field = tipo['Name'] + ', ' + tipo_field
+            tipo = ""
+            ultima_actividad = ""
+            pendientes = ""
+            total_uf_mes = 0
+            total_uf_ano = 0
+            proyectos_asignados = ""
+
+            tipo = ",".join(item['Name'] for item in tipos)
 
             log_queryset = VentaLog.objects.filter(UserID=user_id).order_by('-Date').first()
             log_serializer = VentaLogUserSerializer(log_queryset)
             ultima_actividad = log_serializer.data['VentaLogType']
 
-            cotizacion_data = Cotizacion.objects.all()
+            projects = Proyecto.objects.filter(
+                UserProyecto__id=user_id
+            ).distinct()
+
+
+            proyectos_asignados = ','.join(project.Name for project in projects)
+
+            today = datetime.datetime.now()
+            current_promesas = Promesa.objects.\
+                filter(ProyectoID__in=projects, IsOfficial=True).\
+                filter(Date__year=today.year, Date__month=today.month)
+            total_uf_mes = len(current_promesas)
+
+            last_promesas = Promesa.objects. \
+                filter(ProyectoID__in=projects, IsOfficial=True). \
+                filter(Date__year=today.year-1, Date__month=today.month)
+            total_uf_ano = len(last_promesas)
+
+            cotizacion_data = Cotizacion.objects. filter(ProyectoID__in=projects)
             cotizacion_queryset = cotizacion_data.filter(CotizacionStateID__Name=constants.COTIZATION_STATE[0])
-            cotizationAction = self.get_data(ListCotizacionActionSerializer, cotizacion_queryset)
+            cotizationAction = self.get_data(UserCotizacionActionSerializer, cotizacion_queryset)
 
-            # reserva_data = Reserva.objects.all()
-            # reserva_pending_data = reserva_data.exclude(
-            #     ReservaStateID__Name='Oferta')
-            # reserva_queryset = reserva_data.filter(
-            #     ReservaStateID__Name__in=[constants.RESERVA_STATE[0], constants.RESERVA_STATE[1]])
-            # reservaAction = self.get_data(ListReservaActionSerializer, reserva_queryset)
+            reserva_data = Reserva.objects.filter(ProyectoID__in=projects)
+            reserva_pending_data = reserva_data.exclude(
+                ReservaStateID__Name='Oferta')
+            reserva_queryset = reserva_data.filter(
+                ReservaStateID__Name__in=[constants.RESERVA_STATE[0], constants.RESERVA_STATE[1]])
+            reservaAction = self.get_data(UserReservaActionSerializer, reserva_queryset)
 
-            oferta_data = Oferta.objects.all()
+            oferta_data = Oferta.objects.filter(ProyectoID__in=projects)
             oferta_pending_data = oferta_data.exclude(OfertaState='Promesa')
             oferta_queryset = oferta_data.filter(
                 OfertaState__in=[constants.OFERTA_STATE[0], constants.OFERTA_STATE[1]])
-            oferta_serializer = ListOfertaActionSerializer(oferta_queryset, many=True)
+            oferta_serializer = UserOfertaActionSerializer(oferta_queryset, many=True)
 
-            promesa_data = Promesa.objects.all()
+            promesa_data = Promesa.objects.filter(ProyectoID__in=projects)
             promesa_pending_data = promesa_data.exclude(
                 PromesaState='Pendiente firma inmobiliaria')
             promesa_queryset = promesa_data.filter(
@@ -148,43 +173,24 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
                     constants.PROMESA_STATE[11],
                     constants.PROMESA_STATE[13]]
             )
-            promesa_serializer = ListPromesaActionSerializer(promesa_queryset, many=True)
+            promesa_serializer = UserPromesaActionSerializer(promesa_queryset, many=True)
 
-            pendientes = dict(Cotizacion=cotizationAction,
-                              # Reserva=reservaAction,
-                              Ofertas=oferta_serializer.data,
-                              Promesa=promesa_serializer.data)
-            pendientes = ""
-            total_uf_mes = promesa_data.count()
-            total_uf_ano = promesa_data.count()
-            proyectos_asignados = ""
+            cotization = ','.join(item['SaleState'] for item in cotizationAction)
+            reserva = ','.join(item['SaleState'] for item in reservaAction)
+            oferta = ','.join(item['SaleState'] for item in oferta_serializer.data)
+            promesa = ','.join(item['SaleState'] for item in promesa_serializer.data)
+            pendientes = ','.join([cotization, reserva, oferta, promesa])
 
-            user_summary = UserSummary.objects.filter(
-                UserId=user_id
-            ).first()
-
-            if user_summary is None:
-                user_summary = UserSummary(
-                    Nombre=nombre,
-                    UserId=user_id,
-                    Tipo=tipo_field,
-                    UltimaActividad=ultima_actividad,
-                    Pendientes=pendientes,
-                    TotalUFMes=total_uf_mes,
-                    TotalUFAno=total_uf_ano,
-                    ProyectosAsignados=proyectos_asignados
-                )
-                user_summary.save()
-            # else:
-                # user_summary.Nombre = nombre,
-                # user_summary.UserId = user_id,
-                # user_summary.Tipo = tipo_field,
-                # user_summary.UltimaActividad = ultima_actividad,
-                # user_summary.Pendientes = pendientes,
-                # user_summary.TotalUFMes = total_uf_mes,
-                # user_summary.TotalUFAno = total_uf_ano,
-                # user_summary.ProyectosAsignados = proyectos_asignados
-                # user_summary.save()
+            user_summary, created = UserSummary.objects.get_or_create(UserId=user_id)
+            user_summary.Nombre = nombre
+            user_summary.UserId = user_id
+            user_summary.Tipo = tipo
+            user_summary.UltimaActividad = ultima_actividad
+            user_summary.Pendientes = pendientes
+            user_summary.TotalUFMes = total_uf_mes
+            user_summary.TotalUFAno = total_uf_ano
+            user_summary.ProyectosAsignados = proyectos_asignados
+            user_summary.save()
 
         return Response({
             "logs": "ok",

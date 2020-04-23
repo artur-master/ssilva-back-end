@@ -58,14 +58,14 @@ class VentaLog(models.Model):
 
 
 class UserSummary(models.Model):
-    Nombre = models.CharField(max_length=50)
-    UserId = models.IntegerField()
-    Tipo = models.CharField(max_length=50)
-    UltimaActividad = models.TextField()
-    Pendientes = models.TextField()
-    TotalUFMes = models.IntegerField()
-    TotalUFAno = models.IntegerField()
-    ProyectosAsignados = models.TextField()
+    Nombre = models.TextField(blank=True, null=True)
+    UserId = models.IntegerField(blank=True, null=True)
+    Tipo = models.TextField(blank=True, null=True)
+    UltimaActividad = models.TextField(blank=True, null=True)
+    Pendientes = models.TextField(blank=True, null=True)
+    TotalUFMes = models.IntegerField(blank=True, null=True)
+    TotalUFAno = models.IntegerField(blank=True, null=True)
+    ProyectosAsignados = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'ventas_user_summary'
