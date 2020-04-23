@@ -228,18 +228,18 @@ class UserSummaryViewSet(viewsets.ModelViewSet):
                 UserId=user_id
             ).first()
 
-            if user_summary is None:
-                user_summary = UserSummary(
-                    Nombre=nombre,
-                    UserId=user_id,
-                    Tipo=tipo_field,
-                    UltimaActividad=ultima_actividad,
-                    Pendientes=pendientes,
-                    TotalUFMes=total_uf_mes,
-                    TotalUFAno=total_uf_ano,
-                    ProyectosAsignados=proyectos_asignados
-                )
-                user_summary.save()
+            # if user_summary is None:
+            #     user_summary = UserSummary(
+            #         Nombre=nombre,
+            #         UserId=user_id,
+            #         Tipo=tipo_field,
+            #         UltimaActividad=ultima_actividad,
+            #         Pendientes=pendientes,
+            #         TotalUFMes=total_uf_mes,
+            #         TotalUFAno=total_uf_ano,
+            #         ProyectosAsignados=proyectos_asignados
+            #     )
+            #     user_summary.save()
             # else:
                 # user_summary.Nombre = nombre,
                 # user_summary.UserId = user_id,
