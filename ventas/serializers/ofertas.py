@@ -1279,11 +1279,14 @@ class ListOfertaActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='OfertaID'
+    )
 
     class Meta:
         model = Oferta
         fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
-                  'Date', 'ApprovedUserInfo', 'SaleState')
+                  'Date', 'ApprovedUserInfo', 'SaleState', 'VentaID')
 
     def get_user(self, obj):
         venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()

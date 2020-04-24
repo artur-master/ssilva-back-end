@@ -2430,6 +2430,9 @@ class ListReservaActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='ReservaID'
+    )
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -2439,7 +2442,7 @@ class ListReservaActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserva
         fields = ('ReservaID', 'Date', 'Folio', 'ProyectoID',
-                  'SaleState', 'ApprovedUserInfo')
+                  'SaleState', 'ApprovedUserInfo', 'VentaID')
 
     def get_date(self, obj):
         try:

@@ -715,6 +715,9 @@ class ListCotizacionActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='CotizacionID'
+    )
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -727,7 +730,7 @@ class ListCotizacionActionSerializer(serializers.ModelSerializer):
         model = Cotizacion
         fields = (
             'CotizacionID', 'ProyectoID',
-            'Folio', 'SaleState',
+            'Folio', 'SaleState', 'VentaID',
             'Date', 'ApprovedUserInfo'
         )
 
