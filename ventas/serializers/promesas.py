@@ -1841,11 +1841,15 @@ class ListPromesaActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='PromesaID'
+    )
 
     class Meta:
         model = Promesa
         fields = ('PromesaID', 'Date', 'Folio', 'PromesaState', 
-                  'SaleState', 'ApprovedUserInfo', 'ProyectoID')
+                  'SaleState', 'ApprovedUserInfo', 'ProyectoID', 
+                  'VentaID')
 
     def get_date(self, obj):
         try:
