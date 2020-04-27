@@ -715,6 +715,9 @@ class ListCotizacionActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='CotizacionID'
+    )
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -727,7 +730,7 @@ class ListCotizacionActionSerializer(serializers.ModelSerializer):
         model = Cotizacion
         fields = (
             'CotizacionID', 'ProyectoID',
-            'Folio', 'SaleState',
+            'Folio', 'SaleState', 'VentaID',
             'Date', 'ApprovedUserInfo'
         )
 
@@ -746,5 +749,50 @@ class ListCotizacionActionSerializer(serializers.ModelSerializer):
     def get_state(self, obj):
         try:
             return obj.CotizacionStateID.Name+" cotizacion"
+        except AttributeError:
+            return ""
+
+
+class UserCotizacionActionSerializer(serializers.ModelSerializer):
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    Date = serializers.SerializerMethodField('get_date')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'CotizacionStateID'
+        )
+        return queryset
+
+    class Meta:
+        model = Cotizacion
+        fields = (
+            'CotizacionID', 'ProyectoID',
+            'Folio', 'SaleState',
+            'Date', 'ApprovedUserInfo'
+        )
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.CotizacionID).order_by('-Date').first()
+        if venta_log:
+            user = getattr(venta_log, 'UserID')
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        else:
+            return None
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_state(self, obj):
+        try:
+            return obj.CotizacionStateID.Name + " cotizacion"
         except AttributeError:
             return ""

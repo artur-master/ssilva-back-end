@@ -1841,11 +1841,15 @@ class ListPromesaActionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
     )
+    VentaID = serializers.CharField(
+        source='PromesaID'
+    )
 
     class Meta:
         model = Promesa
         fields = ('PromesaID', 'Date', 'Folio', 'PromesaState', 
-                  'SaleState', 'ApprovedUserInfo', 'ProyectoID')
+                  'SaleState', 'ApprovedUserInfo', 'ProyectoID', 
+                  'VentaID')
 
     def get_date(self, obj):
         try:
@@ -1858,6 +1862,41 @@ class ListPromesaActionSerializer(serializers.ModelSerializer):
         user = getattr(venta_log, 'UserID')
         UserProFileSerializer = UserProfileSerializer(instance=user)
         return UserProFileSerializer.data
+
+    def get_state(self, obj):
+        try:
+            return obj.PromesaState+" promesa"
+        except AttributeError:
+            return ""
+
+
+class UserPromesaActionSerializer(serializers.ModelSerializer):
+    Date = serializers.SerializerMethodField('get_date')
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+
+    class Meta:
+        model = Promesa
+        fields = ('PromesaID', 'Date', 'Folio', 'PromesaState',
+                  'SaleState', 'ApprovedUserInfo', 'ProyectoID')
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.PromesaID).order_by('-Date').first()
+        if venta_log:
+            user = getattr(venta_log, 'UserID')
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        else:
+            return None
 
     def get_state(self, obj):
         try:
