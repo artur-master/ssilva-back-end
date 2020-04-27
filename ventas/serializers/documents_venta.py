@@ -17,9 +17,9 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
     DocumentOferta = serializers.SerializerMethodField(
         'get_oferta_url')
     DocumentOfertaFirmada = serializers.SerializerMethodField(
-        'get_oferta_firmada_url')    
+        'get_oferta_firmada_url')
     DocumentPlanoFirmada = serializers.SerializerMethodField(
-        'get_plano_firmada_url')    
+        'get_plano_firmada_url')
     DocumentFichaPreAprobacion = serializers.SerializerMethodField(
         'get_ficha_url')
     DocumentSimulador = serializers.SerializerMethodField(

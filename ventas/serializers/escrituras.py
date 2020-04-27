@@ -2,31 +2,49 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from rest_framework import serializers, status
 
+from common import constants
 from common.services import get_full_path_x, return_current_user, get_or_none
-from ventas.models.escrituras import (Escritura, TitleReports)
-from empresas_and_proyectos.models.proyectos import Proyecto
+from ventas.models.escrituras import Escritura, AprobacionCreditos
+from ventas.models.promesas import Promesa, PromesaInmueble
+from empresas_and_proyectos.models.proyectos import UserProyectoType, UserProyecto, Proyecto
+from ventas.models.ventas_logs import VentaLog, VentaLogType
+from users.models import User, Permission
+from ventas.serializers.clientes import ClienteSerializer
+from ventas.serializers.reservas import ListReservaInmuebleSerializer
+
+def create_escritura(proyecto, promesa):
+    instance = Escritura.objects.filter(PromesaID=promesa)
+    if len(instance) > 0:
+        instance = instance[0]
+    else:
+        instance = Escritura(
+            PromesaID=promesa,
+            ProyectoID=proyecto
+        )
+    
+    instance.save()
+
+    # AprobacionCreditos.objects.filter(PromesaID=instance).delete()
+    # AprobacionCreditos.objects.bulk_create()
+
 
 class EscrituraSerializer(serializers.ModelSerializer):    
     ProyectoID = serializers.CharField(
-        source='ProyectoID.ProyectoID'
-    )
+        source='ProyectoID.ProyectoID')
     Proyecto = serializers.CharField(
-        source='ProyectoID.Name'
-    )
+        source='ProyectoID.Name')
     EscrituraState = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False,
         read_only=True)
-    SubmissionDate = serializers.SerializerMethodField('get_submission_date')
+    Folio = serializers.CharField(
+        source='PromesaID.Folio')    
+    Cliente = ClienteSerializer(
+        source='PromesaID.ClienteID',
+        allow_null=True )
     CustomerCheckingAccount = serializers.SerializerMethodField('get_customer_url')
-    PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')
-    ReceptionDate = serializers.SerializerMethodField('get_reception_date')
-    RealEstateLawDate = serializers.SerializerMethodField('get_realestatelaw_date')
-    RealEstateLawFile = serializers.SerializerMethodField('get_realestate_url')
-    PlansConservatorDate = serializers.SerializerMethodField('get_plansconservator_date')
-    PlansConservatorFile = serializers.SerializerMethodField('get_plans_url')
-    DeedStartDate = serializers.SerializerMethodField('get_deedstart_date')        
+    PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')       
     MatrixDeed = serializers.SerializerMethodField('get_matrix_deed_url')
     MatrixInstructions = serializers.SerializerMethodField('get_matrix_instructions_url')
     PromesaDeed = serializers.SerializerMethodField('get_promesa_url')
@@ -44,8 +62,9 @@ class EscrituraSerializer(serializers.ModelSerializer):
             'EscrituraID',
             'ProyectoID',
             'Proyecto',
+            'Folio',
+            'Cliente',
             'EscrituraState',
-            'SubmissionDate',
             'CarepetaFisicaState',
             'PromesaInstructions',
             'AgreedDeedDate',
@@ -56,45 +75,13 @@ class EscrituraSerializer(serializers.ModelSerializer):
             'HasPromotion',
             'CustomerCheckingAccount',
             'PowersCharacteristics',
-            'ReceptionDate',
-            'RealEstateLawDate',
-            'RealEstateLawFile',
-            'PlansConservatorDate',
-            'PlansConservatorFile',
-            'DeedStartDate',
-            'AprobacionCreditoState',
-            'DeclarePhysicalFolderState',                
+            # 'AprobacionCreditoState',
+            # 'DeclarePhysicalFolderState',                
             'MatrixDeed',
             'MatrixInstructions',
             'PromesaDeed',
             'PromesaCoinciden',
         )
-
-    def get_submission_date(self, obj):
-        try:
-            return obj.SubmissionDate.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
-    def get_reception_date(self, obj):
-        try:
-            return obj.ReceptionDate.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
-    def get_realestatelaw_date(self, obj):
-        try:
-            return obj.RealEstateLawDate.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
-    def get_plansconservator_date(self, obj):
-        try:
-            return obj.PlansConservatorDate.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
-    def get_deedstart_date(self, obj):
-        try:
-            return obj.DeedStartDate.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
 
     def get_customer_url(self, obj):
         if obj.CustomerCheckingAccount and hasattr(
@@ -108,20 +95,6 @@ class EscrituraSerializer(serializers.ModelSerializer):
                 obj.PowersCharacteristics, 'url'):
             absolute_url = get_full_path_x(self.context['request'])
             return "%s%s" % (absolute_url, obj.PowersCharacteristics.url)
-        else:
-            return ""
-    def get_realestate_url(self, obj):
-        if obj.RealEstateLawFile and hasattr(
-                obj.RealEstateLawFile, 'url'):
-            absolute_url = get_full_path_x(self.context['request'])
-            return "%s%s" % (absolute_url, obj.RealEstateLawFile.url)
-        else:
-            return ""
-    def get_plans_url(self, obj):
-        if obj.PlansConservatorFile and hasattr(
-                obj.PlansConservatorFile, 'url'):
-            absolute_url = get_full_path_x(self.context['request'])
-            return "%s%s" % (absolute_url, obj.PlansConservatorFile.url)
         else:
             return ""
     def get_matrix_deed_url(self, obj):
@@ -146,30 +119,46 @@ class EscrituraSerializer(serializers.ModelSerializer):
         else:
             return ""
 
-class CreateEscrituraSerializer(serializers.ModelSerializer):
-    ProyectoID = serializers.UUIDField(
-        write_only=True)
-    EscrituraState  = serializers.DecimalField(
-        write_only=True,
+class ListEscrituraSerializer(serializers.ModelSerializer):
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+    Proyecto = serializers.CharField(
+        source='ProyectoID.Name'
+    )
+    Folio = serializers.CharField(
+        source='PromesaID.Folio')    
+    EscrituraState = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
-        allow_null=True)
+        coerce_to_string=False,
+        read_only=True)
+    ClienteID = serializers.UUIDField(
+        source='PromesaID.ClienteID.UserID' )
+    Cliente = ClienteSerializer(
+        source='PromesaID.ClienteID',
+        allow_null=True )
+    Inmuebles = serializers.SerializerMethodField('get_inmuebles')
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'ProyectoID', 'PromesaID')
+        return queryset
 
     class Meta:
         model = Escritura
-        fields = ('ProyectoID', 'EscrituraState')
-    
-    def create(self, validated_data):
-        current_user = return_current_user(self)
+        fields = ('ProyectoID', 'Proyecto', 'ClienteID',
+                  'Cliente', 'Folio',
+                  'EscrituraState', 'Inmuebles')
 
-        proyecto = Proyecto.objects.get(
-            ProyectoID=validated_data['ProyectoID'])
-        
-        instance = Escritura.objects.create(
-            ProyectoID=proyecto,
-            EscrituraState=validated_data['EscrituraState'])
-        
-        return instance
+    def get_inmuebles(self, obj):
+        inmuebles_promesa = PromesaInmueble.objects.filter(
+            PromesaID=obj.PromesaID)
+        serializer = ListReservaInmuebleSerializer(
+            instance=inmuebles_promesa, context={'url': self.context['request']}, many=True)
+        return serializer.data
+
 
 class UpdateEscrituraSerializer(serializers.ModelSerializer):
     EscrituraState  = serializers.DecimalField(
@@ -177,16 +166,12 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         max_digits=10,
         decimal_places=2,
         allow_null=True)
-    SubmissionDate = serializers.DateField(
-        write_only=True,
-        allow_null=True)    
 
     class Meta:
         model = Escritura
         fields = (
             'EscrituraID',
             'EscrituraState',
-            'SubmissionDate',
             'CarepetaFisicaState',
             'PromesaInstructions',
             'AgreedDeedDate',
@@ -204,8 +189,6 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         proyecto = instance.ProyectoID
         
         instance.EscrituraState = validated_data['EscrituraState']
-        if 'SubmissionDate' in validated_data:
-            instance.SubmissionDate = validated_data['SubmissionDate']
         if 'CarepetaFisicaState' in validated_data:
             instance.CarepetaFisicaState = validated_data['CarepetaFisicaState']
         if 'PromesaInstructions' in validated_data:
@@ -230,3 +213,170 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ConfirmProyectoSerializer(serializers.ModelSerializer):
+    EscrituraProyectoState = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=False, allow_null=True
+    )
+
+    class Meta:
+        model = Proyecto
+        fields = (
+            'ProyectoID',
+            'EscrituraProyectoState'
+        )
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
+        promesas = Promesa.objects.filter(
+            ProyectoID=instance,
+            PromesaState=constants.PROMESA_STATE[4])
+        if promesas.exists():
+            for promesa in promesas:
+                create_escritura(instance, promesa)
+            
+        # Usuarios
+        # jefe_proyecto = UserProyecto.objects.filter(
+        #     ProyectoID=instance, UserProyectoTypeID=jefe_proyecto_type)
+
+        # if jefe_proyecto.exists():
+        #     eliminar_notificacion_proyecto_sin_jefe_proyecto(instance)
+        # else:
+        #     crear_notificacion_proyecto_sin_jefe_proyecto(
+        #         instance, creator, usuarios_monitorea_proyectos)
+
+        instance.save()
+ 
+        return instance
+
+class UpdateProyectoSerializer(serializers.ModelSerializer):
+    EscrituraProyectoState = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=False, allow_null=True)
+    SubmissionDate = serializers.DateField(
+        write_only=True, required=False)
+    ReceptionDate = serializers.DateField(
+        write_only=True, required=False)
+    RealEstateLawDate = serializers.DateField(
+        write_only=True, required=False)
+    RealEstateLawFile = serializers.FileField(
+        allow_empty_file=True,
+        required=False)
+    PlansConservatorDate = serializers.DateField(
+        write_only=True, required=False)
+    PlansConservatorFile = serializers.FileField(
+        allow_empty_file=True,
+        required=False)
+    DeedStartDate = serializers.DateField(
+        write_only=True, required=False)
+    DeliverDay = serializers.IntegerField(
+        required=False, allow_null=True )
+    StateBankReportDate = serializers.DateField(
+        write_only=True, required=False)
+    StateBankReportFile = serializers.FileField(
+        allow_empty_file=True,
+        required=False)
+    StateBankObservations = serializers.JSONField(
+        write_only=True, required=False )
+    StateBankState = serializers.CharField(
+        write_only=True, required=False)
+    SantanderReportDate = serializers.DateField(
+        write_only=True, required=False)
+    SantanderReportFile = serializers.FileField(
+        allow_empty_file=True,
+        required=False)
+    SantanderObservations = serializers.JSONField(
+        write_only=True, required=False )
+    SantanderState = serializers.CharField(
+        write_only=True, required=False)
+    ChileBankReportDate = serializers.DateField(
+        write_only=True, required=False)
+    ChileBankReportFile = serializers.FileField(
+        allow_empty_file=True,
+        required=False)
+    ChileBankObservations = serializers.JSONField(
+        write_only=True, required=False )
+    ChileBankState = serializers.CharField(
+        write_only=True, required=False )
+    
+    class Meta:
+        model = Proyecto
+        fields = (
+            'ProyectoID',
+            'EscrituraProyectoState',
+            'SubmissionDate',
+            'ReceptionDate',
+            'RealEstateLawDate',
+            'RealEstateLawFile',
+            'PlansConservatorDate',
+            'PlansConservatorFile',
+            'DeedStartDate',
+            'DeliverDay',
+            'StateBankReportDate',
+            'StateBankReportFile',
+            'StateBankObservations',
+            'StateBankState',
+            'SantanderReportDate',
+            'SantanderReportFile',
+            'SantanderObservations',
+            'SantanderState',
+            'ChileBankReportDate',
+            'ChileBankReportFile',
+            'ChileBankObservations',
+            'ChileBankState',
+        )
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        
+        if 'EscrituraProyectoState' in validated_data:
+            instance.EscrituraProyectoState = validated_data['EscrituraProyectoState']
+        if 'SubmissionDate' in validated_data:
+            instance.SubmissionDate = validated_data['SubmissionDate']
+        if 'ReceptionDate' in validated_data:
+            instance.ReceptionDate = validated_data['ReceptionDate']
+        if 'RealEstateLawDate' in validated_data:
+            instance.RealEstateLawDate = validated_data['RealEstateLawDate']
+        if 'RealEstateLawFile' in validated_data:
+            instance.RealEstateLawFile = validated_data['RealEstateLawFile']
+        if 'PlansConservatorDate' in validated_data:
+            instance.PlansConservatorDate = validated_data['PlansConservatorDate']
+        if 'PlansConservatorFile' in validated_data:
+            instance.PlansConservatorFile = validated_data['PlansConservatorFile']
+        if 'DeedStartDate' in validated_data:
+            instance.DeedStartDate = validated_data['DeedStartDate']
+        if 'DeliverDay' in validated_data:
+            instance.DeliverDay = validated_data['DeliverDay']
+        if 'StateBankReportDate' in validated_data:
+            instance.StateBankReportDate = validated_data['StateBankReportDate']
+        if 'StateBankReportFile' in validated_data:
+            instance.StateBankReportFile = validated_data['StateBankReportFile']
+        if 'StateBankObservations' in validated_data:
+            instance.StateBankObservations = validated_data['StateBankObservations']
+        if 'StateBankState' in validated_data:
+            instance.StateBankState = validated_data['StateBankState']
+        if 'SantanderReportDate' in validated_data:
+            instance.SantanderReportDate = validated_data['SantanderReportDate']
+        if 'SantanderReportFile' in validated_data:
+            instance.SantanderReportFile = validated_data['SantanderReportFile']
+        if 'SantanderObservations' in validated_data:
+            instance.SantanderObservations = validated_data['SantanderObservations']
+        if 'SantanderState' in validated_data:
+            instance.SantanderState = validated_data['SantanderState']
+        if 'ChileBankReportDate' in validated_data:
+            instance.ChileBankReportDate = validated_data['ChileBankReportDate']
+        if 'ChileBankReportFile' in validated_data:
+            instance.ChileBankReportFile = validated_data['ChileBankReportFile']
+        if 'ChileBankObservations' in validated_data:
+            instance.ChileBankObservations = validated_data['ChileBankObservations']
+        if 'ChileBankState' in validated_data:
+            instance.ChileBankState = validated_data['ChileBankState']
+        
+        instance.save()
+ 
+        return instance
+

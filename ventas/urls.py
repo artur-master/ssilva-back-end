@@ -67,7 +67,8 @@ from ventas.views.ventas_logs import (
     VentaLogClienteViewSet,
     VentaLogVendedorViewSet)
 from ventas.views.escrituras import (
-    EscrituraViewSet)
+    EscrituraViewSet,
+    EscrituraProyectoViewSet)
 from ventas.views.dashboard import (
     PendingActionsViewSet,
     AllLogsViewSet,
@@ -213,7 +214,8 @@ router.register('dashboard-pending-actions', PendingActionsViewSet)
 router.register('all-users', AllUserViewSet)
 router.register('all-logs-dashboard', AllLogsViewSet)
 
-router.register('escritura', EscrituraViewSet)
+router.register('escrituras', EscrituraViewSet)
+router.register('escritura-proyecto', EscrituraProyectoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from common.models import ContactInfoType, Comuna
 from empresas_and_proyectos.models.aseguradoras import Aseguradora
 from empresas_and_proyectos.models.etapastate import EtapaState
@@ -184,6 +185,55 @@ class Proyecto(models.Model):
     )
 
     objects = ProyectosManager()
+
+    #Escritura
+    EscrituraProyectoState = models.DecimalField(
+        null=True, max_digits=10, decimal_places=2)
+    SubmissionDate = models.DateField(
+        null=True, blank=True)
+    ReceptionDate = models.DateField(
+        null=True, blank=True)
+    RealEstateLawDate = models.DateField(
+        null=True, blank=True)
+    RealEstateLawFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    PlansConservatorDate = models.DateField(
+        null=True, blank=True)
+    PlansConservatorFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    DeedStartDate = models.DateField(
+        null=True, blank=True)
+    DeliverDay = models.IntegerField(
+        null=True, blank=True)
+    StateBankReportDate = models.DateField(
+        null=True, blank=True)
+    StateBankReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    StateBankObservations = JSONField(
+        default=[], blank=True, null=True)
+    StateBankState = models.CharField(
+        max_length=200, null=True, blank=True)
+    SantanderReportDate = models.DateField(
+        null=True, blank=True)
+    SantanderReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    SantanderObservations = JSONField(
+        default=[], blank=True, null=True)
+    SantanderState = models.CharField(
+        max_length=200, null=True, blank=True)
+    ChileBankReportDate = models.DateField(
+        null=True, blank=True)
+    ChileBankReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    ChileBankObservations = JSONField(
+        default=[], blank=True, null=True)
+    ChileBankState = models.CharField(
+        max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.Name

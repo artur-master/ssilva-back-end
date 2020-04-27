@@ -75,6 +75,7 @@ from ventas.models.counter_folios import CounterFolio
 from ventas.models.ofertas import Oferta
 from ventas.models.promesas import Promesa
 from ventas.models.reservas import Reserva
+from ventas.models.escrituras import Escritura
 
 
 class UserProyectoTypeSerializer(serializers.ModelSerializer):
@@ -516,8 +517,24 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         many=True
     )
 
-
     Metadata = serializers.SerializerMethodField('get_project_meta')
+
+    #Escritura
+    EscrituraProyectoState = serializers.DecimalField(
+        max_digits=10, decimal_places=2, coerce_to_string=False, read_only=True)
+    SubmissionDate = serializers.SerializerMethodField('get_submission_date')
+    ReceptionDate = serializers.SerializerMethodField('get_reception_date')
+    RealEstateLawDate = serializers.SerializerMethodField('get_realestatelaw_date')
+    RealEstateLawFile = serializers.SerializerMethodField('get_realestate_url')
+    PlansConservatorDate = serializers.SerializerMethodField('get_plansconservator_date')
+    PlansConservatorFile = serializers.SerializerMethodField('get_plans_url')
+    DeedStartDate = serializers.SerializerMethodField('get_deedstart_date')
+    StateBankReportFile = serializers.SerializerMethodField('get_statebank_url')
+    StateBankObservations = serializers.JSONField( read_only=True, required=False )
+    SantanderReportFile = serializers.SerializerMethodField('get_santander_url')
+    SantanderObservations = serializers.JSONField( read_only=True,required=False )
+    ChileBankReportFile = serializers.SerializerMethodField('get_chilebank_url')
+    ChileBankObservations = serializers.JSONField(read_only=True,required=False)
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -572,7 +589,28 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'Documentos',
             'ComunaID',
             'Etapa',
-            'Metadata'
+            'Metadata',
+            'EscrituraProyectoState',
+            'SubmissionDate',
+            'ReceptionDate',
+            'RealEstateLawDate',
+            'RealEstateLawFile',
+            'PlansConservatorDate',
+            'PlansConservatorFile',
+            'DeedStartDate',
+            'DeliverDay',
+            'StateBankReportDate',
+            'StateBankReportFile',
+            'StateBankObservations',
+            'StateBankState',
+            'SantanderReportDate',
+            'SantanderReportFile',
+            'SantanderObservations',
+            'SantanderState',
+            'ChileBankReportDate',
+            'ChileBankReportFile',
+            'ChileBankObservations',
+            'ChileBankState',
         )
 
     def get_notificaciones(self, obj):
@@ -619,12 +657,75 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         reservation_count = Reserva.objects.filter(ProyectoID=obj).count()
         promesa_count = Promesa.objects.filter(ProyectoID=obj).count()
         offer_count = Oferta.objects.filter(ProyectoID=obj).count()
+        escritura_count = Escritura.objects.filter(ProyectoID=obj).count()
         counter = dict(Quotation=quotation_count,
                        Reservation=reservation_count,
                        Promesa=promesa_count,
-                       Offer=offer_count)
+                       Offer=offer_count,
+                       Escritura=escritura_count)
         result = dict(Count=counter)
         return result
+
+    def get_submission_date(self, obj):
+        try:
+            return obj.SubmissionDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_reception_date(self, obj):
+        try:
+            return obj.ReceptionDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_realestatelaw_date(self, obj):
+        try:
+            return obj.RealEstateLawDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_realestate_url(self, obj):
+        if obj.RealEstateLawFile and hasattr(
+                obj.RealEstateLawFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RealEstateLawFile.url)
+        else:
+            return ""
+    def get_plansconservator_date(self, obj):
+        try:
+            return obj.PlansConservatorDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_plans_url(self, obj):
+        if obj.PlansConservatorFile and hasattr(
+                obj.PlansConservatorFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PlansConservatorFile.url)
+        else:
+            return ""
+    def get_deedstart_date(self, obj):
+        try:
+            return obj.DeedStartDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_statebank_url(self, obj):
+        if obj.StateBankReportFile and hasattr(
+                obj.StateBankReportFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.StateBankReportFile.url)
+        else:
+            return ""
+    def get_santander_url(self, obj):
+        if obj.SantanderReportFile and hasattr(
+                obj.SantanderReportFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.SantanderReportFile.url)
+        else:
+            return ""
+    def get_chilebank_url(self, obj):
+        if obj.ChileBankReportFile and hasattr(
+                obj.ChileBankReportFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ChileBankReportFile.url)
+        else:
+            return ""
 
 
 class ApproveCreateProyectoLegalSerializer(serializers.ModelSerializer):

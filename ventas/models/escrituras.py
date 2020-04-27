@@ -3,7 +3,9 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from empresas_and_proyectos.models.proyectos import Proyecto
+from ventas.models.promesas import Promesa
 from users.models import User
+
 
 class Escritura(models.Model):
     EscrituraID = models.UUIDField(
@@ -13,12 +15,16 @@ class Escritura(models.Model):
     ProyectoID = models.ForeignKey(
         Proyecto,
         related_name='proyecto_escritura',
+        null=True,
+        on_delete=models.CASCADE)
+    PromesaID = models.ForeignKey(
+        Promesa,
+        related_name='promesa_escritura',
         on_delete=models.CASCADE)
     EscrituraState = models.DecimalField(
+        null=True,
         max_digits=10,
         decimal_places=2)
-    SubmissionDate = models.DateTimeField(
-        null=True, blank=True)
     CarepetaFisicaState = models.BooleanField(
         default=False)
     PromesaInstructions = models.NullBooleanField(
@@ -63,31 +69,30 @@ class Escritura(models.Model):
         upload_to="DocumentVentas",
         null=True,
         blank=True)
-    ReceptionDate = models.DateTimeField(
-        null=True, blank=True)
-    RealEstateLawDate = models.DateTimeField(
-        null=True, blank=True)
-    RealEstateLawFile = models.FileField(
+    StateBankReportFile = models.FileField(
         upload_to="DocumentVentas",
         null=True,
         blank=True)
-    PlansConservatorDate = models.DateTimeField(
-        null=True, blank=True)
-    PlansConservatorFile = models.FileField(
+    StateBankConfirmReportFile = models.FileField(
         upload_to="DocumentVentas",
-        null=True, blank=True)
-    DeedStartDate = models.DateTimeField(
-        null=True, blank=True)
-    DeliverDay = models.IntegerField(
-        null=True, blank=True)
-    AprobacionCreditoState = models.NullBooleanField(
-        max_length=3,
-        blank=True,
         null=True,
-        default=None)
-    DeclarePhysicalFolderState = models.BooleanField(
-        default=False)
-        
+        blank=True)
+    SantanderReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
+    SantanderConfirmReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
+    ChileBankReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
+    ChileBankConfirmReportFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)        
     MatrixDeed = models.FileField(
         upload_to="DocumentVentas",
         null=True, blank=True)
@@ -98,59 +103,169 @@ class Escritura(models.Model):
         upload_to="DocumentVentas",
         null=True, blank=True)
     PromesaCoinciden = models.NullBooleanField(
-        max_length=3,
         blank=True,
         null=True,
         default=None)
+    NoticeToClientDate = models.DateTimeField(
+        null=True, blank=True)
+    BalanceFeeUF = models.DecimalField(
+        null=True,
+        max_digits=10,
+        decimal_places=2)
+    BalanceFund = models.DecimalField(
+        null=True,
+        max_digits=10,
+        decimal_places=2)
+    SignDate = models.DateTimeField(
+        null=True, blank=True)
+    PaymentMethodBalance = models.IntegerField(
+        blank=True, null=True)
+    ChequeNumber = models.DecimalField(
+        null=True,
+        max_digits=10,
+        decimal_places=2)
+    Valor = models.DecimalField(
+        null=True,
+        max_digits=10,
+        decimal_places=2)
+    FetchaPago = models.DateTimeField(
+        null=True, blank=True)
+    FetchaFirma = models.DateTimeField(
+        null=True, blank=True)
+    InstructionObservacion = models.CharField(
+        max_length=200, null=True, blank=True)
+    RepertoireNumber = models.IntegerField(
+        blank=True, null=True)
+    StartDate = models.DateTimeField(
+        null=True, blank=True)
+    RealEstateBilling = models.BooleanField(
+        default=False)
+    InvoiceFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    RealEstateSign = models.BooleanField(
+        default=False)
+    RealEstateSignDate = models.DateTimeField(
+        null=True, blank=True)
+    SignNotary = models.BooleanField(
+        default=False)
+    SignNotaryDate = models.DateTimeField(
+        null=True, blank=True)
+    SignDeedCompensation = models.BooleanField(
+        default=False)
+    SignDeedCompensationDate = models.DateTimeField(
+        null=True, blank=True)
+    SignSettelment = models.BooleanField(
+        default=False)
+    SignSettelmentDate = models.DateTimeField(
+        null=True, blank=True)
+    SignPay = models.BooleanField(
+        default=False)
+    SignPayDate = models.DateTimeField(
+        null=True, blank=True)
+    MortgageLift = models.BooleanField(
+        default=False)
+    MortgageLiftDate = models.DateTimeField(
+        null=True, blank=True)
+    RealEstateConservator = models.BooleanField(
+        default=False)
+    RealEstateConservatorFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    SendCopiesToClient = models.BooleanField(
+        default=False)
+    SendCopiesToClientDate = models.DateTimeField(
+        null=True, blank=True)
+    SendCopiesToIN = models.BooleanField(
+        default=False)
+    SendCopiesToINDate = models.DateTimeField(
+        null=True, blank=True)
+    ProofDeed = models.BooleanField(
+        default=False)
+    ProofDeedDate = models.DateTimeField(
+        null=True, blank=True)
+    SubsidyState = models.NullBooleanField(
+        blank=True,
+        null=True,
+        default=None)
+    PaymentSubsidy = models.BooleanField(
+        default=False)
+    PaymentSubsidyFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    PaymentSavingIN = models.BooleanField(
+        default=False)
+    PaymentSavingINFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    INPaymentPending = models.BooleanField(
+        default=False)
+    INPaymentPendingFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
+    GuaranteeToClient = models.BooleanField(
+        default=False)
+    GuaranteeToClientDate = models.DateTimeField(
+        null=True, blank=True)
+    DeliveryProperty = models.BooleanField(
+        default=False)
+    DeliveryPropertyDate = models.DateTimeField(
+        null=True, blank=True)
+    GPLoginRegistration = models.BooleanField(
+        default=False)
+    GPLoginRegistrationFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True, blank=True)
 
     def __str__(self):
-        return '%s - %s' % (self.ProyectoID.Name, self.EscrituraState)
+        return '%s - %s' % (self.ProyectoID.Name, self.PromesaID.Folio)
 
-class TitleReports(models.Model):
+class AprobacionCreditos(models.Model):
     EscrituraID = models.ForeignKey(
         Escritura,
         on_delete=models.CASCADE)
-    StateBankDate = models.DateTimeField(
-        null=True, blank=True)
-    StateBankState = models.CharField(
-        max_length=200, null=True, blank=True)
-    StateBankReport = models.FileField(
+    FormalCredit = models.NullBooleanField(
+        blank=True,
+        null=True,
+        default=None)
+    ClientPersonalHealthStatement= models.FileField(
         upload_to="DocumentVentas",
         null=True,
         blank=True)
-    SantanderDate = models.DateTimeField(
-        null=True, blank=True)
-    SantanderState = models.CharField(
+    ClientBank = models.CharField(
         max_length=200, null=True, blank=True)
-    SantanderReport = models.FileField(
+    ClientExecutiveName = models.CharField(
+        max_length=200, null=True, blank=True)
+    ClientExecutiveEmail = models.EmailField(
+        max_length=60, null=True, 
+        blank=True, unique=True, 
+        error_messages={'unique': 'Email ingresado ya existe en el sistema'})
+    ClientApprovementLetter = models.FileField(
         upload_to="DocumentVentas",
         null=True,
         blank=True)
-    ChileBankDate = models.DateTimeField(
-        null=True, blank=True)
-    ChileBankState = models.CharField(
+    AcBank = models.CharField(
         max_length=200, null=True, blank=True)
-    ChileBankReport = models.FileField(
+    AcExecutiveName = models.CharField(
+        max_length=200, null=True, blank=True)
+    AcExecutiveEmail = models.EmailField(
+        max_length=60, null=True, 
+        blank=True, unique=True, 
+        error_messages={'unique': 'Email ingresado ya existe en el sistema'})
+    AcFinancialInstitution = models.FileField(
         upload_to="DocumentVentas",
         null=True,
         blank=True)
+    AcObservations = JSONField(
+        default=dict,
+        blank=True,
+        null=True)
+    AprobacionCreditoState = models.NullBooleanField(
+        blank=True,
+        null=True,
+        default=None)
+    DeclarePhysicalFolderState = models.BooleanField(
+        default=False)
 
     def __str__(self):
-        return '%s - %s, %s, %s' % (
-            self.EscrituraID,
-            self.StateBankDate,
-            self.SantanderDate,
-            self.ChileBankDate)
-
-class ReportsObservations(models.Model):
-    ReportID = models.ForeignKey(
-        TitleReports,
-        on_delete=models.CASCADE)
-    Date = models.DateTimeField(auto_now_add=True)
-    Observation = models.CharField(
-        max_length=200, null=True, blank=True)
-    Class = models.CharField(
-        max_length=200, null=True, blank=True)
-
-    def __str__(self):
-        return '%s - %s' % (self.ReportID, self.Date)
+        return '%s' % (self.EscrituraID)

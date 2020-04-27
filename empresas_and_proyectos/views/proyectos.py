@@ -175,7 +175,7 @@ class ProyectoViewSet(viewsets.ModelViewSet):
             return Response(data)
         except Proyecto.DoesNotExist:
             raise ValidationError('ProyectoID does not exist')
-
+    
 
 class UserProyectoTypeViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
