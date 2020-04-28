@@ -47,7 +47,44 @@ class EscrituraSerializer(serializers.ModelSerializer):
     PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')       
     MatrixDeed = serializers.SerializerMethodField('get_matrix_deed_url')
     MatrixInstructions = serializers.SerializerMethodField('get_matrix_instructions_url')
-    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')
+    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')    
+    NoticeToClientDate = serializers.SerializerMethodField('get_notice_client_date')
+    BalanceFeeUF = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True)
+    BalanceFund = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True)
+    SignDate = serializers.SerializerMethodField('get_sign_date')
+    Valor = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True)
+    FetchaPago = serializers.SerializerMethodField('get_pago_date')
+    FetchaFirma = serializers.SerializerMethodField('get_firma_date')
+    StartDate = serializers.SerializerMethodField('get_start_date')
+    InvoiceFile = serializers.SerializerMethodField('get_invoice_url')
+    RealEstateSignDate = serializers.SerializerMethodField('get_realestatesign_date')
+    SignNotaryDate = serializers.SerializerMethodField('get_sign_notary_date')
+    SignDeedCompensationDate = serializers.SerializerMethodField('get_signdeed_date')
+    SignSettelmentDate = serializers.SerializerMethodField('get_signsettlement_date')
+    SignPayDate = serializers.SerializerMethodField('get_signpay_date')
+    MortgageLiftDate = serializers.SerializerMethodField('get_lift_date')
+    RealEstateConservatorFile = serializers.SerializerMethodField('get_real_estate_url')
+    SendCopiesToClientDate = serializers.SerializerMethodField('get_send_client_date')
+    SendCopiesToINDate = serializers.SerializerMethodField('get_send_in_date')
+    ProofDeedDate = serializers.SerializerMethodField('get_proof_deed_date')
+    PaymentSubsidyFile  = serializers.SerializerMethodField('get_subsidy_url')
+    PaymentSavingINFile = serializers.SerializerMethodField('get_saving_url')
+    INPaymentPendingFile = serializers.SerializerMethodField('get_in_pending_url')
+    GuaranteeToClientDate = serializers.SerializerMethodField('get_guarantee_client_date')
+    DeliveryPropertyDate = serializers.SerializerMethodField('get_delivery_date')
+    GPLoginRegistrationFile = serializers.SerializerMethodField('get_GP_url')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -81,6 +118,53 @@ class EscrituraSerializer(serializers.ModelSerializer):
             'MatrixInstructions',
             'PromesaDeed',
             'PromesaCoinciden',
+            'NoticeToClientDate',
+            'BalanceFeeUF',
+            'BalanceFund',
+            'SignDate',
+            'PaymentMethodBalance',
+            'ChequeNumber',
+            'Valor',
+            'FetchaPago',
+            'FetchaFirma',
+            'InstructionObservacion',
+            'RepertoireNumber',
+            'StartDate',
+            'RealEstateBilling',
+            'InvoiceFile',
+            'RealEstateSign',
+            'RealEstateSignDate',
+            'SignNotary',
+            'SignNotaryDate',
+            'SignDeedCompensation',
+            'SignDeedCompensationDate',
+            'SignSettelment',
+            'SignSettelmentDate',
+            'SignPay',
+            'SignPayDate',
+            'MortgageLift',
+            'MortgageLiftDate',
+            'RealEstateConservator',
+            'RealEstateConservatorFile',
+            'SendCopiesToClient',
+            'SendCopiesToClientDate',
+            'SendCopiesToIN',
+            'SendCopiesToINDate',
+            'ProofDeed',
+            'ProofDeedDate',
+            'SubsidyState',
+            'PaymentSubsidy',
+            'PaymentSubsidyFile',
+            'PaymentSavingIN',
+            'PaymentSavingINFile',
+            'INPaymentPending',
+            'INPaymentPendingFile',
+            'GuaranteeToClient',
+            'GuaranteeToClientDate',
+            'DeliveryProperty',
+            'DeliveryPropertyDate',
+            'GPLoginRegistration',
+            'GPLoginRegistrationFile'
         )
 
     def get_customer_url(self, obj):
@@ -118,6 +202,129 @@ class EscrituraSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.PromesaDeed.url)
         else:
             return ""
+    def get_notice_client_date(self, obj):
+        try:
+            return obj.NoticeToClientDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_sign_date(self, obj):
+        try:
+            return obj.SignDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_pago_date(self, obj):
+        try:
+            return obj.FetchaPago.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_firma_date(self, obj):
+        try:
+            return obj.FetchaFirma.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_start_date(self, obj):
+        try:
+            return obj.StartDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_realestatesign_date(self, obj):
+        try:
+            return obj.RealEstateSignDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_sign_notary_date(self, obj):
+        try:
+            return obj.SignNotaryDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_signdeed_date(self, obj):
+        try:
+            return obj.SignDeedCompensationDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_signsettlement_date(self, obj):
+        try:
+            return obj.SignSettelmentDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_signpay_date(self, obj):
+        try:
+            return obj.SignPayDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_lift_date(self, obj):
+        try:
+            return obj.MortgageLiftDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_send_client_date(self, obj):
+        try:
+            return obj.SendCopiesToClientDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_send_in_date(self, obj):
+        try:
+            return obj.SendCopiesToINDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_proof_deed_date(self, obj):
+        try:
+            return obj.ProofDeedDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_guarantee_client_date(self, obj):
+        try:
+            return obj.GuaranteeToClientDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_delivery_date(self, obj):
+        try:
+            return obj.DeliveryPropertyDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_invoice_url(self, obj):
+        if obj.InvoiceFile and hasattr(
+                obj.InvoiceFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.InvoiceFile.url)
+        else:
+            return ""
+    def get_real_estate_url(self, obj):
+        if obj.RealEstateConservatorFile and hasattr(
+                obj.RealEstateConservatorFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RealEstateConservatorFile.url)
+        else:
+            return ""
+    def get_subsidy_url(self, obj):
+        if obj.PaymentSubsidyFile and hasattr(
+                obj.PaymentSubsidyFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PaymentSubsidyFile.url)
+        else:
+            return ""
+    def get_saving_url(self, obj):
+        if obj.PaymentSavingINFile and hasattr(
+                obj.PaymentSavingINFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.PaymentSavingINFile.url)
+        else:
+            return ""
+    def get_in_pending_url(self, obj):
+        if obj.INPaymentPendingFile and hasattr(
+                obj.INPaymentPendingFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.INPaymentPendingFile.url)
+        else:
+            return ""
+    def get_GP_url(self, obj):
+        if obj.GPLoginRegistrationFile and hasattr(
+                obj.GPLoginRegistrationFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.GPLoginRegistrationFile.url)
+        else:
+            return ""
+    
 
 class ListEscrituraSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
@@ -252,6 +459,7 @@ class ConfirmProyectoSerializer(serializers.ModelSerializer):
         instance.save()
  
         return instance
+
 
 class UpdateProyectoSerializer(serializers.ModelSerializer):
     EscrituraProyectoState = serializers.DecimalField(
