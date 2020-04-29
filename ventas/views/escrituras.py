@@ -18,16 +18,17 @@ from users.models import User
 
 from ventas.models.escrituras import Escritura
 from ventas.serializers.escrituras import (
-    EscrituraSerializer,ListEscrituraSerializer, UpdateEscrituraSerializer,
+    ListEscrituraSerializer, RetrieveEscrituraSerializer, UpdateEscrituraSerializer,
     ConfirmProyectoSerializer, UpdateProyectoSerializer)
 from empresas_and_proyectos.serializers.proyectos import (
     ProyectoSerializer, 
     RetrieveProyectoSerializer)
+from ventas.serializers.promesas import RetrievePromesaSerializer
 
 class EscrituraViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    serializer_class = EscrituraSerializer
+    serializer_class = ListEscrituraSerializer
     queryset = Escritura.objects.all()
     lookup_field = 'EscrituraID'
 
@@ -40,28 +41,31 @@ class EscrituraViewSet(viewsets.ModelViewSet):
     #         permission_classes = [IsAuthenticated, ]
     #     return [permission() for permission in permission_classes]
 
-    # def retrieve(self, request, EscrituraID):
-    #     queryset = Escritura.objects.all()
-    #     queryset = EscrituraSerializer.setup_eager_loading(queryset)
-    #     instance = get_object_or_404(queryset, EscrituraID=EscrituraID)
-
-    #     serializer = EscrituraSerializer(
-    #         instance, context={'request': request})
-
-    #     return Response(serializer.data)
-
     def list(self, request):
         proyecto_id = self.request.query_params.get('q', None)
         proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
         queryset = Escritura.objects.filter(ProyectoID=proyecto)
-        # queryset = EscrituraSerializer.setup_eager_loading(queryset)
-        # serializer = EscrituraSerializer(queryset, context={'request': request}, many=True)
 
         queryset = ListEscrituraSerializer.setup_eager_loading(queryset)
         serializer = ListEscrituraSerializer(queryset, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
+    def retrieve(self, request, EscrituraID):
+        queryset = Escritura.objects.all()
+        queryset = RetrieveEscrituraSerializer.setup_eager_loading(queryset)
+        instance = get_object_or_404(queryset, EscrituraID=EscrituraID)
+
+        serializer = RetrieveEscrituraSerializer(
+            instance, context={'request': request})
+        promesa = RetrievePromesaSerializer(
+            instance.PromesaID, context={'request': request})
+
+        return Response({
+            "escritura": serializer.data,
+            "promesa": promesa.data
+            })
+        
     def partial_update(self, request, EscrituraID):
         serializer = UpdateEscrituraSerializer(
             self.get_object(), data=request.data,
@@ -72,13 +76,41 @@ class EscrituraViewSet(viewsets.ModelViewSet):
             instance = serializer.save()
             # escritura = self.get_object()
             
-            return Response({"escritura": EscrituraSerializer(instance, context={'request': request}).data,
-                             "detail": "message"},
+            return Response({"escritura": RetrieveEscrituraSerializer(
+                                            instance, context={'request': request}).data,
+                             "promesa": RetrievePromesaSerializer(
+                                            instance.PromesaID, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+    @action(detail=True, methods=['patch'])
+    def notificar(self, request, EscrituraID):
+        serializer = UpdateEscrituraSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            instance = serializer.save()
+            # escritura = self.get_object()
+            project = instance.ProyectoID
+            if project.EscrituraProyectoState<2.1:
+                project.EscrituraProyectoState = 2.1
+                project.save()
+
+            return Response({"escritura": RetrieveEscrituraSerializer(
+                                            instance, context={'request': request}).data,
+                             "promesa": RetrievePromesaSerializer(
+                                            instance.PromesaID, context={'request': request}).data
+                            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+        return Response({"detail": serializer.errors},
+                        status=status.HTTP_409_CONFLICT)
 
 class EscrituraProyectoViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

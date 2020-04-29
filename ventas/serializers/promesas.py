@@ -49,7 +49,7 @@ from ventas.serializers.facturas import RetrieveFacturaSerializer
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.reservas import CreateReservaInmuebleSerializer, ListReservaInmuebleSerializer
 from ventas.serializers.ventas_logs import VentaLogSerializer
-
+from ventas.serializers.escrituras import create_escritura
 
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):

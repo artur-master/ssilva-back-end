@@ -19,7 +19,8 @@ def create_escritura(proyecto, promesa):
     else:
         instance = Escritura(
             PromesaID=promesa,
-            ProyectoID=proyecto
+            ProyectoID=proyecto,
+            EscrituraState=0
         )
     
     instance.save()
@@ -28,7 +29,48 @@ def create_escritura(proyecto, promesa):
     # AprobacionCreditos.objects.bulk_create()
 
 
-class EscrituraSerializer(serializers.ModelSerializer):    
+class ListEscrituraSerializer(serializers.ModelSerializer):
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+    Proyecto = serializers.CharField(
+        source='ProyectoID.Name'
+    )
+    Folio = serializers.CharField(
+        source='PromesaID.Folio')    
+    EscrituraState = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True)
+    ClienteID = serializers.UUIDField(
+        source='PromesaID.ClienteID.UserID' )
+    Cliente = ClienteSerializer(
+        source='PromesaID.ClienteID',
+        allow_null=True )
+    Inmuebles = serializers.SerializerMethodField('get_inmuebles')
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'ProyectoID', 'PromesaID')
+        return queryset
+
+    class Meta:
+        model = Escritura
+        fields = ('EscrituraID','ProyectoID', 'Proyecto', 'ClienteID',
+                  'Cliente', 'Folio',
+                  'EscrituraState', 'Inmuebles')
+
+    def get_inmuebles(self, obj):
+        inmuebles_promesa = PromesaInmueble.objects.filter(
+            PromesaID=obj.PromesaID)
+        serializer = ListReservaInmuebleSerializer(
+            instance=inmuebles_promesa, context={'url': self.context['request']}, many=True)
+        return serializer.data
+
+
+class RetrieveEscrituraSerializer(serializers.ModelSerializer):    
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID')
     Proyecto = serializers.CharField(
@@ -44,10 +86,16 @@ class EscrituraSerializer(serializers.ModelSerializer):
         source='PromesaID.ClienteID',
         allow_null=True )
     CustomerCheckingAccount = serializers.SerializerMethodField('get_customer_url')
-    PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')       
+    PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')
+    TasacionStateBank = serializers.SerializerMethodField('get_tasacion_statebank_url')
+    TasacionSantander = serializers.SerializerMethodField('get_tasacion_santander_url')
+    TasacionChileBank = serializers.SerializerMethodField('get_tasacion_chilebank_url')
+    RevisionStateBank = serializers.SerializerMethodField('get_revision_statebank_url')
+    RevisionSantander = serializers.SerializerMethodField('get_revision_santander_url')
+    RevisionChileBank = serializers.SerializerMethodField('get_revision_chilebank_url')
     MatrixDeed = serializers.SerializerMethodField('get_matrix_deed_url')
     MatrixInstructions = serializers.SerializerMethodField('get_matrix_instructions_url')
-    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')    
+    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')
     NoticeToClientDate = serializers.SerializerMethodField('get_notice_client_date')
     BalanceFeeUF = serializers.DecimalField(
         max_digits=10,
@@ -113,7 +161,16 @@ class EscrituraSerializer(serializers.ModelSerializer):
             'CustomerCheckingAccount',
             'PowersCharacteristics',
             # 'AprobacionCreditoState',
-            # 'DeclarePhysicalFolderState',                
+            # 'DeclarePhysicalFolderState',   
+            'TasacionStateBank',
+            'TasacionSantander',
+            'TasacionChileBank',
+            'RevisionStateBank',
+            'RevisionConfirmoStateBank',
+            'RevisionSantander',
+            'RevisionConfirmoSantander',
+            'RevisionChileBank',
+            'RevisionConfirmoChileBank',
             'MatrixDeed',
             'MatrixInstructions',
             'PromesaDeed',
@@ -179,6 +236,48 @@ class EscrituraSerializer(serializers.ModelSerializer):
                 obj.PowersCharacteristics, 'url'):
             absolute_url = get_full_path_x(self.context['request'])
             return "%s%s" % (absolute_url, obj.PowersCharacteristics.url)
+        else:
+            return ""
+    def get_tasacion_statebank_url(self, obj):
+        if obj.TasacionStateBank and hasattr(
+                obj.TasacionStateBank, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.TasacionStateBank.url)
+        else:
+            return ""
+    def get_tasacion_santander_url(self, obj):
+        if obj.TasacionSantander and hasattr(
+                obj.TasacionSantander, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.TasacionSantander.url)
+        else:
+            return ""
+    def get_tasacion_chilebank_url(self, obj):
+        if obj.TasacionChileBank and hasattr(
+                obj.TasacionChileBank, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.TasacionChileBank.url)
+        else:
+            return ""
+    def get_revision_statebank_url(self, obj):
+        if obj.RevisionStateBank and hasattr(
+                obj.RevisionStateBank, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RevisionStateBank.url)
+        else:
+            return ""
+    def get_revision_santander_url(self, obj):
+        if obj.RevisionSantander and hasattr(
+                obj.RevisionSantander, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RevisionSantander.url)
+        else:
+            return ""
+    def get_revision_chilebank_url(self, obj):
+        if obj.RevisionChileBank and hasattr(
+                obj.RevisionChileBank, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.RevisionChileBank.url)
         else:
             return ""
     def get_matrix_deed_url(self, obj):
@@ -325,47 +424,6 @@ class EscrituraSerializer(serializers.ModelSerializer):
         else:
             return ""
     
-
-class ListEscrituraSerializer(serializers.ModelSerializer):
-    ProyectoID = serializers.CharField(
-        source='ProyectoID.ProyectoID'
-    )
-    Proyecto = serializers.CharField(
-        source='ProyectoID.Name'
-    )
-    Folio = serializers.CharField(
-        source='PromesaID.Folio')    
-    EscrituraState = serializers.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        coerce_to_string=False,
-        read_only=True)
-    ClienteID = serializers.UUIDField(
-        source='PromesaID.ClienteID.UserID' )
-    Cliente = ClienteSerializer(
-        source='PromesaID.ClienteID',
-        allow_null=True )
-    Inmuebles = serializers.SerializerMethodField('get_inmuebles')
-
-    @staticmethod
-    def setup_eager_loading(queryset):
-        queryset = queryset.select_related(
-            'ProyectoID', 'PromesaID')
-        return queryset
-
-    class Meta:
-        model = Escritura
-        fields = ('ProyectoID', 'Proyecto', 'ClienteID',
-                  'Cliente', 'Folio',
-                  'EscrituraState', 'Inmuebles')
-
-    def get_inmuebles(self, obj):
-        inmuebles_promesa = PromesaInmueble.objects.filter(
-            PromesaID=obj.PromesaID)
-        serializer = ListReservaInmuebleSerializer(
-            instance=inmuebles_promesa, context={'url': self.context['request']}, many=True)
-        return serializer.data
-
 
 class UpdateEscrituraSerializer(serializers.ModelSerializer):
     EscrituraState  = serializers.DecimalField(
@@ -545,6 +603,10 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.EscrituraProyectoState = validated_data['EscrituraProyectoState']
         if 'SubmissionDate' in validated_data:
             instance.SubmissionDate = validated_data['SubmissionDate']
+            escrituras = Escritura.objects.filter(ProyectoID=instance)
+            for escritura in escrituras:
+                escritura.EscrituraState=1.1
+                escritura.save()        
         if 'ReceptionDate' in validated_data:
             instance.ReceptionDate = validated_data['ReceptionDate']
         if 'RealEstateLawDate' in validated_data:
