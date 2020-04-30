@@ -4,7 +4,7 @@ from rest_framework import serializers, status
 
 from common import constants
 from common.services import get_full_path_x, return_current_user, get_or_none
-from ventas.models.escrituras import Escritura, AprobacionCreditos
+from ventas.models.escrituras import Escritura, AprobacionCredito
 from ventas.models.promesas import Promesa, PromesaInmueble
 from empresas_and_proyectos.models.proyectos import UserProyectoType, UserProyecto, Proyecto
 from ventas.models.ventas_logs import VentaLog, VentaLogType
@@ -27,6 +27,86 @@ def create_escritura(proyecto, promesa):
 
     # AprobacionCreditos.objects.filter(PromesaID=instance).delete()
     # AprobacionCreditos.objects.bulk_create()
+
+
+class CreateAprobacionCreditoSerializer(serializers.ModelSerializer):
+    EscrituraID = serializers.UUIDField(
+        write_only=True
+    )
+    ClientApprovementLetter = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    ClientPersonalHealthStatement = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    AcFinancialInstitution = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+
+    class Meta:
+        model = AprobacionCredito
+        fields = (
+            'EscrituraID',
+            'FormalCredit',
+            'BankName',
+            'ExecutiveName',
+            'ExecutiveEmail',
+            'ClientApprovementLetter',
+            'ClientPersonalHealthStatement',
+            'AcFinancialInstitution',
+            'AcObservations',
+            'AprobacionCreditoState',
+            'DeclarePhysicalFolderState'
+        )
+
+
+class ListAprobacionCreditoSerializer(serializers.ModelSerializer):
+    ClientPersonalHealthStatement = serializers.SerializerMethodField(
+        'get_healthstatement_url')
+    ClientApprovementLetter = serializers.SerializerMethodField(
+        'get_approvement_url')
+    AcFinancialInstitution = serializers.SerializerMethodField(
+        'get_finicial_url')
+
+    class Meta:
+        model = AprobacionCredito
+        fields = (
+            'AprobacionCreditoID',
+            'FormalCredit',
+            'BankName',
+            'ExecutiveName',
+            'ExecutiveEmail',
+            'ClientApprovementLetter',
+            'ClientPersonalHealthStatement',
+            'AcFinancialInstitution',
+            'AcObservations',
+            'AprobacionCreditoState'
+        )
+
+    def get_healthstatement_url(self, obj):
+        if obj.ClientPersonalHealthStatement and hasattr(
+                obj.ClientPersonalHealthStatement, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ClientPersonalHealthStatement.url)
+        else:
+            return ""
+    def get_approvement_url(self, obj):
+        if obj.ClientApprovementLetter and hasattr(
+                obj.ClientApprovementLetter, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ClientApprovementLetter.url)
+        else:
+            return ""
+    def get_finicial_url(self, obj):
+        if obj.AcFinancialInstitution and hasattr(
+                obj.AcFinancialInstitution, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.AcFinancialInstitution.url)
+        else:
+            return ""
 
 
 class ListEscrituraSerializer(serializers.ModelSerializer):
@@ -133,6 +213,7 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
     GuaranteeToClientDate = serializers.SerializerMethodField('get_guarantee_client_date')
     DeliveryPropertyDate = serializers.SerializerMethodField('get_delivery_date')
     GPLoginRegistrationFile = serializers.SerializerMethodField('get_GP_url')
+    AprobacionCreditos = serializers.SerializerMethodField('get_aprobacion_creditos')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -221,7 +302,8 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'DeliveryProperty',
             'DeliveryPropertyDate',
             'GPLoginRegistration',
-            'GPLoginRegistrationFile'
+            'GPLoginRegistrationFile',
+            'AprobacionCreditos'
         )
 
     def get_customer_url(self, obj):
@@ -423,7 +505,19 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.GPLoginRegistrationFile.url)
         else:
             return ""
-    
+    def get_aprobacion_creditos(self, obj):
+        aprobacionCreditos = AprobacionCredito.objects.filter(EscrituraID = obj)
+        try:
+            if aprobacionCreditos:
+                serializer = ListAprobacionCreditoSerializer(
+                        instance=aprobacionCreditos, many=True,
+                        context={'request': self.context['request']}
+                    )
+                return serializer.data
+            return [{'FormalCredit': '1', 'BankName': 'Banco Estado'}]
+        except AttributeError:
+            return [{'FormalCredit': '1', 'BankName': 'Banco Estado'}]
+
 
 class UpdateEscrituraSerializer(serializers.ModelSerializer):
     EscrituraState  = serializers.DecimalField(
@@ -431,7 +525,7 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         max_digits=10,
         decimal_places=2,
         allow_null=True)
-
+        
     class Meta:
         model = Escritura
         fields = (
@@ -447,6 +541,67 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'HasPromotion',
             'CustomerCheckingAccount',
             'PowersCharacteristics',
+            'TasacionStateBank',
+            'TasacionSantander',
+            'TasacionChileBank',
+            'RevisionStateBank',
+            'RevisionConfirmoStateBank',
+            'RevisionSantander',
+            'RevisionConfirmoSantander',
+            'RevisionChileBank',
+            'RevisionConfirmoChileBank',
+            'MatrixDeed',
+            'MatrixInstructions',
+            'PromesaDeed',
+            'PromesaCoinciden',
+            'NoticeToClientDate',
+            'BalanceFeeUF',
+            'BalanceFund',
+            'SignDate',
+            'PaymentMethodBalance',
+            'ChequeNumber',
+            'Valor',
+            'FetchaPago',
+            'FetchaFirma',
+            'InstructionObservacion',
+            'RepertoireNumber',
+            'StartDate',
+            'RealEstateBilling',
+            'InvoiceFile',
+            'RealEstateSign',
+            'RealEstateSignDate',
+            'SignNotary',
+            'SignNotaryDate',
+            'SignDeedCompensation',
+            'SignDeedCompensationDate',
+            'SignSettelment',
+            'SignSettelmentDate',
+            'SignPay',
+            'SignPayDate',
+            'MortgageLift',
+            'MortgageLiftDate',
+            'RealEstateConservator',
+            'RealEstateConservatorFile',
+            'SendCopiesToClient',
+            'SendCopiesToClientDate',
+            'SendCopiesToIN',
+            'SendCopiesToINDate',
+            'ProofDeed',
+            'ProofDeedDate',
+            'SubsidyState',
+            'PaymentSubsidy',
+            'PaymentSubsidyFile',
+            'PaymentSavingIN',
+            'PaymentSavingINFile',
+            'INPaymentPending',
+            'INPaymentPendingFile',
+            'GuaranteeToClient',
+            'GuaranteeToClientDate',
+            'DeliveryProperty',
+            'DeliveryPropertyDate',
+            'GPLoginRegistration',
+            'GPLoginRegistrationFile',
+            'DeclarePhysicalFolderState'
         )
     
     def update(self, instance, validated_data):
@@ -474,6 +629,157 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.CustomerCheckingAccount = validated_data['CustomerCheckingAccount']
         if 'PowersCharacteristics' in validated_data:
             instance.PowersCharacteristics = validated_data['PowersCharacteristics']
+        if 'TasacionStateBank' in validated_data:
+            instance.TasacionStateBank = validated_data['TasacionStateBank']
+        if 'TasacionSantander' in validated_data:
+            instance.TasacionSantander = validated_data['TasacionSantander']
+        if 'TasacionChileBank' in validated_data:
+            instance.TasacionChileBank = validated_data['TasacionChileBank']
+        if 'RevisionStateBank' in validated_data:
+            instance.RevisionStateBank = validated_data['RevisionStateBank']
+        if 'RevisionConfirmoStateBank' in validated_data:
+            instance.RevisionConfirmoStateBank = validated_data['RevisionConfirmoStateBank']
+        if 'RevisionSantander' in validated_data:
+            instance.RevisionSantander = validated_data['RevisionSantander']
+        if 'RevisionConfirmoSantander' in validated_data:
+            instance.RevisionConfirmoSantander = validated_data['RevisionConfirmoSantander']
+        if 'RevisionChileBank' in validated_data:
+            instance.RevisionChileBank = validated_data['RevisionChileBank']
+        if 'RevisionConfirmoChileBank' in validated_data:
+            instance.RevisionConfirmoChileBank = validated_data['RevisionConfirmoChileBank']
+        if 'MatrixDeed' in validated_data:
+            instance.MatrixDeed = validated_data['MatrixDeed']
+        if 'MatrixInstructions' in validated_data:
+            instance.MatrixInstructions = validated_data['MatrixInstructions']
+        if 'PromesaDeed' in validated_data:
+            instance.PromesaDeed = validated_data['PromesaDeed']
+        if 'PromesaCoinciden' in validated_data:
+            instance.PromesaCoinciden = validated_data['PromesaCoinciden']
+        if 'NoticeToClientDate' in validated_data:
+            instance.NoticeToClientDate = validated_data['NoticeToClientDate']
+        if 'BalanceFeeUF' in validated_data:
+            instance.BalanceFeeUF = validated_data['BalanceFeeUF']
+        if 'BalanceFund' in validated_data:
+            instance.BalanceFund = validated_data['BalanceFund']
+        if 'SignDate' in validated_data:
+            instance.SignDate = validated_data['SignDate']
+        if 'PaymentMethodBalance' in validated_data:
+            instance.PaymentMethodBalance = validated_data['PaymentMethodBalance']
+        if 'ChequeNumber' in validated_data:
+            instance.ChequeNumber = validated_data['ChequeNumber']
+        if 'Valor' in validated_data:
+            instance.Valor = validated_data['Valor']
+        if 'FetchaPago' in validated_data:
+            instance.FetchaPago = validated_data['FetchaPago']
+        if 'FetchaFirma' in validated_data:
+            instance.FetchaFirma = validated_data['FetchaFirma']
+        if 'InstructionObservacion' in validated_data:
+            instance.InstructionObservacion = validated_data['InstructionObservacion']
+        if 'RepertoireNumber' in validated_data:
+            instance.RepertoireNumber = validated_data['RepertoireNumber']
+        if 'StartDate' in validated_data:
+            instance.StartDate = validated_data['StartDate']
+        if 'RealEstateBilling' in validated_data:
+            instance.RealEstateBilling = validated_data['RealEstateBilling']
+        if 'InvoiceFile' in validated_data:
+            instance.InvoiceFile = validated_data['InvoiceFile']
+        if 'RealEstateSign' in validated_data:
+            instance.RealEstateSign = validated_data['RealEstateSign']
+        if 'RealEstateSignDate' in validated_data:
+            instance.RealEstateSignDate = validated_data['RealEstateSignDate']
+        if 'SignNotary' in validated_data:
+            instance.SignNotary = validated_data['SignNotary']
+        if 'SignNotaryDate' in validated_data:
+            instance.SignNotaryDate = validated_data['SignNotaryDate']
+        if 'SignDeedCompensation' in validated_data:
+            instance.SignDeedCompensation = validated_data['SignDeedCompensation']
+        if 'SignDeedCompensationDate' in validated_data:
+            instance.SignDeedCompensationDate = validated_data['SignDeedCompensationDate']
+        if 'SignSettelment' in validated_data:
+            instance.pjw = validated_data['SignSettelment']
+        if 'SignSettelmentDate' in validated_data:
+            instance.SignSettelmentDate = validated_data['SignSettelmentDate']
+        if 'SignPay' in validated_data:
+            instance.SignPay = validated_data['SignPay']
+        if 'SignPayDate' in validated_data:
+            instance.SignPayDate = validated_data['SignPayDate']
+        if 'MortgageLift' in validated_data:
+            instance.MortgageLift = validated_data['MortgageLift']
+        if 'MortgageLiftDate' in validated_data:
+            instance.MortgageLiftDate = validated_data['MortgageLiftDate']
+        if 'RealEstateConservator' in validated_data:
+            instance.RealEstateConservator = validated_data['RealEstateConservator']
+        if 'RealEstateConservatorFile' in validated_data:
+            instance.RealEstateConservatorFile = validated_data['RealEstateConservatorFile']
+        if 'SendCopiesToClient' in validated_data:
+            instance.SendCopiesToClient = validated_data['SendCopiesToClient']
+        if 'SendCopiesToClientDate' in validated_data:
+            instance.SendCopiesToClientDate = validated_data['SendCopiesToClientDate']
+        if 'SendCopiesToIN' in validated_data:
+            instance.SendCopiesToIN = validated_data['SendCopiesToIN']
+        if 'SendCopiesToINDate' in validated_data:
+            instance.SendCopiesToINDate = validated_data['SendCopiesToINDate']
+        if 'ProofDeed' in validated_data:
+            instance.ProofDeed = validated_data['ProofDeed']
+        if 'ProofDeedDate' in validated_data:
+            instance.ProofDeedDate = validated_data['ProofDeedDate']
+        if 'SubsidyState' in validated_data:
+            instance.SubsidyState = validated_data['SubsidyState']
+        if 'PaymentSubsidy' in validated_data:
+            instance.PaymentSubsidy = validated_data['PaymentSubsidy']
+        if 'PaymentSubsidyFile' in validated_data:
+            instance.PaymentSubsidyFile = validated_data['PaymentSubsidyFile']
+        if 'PaymentSavingIN' in validated_data:
+            instance.PaymentSavingIN = validated_data['PaymentSavingIN']
+        if 'PaymentSavingINFile' in validated_data:
+            instance.PaymentSavingINFile = validated_data['PaymentSavingINFile']
+        if 'INPaymentPending' in validated_data:
+            instance.INPaymentPending = validated_data['INPaymentPending']
+        if 'INPaymentPendingFile' in validated_data:
+            instance.INPaymentPendingFile = validated_data['INPaymentPendingFile']
+        if 'GuaranteeToClient' in validated_data:
+            instance.GuaranteeToClient = validated_data['GuaranteeToClient']
+        if 'GuaranteeToClientDate' in validated_data:
+            instance.GuaranteeToClientDate = validated_data['GuaranteeToClientDate']
+        if 'DeliveryProperty' in validated_data:
+            instance.DeliveryProperty = validated_data['DeliveryProperty']
+        if 'DeliveryPropertyDate' in validated_data:
+            instance.DeliveryPropertyDate = validated_data['DeliveryPropertyDate']
+        if 'GPLoginRegistration' in validated_data:
+            instance.GPLoginRegistration = validated_data['GPLoginRegistration']
+        if 'GPLoginRegistrationFile' in validated_data:
+            instance.GPLoginRegistrationFile = validated_data['GPLoginRegistrationFile']         
+        if 'DeclarePhysicalFolderState' in validated_data:
+            instance.DeclarePhysicalFolderState = validated_data['DeclarePhysicalFolderState']         
+
+        instance.save()
+
+        return instance
+
+
+class UpdateAprobacionCreditoSerializer(serializers.ModelSerializer):
+    EscrituraState  = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True)
+    AprobacionCreditos = CreateAprobacionCreditoSerializer(
+        many=True,
+        required=False
+    )
+    class Meta:
+        model = Escritura
+        fields = (
+            'EscrituraID',
+            'EscrituraState',
+            'AprobacionCreditos'
+        )
+    
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+        proyecto = instance.ProyectoID
+        
+        instance.EscrituraState = validated_data['EscrituraState']
         
         instance.save()
 

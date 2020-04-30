@@ -16,14 +16,16 @@ from common.services import download_pdf_views
 from empresas_and_proyectos.models.proyectos import Proyecto
 from users.models import User
 
-from ventas.models.escrituras import Escritura
+from ventas.models.escrituras import Escritura, AprobacionCredito
 from ventas.serializers.escrituras import (
     ListEscrituraSerializer, RetrieveEscrituraSerializer, UpdateEscrituraSerializer,
+    UpdateAprobacionCreditoSerializer,
     ConfirmProyectoSerializer, UpdateProyectoSerializer)
 from empresas_and_proyectos.serializers.proyectos import (
     ProyectoSerializer, 
     RetrieveProyectoSerializer)
 from ventas.serializers.promesas import RetrievePromesaSerializer
+import json
 
 class EscrituraViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -96,8 +98,8 @@ class EscrituraViewSet(viewsets.ModelViewSet):
             instance = serializer.save()
             # escritura = self.get_object()
             project = instance.ProyectoID
-            if project.EscrituraProyectoState<2.1:
-                project.EscrituraProyectoState = 2.1
+            if project.EscrituraProyectoState<2:
+                project.EscrituraProyectoState = 2
                 project.save()
 
             return Response({"escritura": RetrieveEscrituraSerializer(
@@ -111,6 +113,85 @@ class EscrituraViewSet(viewsets.ModelViewSet):
 
         return Response({"detail": serializer.errors},
                         status=status.HTTP_409_CONFLICT)
+
+    @action(detail=True, methods=['patch'])
+    def aprova_credit(self, request, EscrituraID):
+        data = request.data
+
+        many = isinstance(data, list)
+        serializer = UpdateEscrituraSerializer(
+            self.get_object(), data=data, partial=True,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            instance = serializer.save()
+            # escritura = self.get_object()
+            
+            creditos = AprobacionCredito.objects.filter(EscrituraID=instance)
+            if creditos.exists():
+                creditos.delete()
+            
+            creditosNumber = int(data.get("CreditosNumber"))
+            credito_list = list()
+            for i in range(creditosNumber):
+                credito = AprobacionCredito(                    
+                    FormalCredit = data.get("AprobacionCreditos.{}.FormalCredit".format(i)),
+                    BankName = data.get("AprobacionCreditos.{}.BankName".format(i)),
+                    ExecutiveEmail = data.get("AprobacionCreditos.{}.ExecutiveEmail".format(i)),
+                    ExecutiveName = data.get("AprobacionCreditos.{}.ExecutiveName".format(i)),
+                    ClientPersonalHealthStatement = 
+                        data.get("AprobacionCreditos.{}.ClientPersonalHealthStatement".format(i), None),
+                    AcFinancialInstitution = 
+                        data.get("AprobacionCreditos.{}.AcFinancialInstitution".format(i), None),                    
+                    EscrituraID = instance)
+                credito_list.append(credito)
+            if credito_list:
+                AprobacionCredito.objects.bulk_create(credito_list)
+
+            return Response({"escritura": RetrieveEscrituraSerializer(
+                                            instance, context={'request': request}).data,
+                             "promesa": RetrievePromesaSerializer(
+                                            instance.PromesaID, context={'request': request}).data
+                            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+    @action(detail=True, methods=['patch'])
+    def check_credit(self, request, EscrituraID):
+        data = request.data
+
+        # many = isinstance(data, list)
+        serializer = UpdateEscrituraSerializer(
+            self.get_object(), data=data, partial=True,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            # escritura = self.get_object()
+            
+            creditosNumber = int(data.get("CreditosNumber"))
+            for i in range(creditosNumber):
+                credito = AprobacionCredito.objects.get(
+                    AprobacionCreditoID=data.get("AprobacionCreditos.{}.AprobacionCreditoID".format(i)))
+                print(data)
+                credito.AprobacionCreditoState=(data.get("AprobacionCreditos.{}.AprobacionCreditoState".format(i))=='1')
+                if "AprobacionCreditos.{}.AcObservations".format(i) in data:
+                    credito.AcObservations= json.loads(data.get("AprobacionCreditos.{}.AcObservations".format(i)))
+
+                credito.save()
+                
+            instance = serializer.save()
+            return Response({"escritura": RetrieveEscrituraSerializer(
+                                            instance, context={'request': request}).data,
+                             "promesa": RetrievePromesaSerializer(
+                                            instance.PromesaID, context={'request': request}).data
+                            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
 
 class EscrituraProyectoViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

@@ -24,6 +24,7 @@ PERMISSIONS = [
     "Es aprobador inmobiliario", "Consulta proyectos", "Administra clientes",
     "Consulta clientes", "Aprueba inmuebles", "Recepciona garantias",
     "Aprueba confeccion promesa", "Confecciona maquetas",
+    "Escritura usuarios"
 ]
 
 NOTIFICATION_TYPE = [

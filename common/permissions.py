@@ -577,6 +577,9 @@ def list_proyectos_by_permission(current_user):
         elif permission.Name == constants.PERMISSIONS[19]:
             has_permission = True
             queryset = Proyecto.objects.all()
+        elif permission.Name == constants.PERMISSIONS[23]:
+            has_permission = True
+            queryset = Proyecto.objects.all()
 
     # Si no posee alguno de los permisos, se le muestran los proyectos en que esta asignado
     if not has_permission:
