@@ -183,6 +183,9 @@ class Proyecto(models.Model):
         ProjectDocument,
         related_name='document_project'
     )
+    
+    MetasUf = models.FloatField(default=0, null=True, blank=True)
+    MetasPromesas = models.IntegerField(null=True, blank=True)
 
     objects = ProyectosManager()
 
