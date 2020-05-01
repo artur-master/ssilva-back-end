@@ -590,6 +590,8 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'ComunaID',
             'Etapa',
             'Metadata',
+            'MetasUf',
+            'MetasPromesas',
             'EscrituraProyectoState',
             'SubmissionDate',
             'ReceptionDate',
@@ -1237,7 +1239,9 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'MoreThanOneEtapa',
             'EtapaStateID',
             'EntregaInmediata',
-            'Arquitecto'
+            'Arquitecto',
+            'MetasUf',
+            'MetasPromesas'
         )
 
     def create(self, validated_data):
@@ -1300,7 +1304,9 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             BorradorPromesaState=borrador_promesa,
             IngresoComisionesState=ingreso_comisiones,
             EtapaStateID=etapastate,
-            EntregaInmediata=validated_data.get('EntregaInmediata', False)
+            EntregaInmediata=validated_data.get('EntregaInmediata', False),
+            MetasUf=validated_data.get('MetasUf', 0),
+            MetasPromesas=validated_data.get('MetasPromesas', 0)
         )
         if validated_data.get('EntregaInmediata') is True:
             notification_type = NotificationType.objects.get(
@@ -1739,7 +1745,9 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'MoreThanOneEtapa',
             'Comment',
             'EtapaStateID',
-            'EntregaInmediata'
+            'EntregaInmediata',
+            'MetasUf',
+            'MetasPromesas',
         )
 
     def update(self, instance, validated_data):
@@ -2089,6 +2097,11 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.EtapaStateID = etapastate
         if 'EntregaInmediata' in validated_data:
             instance.EntregaInmediata = validated_data.get('EntregaInmediata')
+        if 'MetasUf' in validated_data:
+            instance.MetasUf = validated_data.get('MetasUf', 0)
+        if 'MetasPromesas' in validated_data:
+            instance.MetasPromesas = validated_data.get('MetasPromesas', 0)
+
         instance.save()
         log.save()
         if 'EntregaInmediata' in validated_data and validated_data[
