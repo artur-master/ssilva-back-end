@@ -69,6 +69,8 @@ class Escritura(models.Model):
         upload_to="DocumentVentas",
         null=True,
         blank=True)
+    NoticeToClientDate = models.DateField(
+        null=True, blank=True)
     TasacionStateBank = models.FileField(
         upload_to="DocumentVentas",
         null=True,
@@ -105,14 +107,12 @@ class Escritura(models.Model):
     MatrixInstructions = models.FileField(
         upload_to="DocumentVentas",
         null=True, blank=True)
-    PromesaDeed = models.FileField(
+    PromocionDeed = models.FileField(
         upload_to="DocumentVentas",
         null=True, blank=True)
-    PromesaCoinciden = models.NullBooleanField(
-        blank=True,
-        null=True,
-        default=None)
-    NoticeToClientDate = models.DateField(
+    PromesaCoinciden = models.BooleanField(
+        blank=True, default=True)
+    NoticeToClientSignDate = models.DateField(
         null=True, blank=True)
     BalanceFeeUF = models.DecimalField(
         null=True,
@@ -125,7 +125,7 @@ class Escritura(models.Model):
     SignDate = models.DateTimeField(
         null=True, blank=True)
     PaymentMethodBalance = models.IntegerField(
-        blank=True, null=True)
+        blank=True, default=0)
     ChequeNumber = models.DecimalField(
         null=True,
         max_digits=10,
@@ -136,18 +136,24 @@ class Escritura(models.Model):
         decimal_places=2)
     FetchaPago = models.DateTimeField(
         null=True, blank=True)
-    FetchaFirma = models.DateTimeField(
-        null=True, blank=True)
+    ProofDeposite = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
     InstructionObservacion = models.CharField(
         max_length=200, null=True, blank=True)
-    RepertoireNumber = models.IntegerField(
-        blank=True, null=True)
+    RepertoireNumber = models.CharField(
+        max_length=200, blank=True, null=True)
     StartDate = models.DateTimeField(
         null=True, blank=True)
     RealEstateBilling = models.BooleanField(
         default=False)
     InvoiceFile = models.FileField(
         upload_to="DocumentVentas",
+        null=True, blank=True)
+    SendRealEstateSign = models.BooleanField(
+        default=False)
+    SendRealEstateSignDate = models.DateTimeField(
         null=True, blank=True)
     RealEstateSign = models.BooleanField(
         default=False)
@@ -169,26 +175,59 @@ class Escritura(models.Model):
         default=False)
     SignPayDate = models.DateTimeField(
         null=True, blank=True)
-    MortgageLift = models.BooleanField(
+    IngresoAlzamiento = models.BooleanField(
         default=False)
-    MortgageLiftDate = models.DateTimeField(
+    IngresoAlzamientoDate = models.DateTimeField(
+        null=True, blank=True)
+    SalidaAlzamiento = models.BooleanField(
+        default=False)
+    SalidaAlzamientoDate = models.DateTimeField(
+        null=True, blank=True)
+    EnteranceFISign = models.BooleanField(
+        default=False)
+    EnteranceFISignDate = models.DateTimeField(
+        null=True, blank=True)
+    ExitFISign = models.BooleanField(
+        default=False)
+    ExitFISignDate = models.DateTimeField(
+        null=True, blank=True)
+    IngresoCierreCopias = models.BooleanField(
+        default=False)
+    IngresoCierreCopiasDate = models.DateTimeField(
+        null=True, blank=True)
+    SalidaCierreCopias = models.BooleanField(
+        default=False)
+    SalidaCierreCopiasDate = models.DateTimeField(
+        null=True, blank=True)
+    CompensationSettlement = models.BooleanField(
+        default=False)
+    CompensationSettlementDate = models.DateTimeField(
+        null=True, blank=True)
+    CompensationRealEstate = models.BooleanField(
+        default=False)
+    CompensationRealEstateDate = models.DateTimeField(
         null=True, blank=True)
     RealEstateConservator = models.BooleanField(
         default=False)
-    RealEstateConservatorFile = models.FileField(
-        upload_to="DocumentVentas",
-        null=True, blank=True)
+    RealEstateConservatorDate = models.DateTimeField(
+        null=True, blank=True)    
+    Cover = models.BooleanField(
+        default=False)
+    CoverDate = models.DateTimeField(
+        null=True, blank=True)    
     SendCopiesToClient = models.BooleanField(
         default=False)
     SendCopiesToClientDate = models.DateTimeField(
         null=True, blank=True)
     SendCopiesToIN = models.BooleanField(
         default=False)
-    SendCopiesToINDate = models.DateTimeField(
+    SendCopiesToINFile = models.FileField(
+        upload_to="DocumentVentas",
         null=True, blank=True)
-    ProofDeed = models.BooleanField(
+    ProofPaymentSettlement = models.BooleanField(
         default=False)
-    ProofDeedDate = models.DateTimeField(
+    ProofPaymentSettlementFile = models.FileField(
+        upload_to="DocumentVentas",
         null=True, blank=True)
     SubsidyState = models.NullBooleanField(
         blank=True,
@@ -208,7 +247,15 @@ class Escritura(models.Model):
         default=False)
     INPaymentPendingFile = models.FileField(
         upload_to="DocumentVentas",
+        null=True, blank=True)    
+    Retirement = models.BooleanField(
+        default=False)
+    RetirementDate = models.DateTimeField(
         null=True, blank=True)
+    Subscription = models.BooleanField(
+        default=False)
+    SubscriptionDate = models.DateTimeField(
+        null=True, blank=True)    
     GuaranteeToClient = models.BooleanField(
         default=False)
     GuaranteeToClientDate = models.DateTimeField(

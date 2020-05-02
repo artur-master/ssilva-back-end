@@ -58,8 +58,7 @@ class CreateAprobacionCreditoSerializer(serializers.ModelSerializer):
             'ClientPersonalHealthStatement',
             'AcFinancialInstitution',
             'AcObservations',
-            'AprobacionCreditoState',
-            'DeclarePhysicalFolderState'
+            'AprobacionCreditoState'
         )
 
 
@@ -167,6 +166,7 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         allow_null=True )
     CustomerCheckingAccount = serializers.SerializerMethodField('get_customer_url')
     PowersCharacteristics = serializers.SerializerMethodField('get_powers_url')
+    NoticeToClientDate = serializers.SerializerMethodField('get_notice_client_date')
     TasacionStateBank = serializers.SerializerMethodField('get_tasacion_statebank_url')
     TasacionSantander = serializers.SerializerMethodField('get_tasacion_santander_url')
     TasacionChileBank = serializers.SerializerMethodField('get_tasacion_chilebank_url')
@@ -175,8 +175,8 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
     RevisionChileBank = serializers.SerializerMethodField('get_revision_chilebank_url')
     MatrixDeed = serializers.SerializerMethodField('get_matrix_deed_url')
     MatrixInstructions = serializers.SerializerMethodField('get_matrix_instructions_url')
-    PromesaDeed = serializers.SerializerMethodField('get_promesa_url')
-    NoticeToClientDate = serializers.SerializerMethodField('get_notice_client_date')
+    PromocionDeed = serializers.SerializerMethodField('get_promesa_url')
+    NoticeToClientSignDate = serializers.SerializerMethodField('get_notice_client_sign_date')
     BalanceFeeUF = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -194,22 +194,33 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True)
     FetchaPago = serializers.SerializerMethodField('get_pago_date')
-    FetchaFirma = serializers.SerializerMethodField('get_firma_date')
+    ProofDeposite = serializers.SerializerMethodField('get_proof_deposite_url')
     StartDate = serializers.SerializerMethodField('get_start_date')
     InvoiceFile = serializers.SerializerMethodField('get_invoice_url')
+    SendRealEstateSignDate = serializers.SerializerMethodField('get_send_realestatesign_date')
     RealEstateSignDate = serializers.SerializerMethodField('get_realestatesign_date')
     SignNotaryDate = serializers.SerializerMethodField('get_sign_notary_date')
     SignDeedCompensationDate = serializers.SerializerMethodField('get_signdeed_date')
     SignSettelmentDate = serializers.SerializerMethodField('get_signsettlement_date')
     SignPayDate = serializers.SerializerMethodField('get_signpay_date')
-    MortgageLiftDate = serializers.SerializerMethodField('get_lift_date')
-    RealEstateConservatorFile = serializers.SerializerMethodField('get_real_estate_url')
+    SalidaAlzamientoDate = serializers.SerializerMethodField('get_salida_alzamiento_date')
+    EnteranceFISignDate = serializers.SerializerMethodField('get_enterance_fi_sign_date')
+    ExitFISignDate = serializers.SerializerMethodField('get_exit_fi_sign_date')
+    IngresoCierreCopiasDate = serializers.SerializerMethodField('get_ingreso_cierre_date')
+    SalidaCierreCopiasDate = serializers.SerializerMethodField('get_salida_cierre_date')
+    CompensationSettlementDate = serializers.SerializerMethodField('get_compensation_settlement_date')
+    CompensationRealEstateDate = serializers.SerializerMethodField('get_compensation_in_date')
+    IngresoAlzamientoDate = serializers.SerializerMethodField('get_alzamiento_date')
+    RealEstateConservatorDate = serializers.SerializerMethodField('get_real_estate_date')
+    CoverDate = serializers.SerializerMethodField('get_cover_date')
     SendCopiesToClientDate = serializers.SerializerMethodField('get_send_client_date')
-    SendCopiesToINDate = serializers.SerializerMethodField('get_send_in_date')
-    ProofDeedDate = serializers.SerializerMethodField('get_proof_deed_date')
+    SendCopiesToINFile = serializers.SerializerMethodField('get_send_in_url')
+    ProofPaymentSettlementFile = serializers.SerializerMethodField('get_proof_payment_settlement_url')
     PaymentSubsidyFile  = serializers.SerializerMethodField('get_subsidy_url')
     PaymentSavingINFile = serializers.SerializerMethodField('get_saving_url')
     INPaymentPendingFile = serializers.SerializerMethodField('get_in_pending_url')
+    RetirementDate = serializers.SerializerMethodField('get_retirement_date')
+    SubscriptionDate = serializers.SerializerMethodField('get_subscription_date')
     GuaranteeToClientDate = serializers.SerializerMethodField('get_guarantee_client_date')
     DeliveryPropertyDate = serializers.SerializerMethodField('get_delivery_date')
     GPLoginRegistrationFile = serializers.SerializerMethodField('get_GP_url')
@@ -241,8 +252,9 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'HasPromotion',
             'CustomerCheckingAccount',
             'PowersCharacteristics',
+            'NoticeToClientDate',
             # 'AprobacionCreditoState',
-            # 'DeclarePhysicalFolderState',   
+            'DeclarePhysicalFolderState',   
             'TasacionStateBank',
             'TasacionSantander',
             'TasacionChileBank',
@@ -254,9 +266,9 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'RevisionConfirmoChileBank',
             'MatrixDeed',
             'MatrixInstructions',
-            'PromesaDeed',
+            'PromocionDeed',
             'PromesaCoinciden',
-            'NoticeToClientDate',
+            'NoticeToClientSignDate',
             'BalanceFeeUF',
             'BalanceFund',
             'SignDate',
@@ -264,12 +276,14 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'ChequeNumber',
             'Valor',
             'FetchaPago',
-            'FetchaFirma',
+            'ProofDeposite',
             'InstructionObservacion',
             'RepertoireNumber',
             'StartDate',
             'RealEstateBilling',
             'InvoiceFile',
+            'SendRealEstateSign',
+            'SendRealEstateSignDate',
             'RealEstateSign',
             'RealEstateSignDate',
             'SignNotary',
@@ -280,16 +294,32 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'SignSettelmentDate',
             'SignPay',
             'SignPayDate',
-            'MortgageLift',
-            'MortgageLiftDate',
+            'SalidaAlzamiento',
+            'SalidaAlzamientoDate',
+            'EnteranceFISign',
+            'EnteranceFISignDate',
+            'ExitFISign',
+            'ExitFISignDate',
+            'IngresoCierreCopias',
+            'IngresoCierreCopiasDate',
+            'SalidaCierreCopias',
+            'SalidaCierreCopiasDate',
+            'CompensationSettlement',
+            'CompensationSettlementDate',
+            'CompensationRealEstate',
+            'CompensationRealEstateDate',
+            'IngresoAlzamiento',
+            'IngresoAlzamientoDate',
             'RealEstateConservator',
-            'RealEstateConservatorFile',
+            'RealEstateConservatorDate',
+            'Cover',
+            'CoverDate',
             'SendCopiesToClient',
             'SendCopiesToClientDate',
             'SendCopiesToIN',
-            'SendCopiesToINDate',
-            'ProofDeed',
-            'ProofDeedDate',
+            'SendCopiesToINFile',
+            'ProofPaymentSettlement',
+            'ProofPaymentSettlementFile',
             'SubsidyState',
             'PaymentSubsidy',
             'PaymentSubsidyFile',
@@ -297,6 +327,10 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'PaymentSavingINFile',
             'INPaymentPending',
             'INPaymentPendingFile',
+            'Retirement',
+            'RetirementDate',
+            'Subscription',
+            'SubscriptionDate',
             'GuaranteeToClient',
             'GuaranteeToClientDate',
             'DeliveryProperty',
@@ -377,15 +411,27 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         else:
             return ""
     def get_promesa_url(self, obj):
-        if obj.PromesaDeed and hasattr(
-                obj.PromesaDeed, 'url'):
+        if obj.PromocionDeed and hasattr(
+                obj.PromocionDeed, 'url'):
             absolute_url = get_full_path_x(self.context['request'])
-            return "%s%s" % (absolute_url, obj.PromesaDeed.url)
+            return "%s%s" % (absolute_url, obj.PromocionDeed.url)
+        else:
+            return ""
+    def get_proof_deposite_url(self, obj):
+        if obj.ProofDeposite and hasattr(
+                obj.ProofDeposite, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ProofDeposite.url)
         else:
             return ""
     def get_notice_client_date(self, obj):
         try:
             return obj.NoticeToClientDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_notice_client_sign_date(self, obj):
+        try:
+            return obj.NoticeToClientSignDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_sign_date(self, obj):
@@ -398,14 +444,14 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return obj.FetchaPago.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
-    def get_firma_date(self, obj):
-        try:
-            return obj.FetchaFirma.strftime("%Y-%m-%d")
-        except AttributeError:
-            return ""
     def get_start_date(self, obj):
         try:
             return obj.StartDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_send_realestatesign_date(self, obj):
+        try:
+            return obj.SendRealEstateSignDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_realestatesign_date(self, obj):
@@ -433,9 +479,44 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return obj.SignPayDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
-    def get_lift_date(self, obj):
+    def get_salida_alzamiento_date(self, obj):
         try:
-            return obj.MortgageLiftDate.strftime("%Y-%m-%d")
+            return obj.SalidaAlzamientoDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_enterance_fi_sign_date(self, obj):
+        try:
+            return obj.EnteranceFISignDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_exit_fi_sign_date(self, obj):
+        try:
+            return obj.ExitFISignDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_ingreso_cierre_date(self, obj):
+        try:
+            return obj.IngresoCierreCopiasDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_salida_cierre_date(self, obj):
+        try:
+            return obj.SalidaCierreCopiasDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_compensation_settlement_date(self, obj):
+        try:
+            return obj.CompensationSettlementDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_compensation_in_date(self, obj):
+        try:
+            return obj.CompensationRealEstateDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_alzamiento_date(self, obj):
+        try:
+            return obj.IngresoAlzamientoDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_send_client_date(self, obj):
@@ -443,19 +524,33 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return obj.SendCopiesToClientDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
-    def get_send_in_date(self, obj):
-        try:
-            return obj.SendCopiesToINDate.strftime("%Y-%m-%d")
-        except AttributeError:
+    def get_send_in_url(self, obj):
+        if obj.SendCopiesToINFile and hasattr(
+                obj.SendCopiesToINFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.SendCopiesToINFile.url)
+        else:
             return ""
-    def get_proof_deed_date(self, obj):
-        try:
-            return obj.ProofDeedDate.strftime("%Y-%m-%d")
-        except AttributeError:
+    def get_proof_payment_settlement_url(self, obj):
+        if obj.ProofPaymentSettlementFile and hasattr(
+                obj.ProofPaymentSettlementFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ProofPaymentSettlementFile.url)
+        else:
             return ""
     def get_guarantee_client_date(self, obj):
         try:
             return obj.GuaranteeToClientDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_retirement_date(self, obj):
+        try:
+            return obj.RetirementDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_subscription_date(self, obj):
+        try:
+            return obj.SubscriptionDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_delivery_date(self, obj):
@@ -470,12 +565,15 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.InvoiceFile.url)
         else:
             return ""
-    def get_real_estate_url(self, obj):
-        if obj.RealEstateConservatorFile and hasattr(
-                obj.RealEstateConservatorFile, 'url'):
-            absolute_url = get_full_path_x(self.context['request'])
-            return "%s%s" % (absolute_url, obj.RealEstateConservatorFile.url)
-        else:
+    def get_real_estate_date(self, obj):
+        try:
+            return obj.RealEstateConservatorDate.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_cover_date(self, obj):
+        try:
+            return obj.CoverDate.strftime("%Y-%m-%d")
+        except AttributeError:
             return ""
     def get_subsidy_url(self, obj):
         if obj.PaymentSubsidyFile and hasattr(
@@ -525,7 +623,7 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         max_digits=10,
         decimal_places=2,
         allow_null=True)
-        
+
     class Meta:
         model = Escritura
         fields = (
@@ -541,6 +639,7 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'HasPromotion',
             'CustomerCheckingAccount',
             'PowersCharacteristics',
+            'NoticeToClientDate',
             'TasacionStateBank',
             'TasacionSantander',
             'TasacionChileBank',
@@ -552,9 +651,9 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'RevisionConfirmoChileBank',
             'MatrixDeed',
             'MatrixInstructions',
-            'PromesaDeed',
+            'PromocionDeed',
             'PromesaCoinciden',
-            'NoticeToClientDate',
+            'NoticeToClientSignDate',
             'BalanceFeeUF',
             'BalanceFund',
             'SignDate',
@@ -562,12 +661,14 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'ChequeNumber',
             'Valor',
             'FetchaPago',
-            'FetchaFirma',
+            'ProofDeposite',
             'InstructionObservacion',
             'RepertoireNumber',
             'StartDate',
             'RealEstateBilling',
             'InvoiceFile',
+            'SendRealEstateSign',
+            'SendRealEstateSignDate',
             'RealEstateSign',
             'RealEstateSignDate',
             'SignNotary',
@@ -578,16 +679,32 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'SignSettelmentDate',
             'SignPay',
             'SignPayDate',
-            'MortgageLift',
-            'MortgageLiftDate',
+            'SalidaAlzamiento',
+            'SalidaAlzamientoDate',
+            'EnteranceFISign',
+            'EnteranceFISignDate',
+            'ExitFISign',
+            'ExitFISignDate',
+            'IngresoCierreCopias',
+            'IngresoCierreCopiasDate',
+            'SalidaCierreCopias',
+            'SalidaCierreCopiasDate',
+            'CompensationSettlement',
+            'CompensationSettlementDate',
+            'CompensationRealEstate',
+            'CompensationRealEstateDate',
+            'IngresoAlzamiento',
+            'IngresoAlzamientoDate',
             'RealEstateConservator',
-            'RealEstateConservatorFile',
+            'RealEstateConservatorDate',
+            'Cover',
+            'CoverDate',
             'SendCopiesToClient',
             'SendCopiesToClientDate',
             'SendCopiesToIN',
-            'SendCopiesToINDate',
-            'ProofDeed',
-            'ProofDeedDate',
+            'SendCopiesToINFile',
+            'ProofPaymentSettlement',
+            'ProofPaymentSettlementFile',
             'SubsidyState',
             'PaymentSubsidy',
             'PaymentSubsidyFile',
@@ -595,6 +712,10 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'PaymentSavingINFile',
             'INPaymentPending',
             'INPaymentPendingFile',
+            'Retirement',
+            'RetirementDate',
+            'Subscription',
+            'SubscriptionDate',
             'GuaranteeToClient',
             'GuaranteeToClientDate',
             'DeliveryProperty',
@@ -607,8 +728,9 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         proyecto = instance.ProyectoID
-        
-        instance.EscrituraState = validated_data['EscrituraState']
+
+        if 'EscrituraState' in validated_data:
+            instance.EscrituraState = validated_data['EscrituraState']
         if 'CarepetaFisicaState' in validated_data:
             instance.CarepetaFisicaState = validated_data['CarepetaFisicaState']
         if 'PromesaInstructions' in validated_data:
@@ -651,12 +773,14 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.MatrixDeed = validated_data['MatrixDeed']
         if 'MatrixInstructions' in validated_data:
             instance.MatrixInstructions = validated_data['MatrixInstructions']
-        if 'PromesaDeed' in validated_data:
-            instance.PromesaDeed = validated_data['PromesaDeed']
+        if 'PromocionDeed' in validated_data:
+            instance.PromocionDeed = validated_data['PromocionDeed']
         if 'PromesaCoinciden' in validated_data:
             instance.PromesaCoinciden = validated_data['PromesaCoinciden']
         if 'NoticeToClientDate' in validated_data:
             instance.NoticeToClientDate = validated_data['NoticeToClientDate']
+        if 'NoticeToClientSignDate' in validated_data:
+            instance.NoticeToClientSignDate = validated_data['NoticeToClientSignDate']
         if 'BalanceFeeUF' in validated_data:
             instance.BalanceFeeUF = validated_data['BalanceFeeUF']
         if 'BalanceFund' in validated_data:
@@ -671,8 +795,8 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.Valor = validated_data['Valor']
         if 'FetchaPago' in validated_data:
             instance.FetchaPago = validated_data['FetchaPago']
-        if 'FetchaFirma' in validated_data:
-            instance.FetchaFirma = validated_data['FetchaFirma']
+        if 'ProofDeposite' in validated_data:
+            instance.ProofDeposite = validated_data['ProofDeposite']
         if 'InstructionObservacion' in validated_data:
             instance.InstructionObservacion = validated_data['InstructionObservacion']
         if 'RepertoireNumber' in validated_data:
@@ -683,6 +807,10 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.RealEstateBilling = validated_data['RealEstateBilling']
         if 'InvoiceFile' in validated_data:
             instance.InvoiceFile = validated_data['InvoiceFile']
+        if 'SendRealEstateSign' in validated_data:
+            instance.SendRealEstateSign = validated_data['SendRealEstateSign']
+        if 'SendRealEstateSignDate' in validated_data:
+            instance.SendRealEstateSignDate = validated_data['SendRealEstateSignDate']
         if 'RealEstateSign' in validated_data:
             instance.RealEstateSign = validated_data['RealEstateSign']
         if 'RealEstateSignDate' in validated_data:
@@ -696,33 +824,65 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         if 'SignDeedCompensationDate' in validated_data:
             instance.SignDeedCompensationDate = validated_data['SignDeedCompensationDate']
         if 'SignSettelment' in validated_data:
-            instance.pjw = validated_data['SignSettelment']
+            instance.SignSettelment = validated_data['SignSettelment']
         if 'SignSettelmentDate' in validated_data:
             instance.SignSettelmentDate = validated_data['SignSettelmentDate']
         if 'SignPay' in validated_data:
             instance.SignPay = validated_data['SignPay']
         if 'SignPayDate' in validated_data:
             instance.SignPayDate = validated_data['SignPayDate']
-        if 'MortgageLift' in validated_data:
-            instance.MortgageLift = validated_data['MortgageLift']
-        if 'MortgageLiftDate' in validated_data:
-            instance.MortgageLiftDate = validated_data['MortgageLiftDate']
+        if 'SalidaAlzamiento' in validated_data:
+            instance.SalidaAlzamiento = validated_data['SalidaAlzamiento']
+        if 'SalidaAlzamientoDate' in validated_data:
+            instance.SalidaAlzamientoDate = validated_data['SalidaAlzamientoDate']
+        if 'EnteranceFISign' in validated_data:
+            instance.EnteranceFISign = validated_data['EnteranceFISign']
+        if 'EnteranceFISignDate' in validated_data:
+            instance.EnteranceFISignDate = validated_data['EnteranceFISignDate']
+        if 'ExitFISign' in validated_data:
+            instance.ExitFISign = validated_data['ExitFISign']
+        if 'ExitFISignDate' in validated_data:
+            instance.ExitFISignDate = validated_data['ExitFISignDate']
+        if 'IngresoCierreCopias' in validated_data:
+            instance.IngresoCierreCopias = validated_data['IngresoCierreCopias']
+        if 'IngresoCierreCopiasDate' in validated_data:
+            instance.IngresoCierreCopiasDate = validated_data['IngresoCierreCopiasDate']
+        if 'SalidaCierreCopias' in validated_data:
+            instance.SalidaCierreCopias = validated_data['SalidaCierreCopias']
+        if 'SalidaCierreCopiasDate' in validated_data:
+            instance.SalidaCierreCopiasDate = validated_data['SalidaCierreCopiasDate']
+        if 'CompensationSettlement' in validated_data:
+            instance.CompensationSettlement = validated_data['CompensationSettlement']
+        if 'CompensationSettlementDate' in validated_data:
+            instance.CompensationSettlementDate = validated_data['CompensationSettlementDate']
+        if 'CompensationRealEstate' in validated_data:
+            instance.CompensationRealEstate = validated_data['CompensationRealEstate']
+        if 'CompensationRealEstateDate' in validated_data:
+            instance.CompensationRealEstateDate = validated_data['CompensationRealEstateDate']
+        if 'IngresoAlzamiento' in validated_data:
+            instance.IngresoAlzamiento = validated_data['IngresoAlzamiento']
+        if 'IngresoAlzamientoDate' in validated_data:
+            instance.IngresoAlzamientoDate = validated_data['IngresoAlzamientoDate']
         if 'RealEstateConservator' in validated_data:
             instance.RealEstateConservator = validated_data['RealEstateConservator']
-        if 'RealEstateConservatorFile' in validated_data:
-            instance.RealEstateConservatorFile = validated_data['RealEstateConservatorFile']
+        if 'RealEstateConservatorDate' in validated_data:
+            instance.RealEstateConservatorDate = validated_data['RealEstateConservatorDate']
+        if 'Cover' in validated_data:
+            instance.Cover = validated_data['Cover']
+        if 'CoverDate' in validated_data:
+            instance.CoverDate = validated_data['CoverDate']
         if 'SendCopiesToClient' in validated_data:
             instance.SendCopiesToClient = validated_data['SendCopiesToClient']
         if 'SendCopiesToClientDate' in validated_data:
             instance.SendCopiesToClientDate = validated_data['SendCopiesToClientDate']
         if 'SendCopiesToIN' in validated_data:
             instance.SendCopiesToIN = validated_data['SendCopiesToIN']
-        if 'SendCopiesToINDate' in validated_data:
-            instance.SendCopiesToINDate = validated_data['SendCopiesToINDate']
-        if 'ProofDeed' in validated_data:
-            instance.ProofDeed = validated_data['ProofDeed']
-        if 'ProofDeedDate' in validated_data:
-            instance.ProofDeedDate = validated_data['ProofDeedDate']
+        if 'SendCopiesToINFile' in validated_data:
+            instance.SendCopiesToINFile = validated_data['SendCopiesToINFile']
+        if 'ProofPaymentSettlement' in validated_data:
+            instance.ProofPaymentSettlement = validated_data['ProofPaymentSettlement']
+        if 'ProofPaymentSettlementFile' in validated_data:
+            instance.ProofPaymentSettlementFile = validated_data['ProofPaymentSettlementFile']
         if 'SubsidyState' in validated_data:
             instance.SubsidyState = validated_data['SubsidyState']
         if 'PaymentSubsidy' in validated_data:
@@ -737,6 +897,14 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.INPaymentPending = validated_data['INPaymentPending']
         if 'INPaymentPendingFile' in validated_data:
             instance.INPaymentPendingFile = validated_data['INPaymentPendingFile']
+        if 'Retirement' in validated_data:
+            instance.Retirement = validated_data['Retirement']
+        if 'RetirementDate' in validated_data:
+            instance.RetirementDate = validated_data['RetirementDate']
+        if 'Subscription' in validated_data:
+            instance.Subscription = validated_data['Subscription']
+        if 'SubscriptionDate' in validated_data:
+            instance.SubscriptionDate = validated_data['SubscriptionDate']
         if 'GuaranteeToClient' in validated_data:
             instance.GuaranteeToClient = validated_data['GuaranteeToClient']
         if 'GuaranteeToClientDate' in validated_data:

@@ -77,6 +77,9 @@ class EscrituraViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.save()
             # escritura = self.get_object()
+            if 'ModificaPromesa' in request.data:
+                instance.PromesaID.DocumentPromesa=request.data.get('ModificaPromesa')
+                instance.PromesaID.save()
             
             return Response({"escritura": RetrieveEscrituraSerializer(
                                             instance, context={'request': request}).data,
@@ -175,7 +178,7 @@ class EscrituraViewSet(viewsets.ModelViewSet):
             for i in range(creditosNumber):
                 credito = AprobacionCredito.objects.get(
                     AprobacionCreditoID=data.get("AprobacionCreditos.{}.AprobacionCreditoID".format(i)))
-                print(data)
+                
                 credito.AprobacionCreditoState=(data.get("AprobacionCreditos.{}.AprobacionCreditoState".format(i))=='1')
                 if "AprobacionCreditos.{}.AcObservations".format(i) in data:
                     credito.AcObservations= json.loads(data.get("AprobacionCreditos.{}.AcObservations".format(i)))
@@ -183,6 +186,13 @@ class EscrituraViewSet(viewsets.ModelViewSet):
                 credito.save()
                 
             instance = serializer.save()
+            
+            #update project
+            project = instance.ProyectoID
+            if project.EscrituraProyectoState<3.1:
+                project.EscrituraProyectoState = 3.1
+                project.save()
+
             return Response({"escritura": RetrieveEscrituraSerializer(
                                             instance, context={'request': request}).data,
                              "promesa": RetrievePromesaSerializer(
