@@ -239,7 +239,7 @@ class EscrituraProyectoViewSet(viewsets.ModelViewSet):
             instance = serializer.save()
             retrieve_serializer = RetrieveProyectoSerializer(instance, context={'request': request})
             return Response({"proyecto": retrieve_serializer.data,
-                            "detail": "Proyecto actualizado con éxito."},
+                             "detail": "Proyecto actualizado con éxito."},
                             status=status.HTTP_200_OK)
         return Response({"detail": serializer.errors},
                         status=status.HTTP_409_CONFLICT)

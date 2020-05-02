@@ -25,6 +25,7 @@ class Escritura(models.Model):
         null=True,
         max_digits=10,
         decimal_places=2)
+    Date = models.DateTimeField(auto_now_add=True)
     CarepetaFisicaState = models.BooleanField(
         default=False)
     PromesaInstructions = models.NullBooleanField(

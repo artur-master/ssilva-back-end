@@ -116,7 +116,9 @@ class ListEscrituraSerializer(serializers.ModelSerializer):
         source='ProyectoID.Name'
     )
     Folio = serializers.CharField(
-        source='PromesaID.Folio')    
+        source='PromesaID.Folio')
+    Date = serializers.SerializerMethodField(
+        'get_date')   
     EscrituraState = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -141,6 +143,12 @@ class ListEscrituraSerializer(serializers.ModelSerializer):
                   'Cliente', 'Folio',
                   'EscrituraState', 'Inmuebles')
 
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+
     def get_inmuebles(self, obj):
         inmuebles_promesa = PromesaInmueble.objects.filter(
             PromesaID=obj.PromesaID)
@@ -160,7 +168,8 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True)
     Folio = serializers.CharField(
-        source='PromesaID.Folio')    
+        source='PromesaID.Folio')
+    Date = serializers.SerializerMethodField('get_Date')
     Cliente = ClienteSerializer(
         source='PromesaID.ClienteID',
         allow_null=True )
@@ -240,6 +249,7 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'ProyectoID',
             'Proyecto',
             'Folio',
+            'Date',
             'Cliente',
             'EscrituraState',
             'CarepetaFisicaState',
@@ -339,7 +349,12 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'GPLoginRegistrationFile',
             'AprobacionCreditos'
         )
-
+        
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
     def get_customer_url(self, obj):
         if obj.CustomerCheckingAccount and hasattr(
                 obj.CustomerCheckingAccount, 'url'):
