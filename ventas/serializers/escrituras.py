@@ -140,7 +140,7 @@ class ListEscrituraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Escritura
         fields = ('EscrituraID','ProyectoID', 'Proyecto', 'ClienteID',
-                  'Cliente', 'Folio',
+                  'Cliente', 'Folio','Date',
                   'EscrituraState', 'Inmuebles')
 
     def get_date(self, obj):
@@ -349,7 +349,7 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'GPLoginRegistrationFile',
             'AprobacionCreditos'
         )
-        
+
     def get_date(self, obj):
         try:
             return obj.Date.strftime("%Y-%m-%d")
