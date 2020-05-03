@@ -118,7 +118,7 @@ class ListEscrituraSerializer(serializers.ModelSerializer):
     Folio = serializers.CharField(
         source='PromesaID.Folio')
     Date = serializers.SerializerMethodField(
-        'get_date')   
+        'get_date')
     EscrituraState = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -169,7 +169,7 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         read_only=True)
     Folio = serializers.CharField(
         source='PromesaID.Folio')
-    Date = serializers.SerializerMethodField('get_Date')
+    Date = serializers.SerializerMethodField('get_date')
     Cliente = ClienteSerializer(
         source='PromesaID.ClienteID',
         allow_null=True )
