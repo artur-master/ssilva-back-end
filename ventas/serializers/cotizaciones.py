@@ -708,6 +708,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
 
         return instance
 
+
 class ListCotizacionActionSerializer(serializers.ModelSerializer):
     ApprovedUserInfo = serializers.SerializerMethodField('get_user')
     Date = serializers.SerializerMethodField('get_date')

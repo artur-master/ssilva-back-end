@@ -141,6 +141,7 @@ class CreatePaymentInstructionSerializer(serializers.ModelSerializer):
         model = PaymentInstruction
         fields = ('Date', 'Document')
 
+
 class ListPaymentInstructionSerializer(serializers.ModelSerializer):
     Date = serializers.SerializerMethodField('get_date')
     Document = serializers.SerializerMethodField('get_document_url')
@@ -163,6 +164,7 @@ class ListPaymentInstructionSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.Document.url)
         else:
             return ""
+
 
 class ListPromesaSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
@@ -1836,7 +1838,6 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
         #end sending email
 
         return instance
-
 
 
 class ListPromesaActionSerializer(serializers.ModelSerializer):

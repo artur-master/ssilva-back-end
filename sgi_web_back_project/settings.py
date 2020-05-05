@@ -41,6 +41,9 @@ EMAIL_PORT = env.int('EMAIL_PORT')
 EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT')
 UF_AUTH_KEY = env.str('UF_AUTH_KEY')
 
+#Pipdrive setting
+PIPEDRIVE_API_TOKEN = env.str('PIPEDRIVE_API_TOKEN')
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

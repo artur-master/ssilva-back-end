@@ -10,7 +10,8 @@ from ventas.views.cotizaciones import (
     CotizacionProyectoViewSet,
     CotizacionesClienteViewSet,
     CotizacionesCotizadorViewSet,
-    CotizacionTypeViewSet)
+    CotizacionTypeViewSet,
+    PreCotizacionViewSet)
 from ventas.views.desistimiento import (
     RegisterDesistimientoViewSet,
     UploadConfeccionDesistimientoViewSet,
@@ -220,6 +221,8 @@ router.register('escrituras', EscrituraViewSet)
 router.register('escritura-proyecto', EscrituraProyectoViewSet)
 
 router.register('user-summary', UserSummaryViewSet)
+
+router.register('pre-cotizaciones', PreCotizacionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
