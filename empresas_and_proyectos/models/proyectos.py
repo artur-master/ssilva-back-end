@@ -216,7 +216,7 @@ class Proyecto(models.Model):
         upload_to="DocumentVentas",
         null=True, blank=True)
     StateBankObservations = JSONField(
-        default=[], blank=True, null=True)
+        default=list, blank=True, null=True)
     StateBankState = models.CharField(
         max_length=200, null=True, blank=True)
     SantanderReportDate = models.DateField(
@@ -225,7 +225,7 @@ class Proyecto(models.Model):
         upload_to="DocumentVentas",
         null=True, blank=True)
     SantanderObservations = JSONField(
-        default=[], blank=True, null=True)
+        default=list, blank=True, null=True)
     SantanderState = models.CharField(
         max_length=200, null=True, blank=True)
     ChileBankReportDate = models.DateField(
@@ -234,7 +234,7 @@ class Proyecto(models.Model):
         upload_to="DocumentVentas",
         null=True, blank=True)
     ChileBankObservations = JSONField(
-        default=[], blank=True, null=True)
+        default=list, blank=True, null=True)
     ChileBankState = models.CharField(
         max_length=200, null=True, blank=True)
 

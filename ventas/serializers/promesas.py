@@ -935,11 +935,6 @@ class GenerateFacturaSerializer(serializers.ModelSerializer):
         instance.PromesaState = constants.PROMESA_STATE[4]
         instance.save()
         
-        # Create escritura
-        proyecto = instance.ProyectoID
-        if not proyecto.EscrituraProyectoState == None:
-            create_escritura(proyecto, instance)
-
         return instance
 
 
@@ -1130,6 +1125,11 @@ class SendCopiesSerializer(serializers.ModelSerializer):
         instance.save()
         # generateFactura(instance)
 
+        # # Create Escritura
+        proyecto = instance.ProyectoID
+        if not proyecto.EscrituraProyectoState == None:
+            create_escritura(proyecto, instance)
+        
         return instance
 
 

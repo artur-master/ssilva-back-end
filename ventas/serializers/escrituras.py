@@ -19,10 +19,11 @@ def create_escritura(proyecto, promesa):
     else:
         instance = Escritura(
             PromesaID=promesa,
-            ProyectoID=proyecto,
-            EscrituraState=0
+            ProyectoID=proyecto
         )
     
+    escritura_state = 0 if proyecto.EscrituraProyectoState else 1.1
+    instance.EscrituraState = escritura_state
     instance.save()
 
     # AprobacionCreditos.objects.filter(PromesaID=instance).delete()

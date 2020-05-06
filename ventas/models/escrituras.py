@@ -304,7 +304,7 @@ class AprobacionCredito(models.Model):
         upload_to="DocumentVentas",
         null=True, blank=True)
     AcObservations = JSONField(
-        default=[],
+        default=list,
         blank=True,  null=True)
     AprobacionCreditoState = models.NullBooleanField(
         blank=True, null=True,
