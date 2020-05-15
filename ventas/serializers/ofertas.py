@@ -1178,8 +1178,6 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             direccion_empresa_compradora = empresa_compradora_data['Address']
 
         pay_type = get_or_none(PayType, PayTypeID=pay_type_id)
-        print(pay_type_id);
-        print(pay_type);
         # Validaciones campos obligatorios
         if not pay_type:
             raise CustomValidation(
@@ -1290,9 +1288,12 @@ class ListOfertaActionSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
-        user = getattr(venta_log, 'UserID')
-        UserProFileSerializer = UserProfileSerializer(instance=user)
-        return UserProFileSerializer.data
+        try:
+            user = venta_log.UserID
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        except:
+            return []
 
     def get_date(self, obj):
         try:

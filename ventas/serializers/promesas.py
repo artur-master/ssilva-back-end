@@ -1865,9 +1865,12 @@ class ListPromesaActionSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         venta_log = VentaLog.objects.filter(VentaID=obj.PromesaID).order_by('-Date').first()
-        user = getattr(venta_log, 'UserID')
-        UserProFileSerializer = UserProfileSerializer(instance=user)
-        return UserProFileSerializer.data
+        try:
+            user = venta_log.UserID
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        except:
+            return []
 
     def get_state(self, obj):
         try:
