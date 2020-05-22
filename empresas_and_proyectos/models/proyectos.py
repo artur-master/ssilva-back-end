@@ -128,11 +128,19 @@ class Proyecto(models.Model):
     ContadoMontoCuotas = models.IntegerField(null=True, blank=True)
     ContadoMontoEscrituraContado = models.IntegerField(null=True, blank=True)
     ContadoAhorroPlus = models.IntegerField(null=True, blank=True)
+    ContadoAhorroPlusMaxDiscounts = models.DecimalField(        
+        max_digits=10, decimal_places=2,
+        null=True, blank=True
+    )
     
     CreditoMontoPromesa = models.IntegerField(null=True, blank=True)
     CreditoMontoCuotas = models.IntegerField(null=True, blank=True)
     CreditoMontoEscrituraContado = models.IntegerField(null=True, blank=True)
     CreditoAhorroPlus = models.IntegerField(null=True, blank=True)
+    CreditoAhorroPlusMaxDiscounts = models.DecimalField(        
+        max_digits=10, decimal_places=2,
+        null=True, blank=True
+    )
 
     DiscountMaxPercent = models.DecimalField(        
         max_digits=10, decimal_places=2,
@@ -186,6 +194,8 @@ class Proyecto(models.Model):
     
     MetasUf = models.FloatField(default=0, null=True, blank=True)
     MetasPromesas = models.IntegerField(null=True, blank=True)
+
+    MaxQuotation = models.IntegerField(null=True, blank=True)
 
     objects = ProyectosManager()
 

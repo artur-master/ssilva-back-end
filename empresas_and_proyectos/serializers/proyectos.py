@@ -574,10 +574,12 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'ContadoMontoCuotas',
             'ContadoMontoEscrituraContado',
             'ContadoAhorroPlus',
+            'ContadoAhorroPlusMaxDiscounts',
             'CreditoMontoPromesa',
             'CreditoMontoCuotas',
             'CreditoMontoEscrituraContado',
             'CreditoAhorroPlus',
+            'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
             'Aseguradora',
             'UsersProyecto',
@@ -590,6 +592,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'ComunaID',
             'Etapa',
             'Metadata',
+            'MaxQuotation',
             'MetasUf',
             'MetasPromesas',
             'EscrituraProyectoState',
@@ -1177,6 +1180,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    ContadoAhorroPlusMaxDiscounts= serializers.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        required=False,
+        allow_null=True
+    )
     CreditoMontoPromesa = serializers.IntegerField(
         required=False,
         allow_null=True
@@ -1190,6 +1199,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         allow_null=True
     )
     CreditoAhorroPlus = serializers.IntegerField(
+        required=False,
+        allow_null=True
+    )
+    CreditoAhorroPlusMaxDiscounts = serializers.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
         required=False,
         allow_null=True
     )
@@ -1229,10 +1244,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'ContadoMontoCuotas',
             'ContadoMontoEscrituraContado',
             'ContadoAhorroPlus',
+            'ContadoAhorroPlusMaxDiscounts',
             'CreditoMontoPromesa',
             'CreditoMontoCuotas',
             'CreditoMontoEscrituraContado',
             'CreditoAhorroPlus',
+            'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
             'UsersProyecto',
             'Aseguradora',
@@ -1240,6 +1257,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'EtapaStateID',
             'EntregaInmediata',
             'Arquitecto',
+            'MaxQuotation',
             'MetasUf',
             'MetasPromesas'
         )
@@ -1294,10 +1312,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             ContadoMontoCuotas=validated_data.get('ContadoMontoCuotas', 20),
             ContadoMontoEscrituraContado=validated_data.get('ContadoMontoEscrituraContado', 20),
             ContadoAhorroPlus=validated_data.get('ContadoAhorroPlus', 20),
+            ContadoAhorroPlusMaxDiscounts=validated_data.get('ContadoAhorroPlusMaxDiscounts', 1000),
             CreditoMontoPromesa=validated_data.get('CreditoMontoPromesa', 20),
             CreditoMontoCuotas=validated_data.get('CreditoMontoCuotas', 20),
             CreditoMontoEscrituraContado=validated_data.get('CreditoMontoEscrituraContado', 20),
             CreditoAhorroPlus=validated_data.get('CreditoAhorroPlus', 20),
+            CreditoAhorroPlusMaxDiscounts=validated_data.get('CreditoAhorroPlusMaxDiscounts', 1000),
             DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
             MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
             PlanMediosState=plan_medios,
@@ -1306,7 +1326,8 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             EtapaStateID=etapastate,
             EntregaInmediata=validated_data.get('EntregaInmediata', False),
             MetasUf=validated_data.get('MetasUf', 0),
-            MetasPromesas=validated_data.get('MetasPromesas', 0)
+            MetasPromesas=validated_data.get('MetasPromesas', 0),
+            MaxQuotation=validated_data.get('MaxQuotation', 0)
         )
         if validated_data.get('EntregaInmediata') is True:
             notification_type = NotificationType.objects.get(
@@ -1380,10 +1401,12 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
                                   ContadoMontoCuotas=validated_data.get('ContadoMontoCuotas', 20),
                                   ContadoMontoEscrituraContado=validated_data.get('ContadoMontoEscrituraContado', 20),
                                   ContadoAhorroPlus=validated_data.get('ContadoAhorroPlus', 20),
+                                  ContadoAhorroPlusMaxDiscounts=validated_data.get('ContadoAhorroPlusMaxDiscounts', 1000),
                                   CreditoMontoPromesa=validated_data.get('CreditoMontoPromesa', 20),
                                   CreditoMontoCuotas=validated_data.get('CreditoMontoCuotas', 20),
                                   CreditoMontoEscrituraContado=validated_data.get('CreditoMontoEscrituraContado', 20),
                                   CreditoAhorroPlus=validated_data.get('CreditoAhorroPlus', 20),
+                                  CreditoAhorroPlusMaxDiscounts=validated_data.get('CreditoAhorroPlusMaxDiscounts', 1000),
                                   DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
                                   MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
                                   PlanMediosState=plan_medios,
@@ -1699,10 +1722,12 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
     ContadoMontoCuotas = serializers.IntegerField(required=False, allow_null=True)
     ContadoMontoEscrituraContado = serializers.IntegerField(required=False, allow_null=True)
     ContadoAhorroPlus = serializers.IntegerField(required=False, allow_null=True)
+    ContadoAhorroPlusMaxDiscounts = serializers.IntegerField(required=False, allow_null=True)
     CreditoMontoPromesa = serializers.IntegerField(required=False, allow_null=True)
     CreditoMontoCuotas = serializers.IntegerField(required=False, allow_null=True)
     CreditoMontoEscrituraContado = serializers.IntegerField(required=False, allow_null=True)
     CreditoAhorroPlus = serializers.IntegerField(required=False, allow_null=True)
+    CreditoAhorroPlusMaxDiscounts = serializers.IntegerField(required=False, allow_null=True)
     DiscountMaxPercent = serializers.DecimalField(
         max_digits=10, decimal_places=2,
         required=False, allow_null=True
@@ -1735,10 +1760,12 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'ContadoMontoCuotas',
             'ContadoMontoEscrituraContado',
             'ContadoAhorroPlus',
+            'ContadoAhorroPlusMaxDiscounts',
             'CreditoMontoPromesa',
             'CreditoMontoCuotas',
             'CreditoMontoEscrituraContado',
             'CreditoAhorroPlus',
+            'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
             'UsersProyecto',
             'Aseguradora',
@@ -1748,6 +1775,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'EntregaInmediata',
             'MetasUf',
             'MetasPromesas',
+            'MaxQuotation',
         )
 
     def update(self, instance, validated_data):
@@ -1802,11 +1830,13 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
                                   ContadoMontoPromesa=validated_data.get('ContadoMontoPromesa', 20),
                                   ContadoMontoCuotas=validated_data.get('ContadoMontoCuotas', 20),
                                   ContadoMontoEscrituraContado=validated_data.get('ContadoMontoEscrituraContado', 20),
-                                  ContadoAhorroPlus=validated_data.get('ContadoAhorroPlus', 20),
                                   CreditoMontoPromesa=validated_data.get('CreditoMontoPromesa', 20),
+                                  ContadoAhorroPlus=validated_data.get('ContadoAhorroPlus', 20),
+                                  ContadoAhorroPlusMaxDiscounts=validated_data.get('ContadoAhorroPlusMaxDiscounts', 1000),
                                   CreditoMontoCuotas=validated_data.get('CreditoMontoCuotas', 20),
                                   CreditoMontoEscrituraContado=validated_data.get('CreditoMontoEscrituraContado', 20),
                                   CreditoAhorroPlus=validated_data.get('CreditoAhorroPlus', 20),
+                                  CreditoAhorroPlusMaxDiscounts=validated_data.get('CreditoAhorroPlusMaxDiscounts', 1000),
                                   DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
                                   MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
                                   PlanMediosState=instance.PlanMediosState,
@@ -2081,6 +2111,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.ContadoMontoEscrituraContado = validated_data.get('ContadoMontoEscrituraContado')
         if 'ContadoAhorroPlus' in validated_data:
             instance.ContadoAhorroPlus = validated_data.get('ContadoAhorroPlus')
+        if 'ContadoAhorroPlusMaxDiscounts' in validated_data:
+            instance.ContadoAhorroPlusMaxDiscounts = validated_data.get('ContadoAhorroPlusMaxDiscounts')
         if 'CreditoMontoPromesa' in validated_data:
             instance.CreditoMontoPromesa = validated_data.get('CreditoMontoPromesa')
         if 'CreditoMontoCuotas' in validated_data:
@@ -2089,6 +2121,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.CreditoMontoEscrituraContado = validated_data.get('CreditoMontoEscrituraContado')
         if 'CreditoAhorroPlus' in validated_data:
             instance.CreditoAhorroPlus = validated_data.get('CreditoAhorroPlus')
+        if 'CreditoAhorroPlusMaxDiscounts' in validated_data:
+            instance.CreditoAhorroPlusMaxDiscounts = validated_data.get('CreditoAhorroPlusMaxDiscounts')
         if 'DiscountMaxPercent' in validated_data:
             instance.DiscountMaxPercent = validated_data.get('DiscountMaxPercent')
         if 'MoreThanOneEtapa' in validated_data:
@@ -2101,6 +2135,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.MetasUf = validated_data.get('MetasUf', 0)
         if 'MetasPromesas' in validated_data:
             instance.MetasPromesas = validated_data.get('MetasPromesas', 0)
+        if 'MaxQuotation' in validated_data:
+            instance.MaxQuotation = validated_data.get('MaxQuotation', 0)
 
         instance.save()
         log.save()
