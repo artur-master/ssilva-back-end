@@ -1180,7 +1180,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
-    ContadoAhorroPlusMaxDiscounts= serializers.DecimalField(
+    ContadoAhorroPlusMaxDiscounts = serializers.DecimalField(
         max_digits=10, 
         decimal_places=2,
         required=False,
@@ -1722,12 +1722,18 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
     ContadoMontoCuotas = serializers.IntegerField(required=False, allow_null=True)
     ContadoMontoEscrituraContado = serializers.IntegerField(required=False, allow_null=True)
     ContadoAhorroPlus = serializers.IntegerField(required=False, allow_null=True)
-    ContadoAhorroPlusMaxDiscounts = serializers.IntegerField(required=False, allow_null=True)
+    ContadoAhorroPlusMaxDiscounts = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=False, allow_null=True
+    )
     CreditoMontoPromesa = serializers.IntegerField(required=False, allow_null=True)
     CreditoMontoCuotas = serializers.IntegerField(required=False, allow_null=True)
     CreditoMontoEscrituraContado = serializers.IntegerField(required=False, allow_null=True)
     CreditoAhorroPlus = serializers.IntegerField(required=False, allow_null=True)
-    CreditoAhorroPlusMaxDiscounts = serializers.IntegerField(required=False, allow_null=True)
+    CreditoAhorroPlusMaxDiscounts = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=False, allow_null=True
+    )
     DiscountMaxPercent = serializers.DecimalField(
         max_digits=10, decimal_places=2,
         required=False, allow_null=True

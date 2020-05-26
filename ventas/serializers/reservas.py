@@ -507,6 +507,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
     )
     Empleador = CreateEmpleadorSerializer(
         write_only=True,
+        allow_null=True,
         required=False
     )
     CoEmpleador = CreateEmpleadorSerializer(
@@ -728,7 +729,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 )
         else:
             patrimony = None
-
+            
         if empleador_data:
             empleador = Empleador.objects.filter(ClienteID=cliente)
             if len(empleador) > 0:

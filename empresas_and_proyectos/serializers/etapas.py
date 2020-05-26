@@ -98,7 +98,8 @@ class ListEtapaSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_inmuebles_etapa(self, obj):
-        inmuebles_etapa = Inmueble.objects.filter(EtapaID=obj, EdificioID=None)
+        inmuebles_etapa = Inmueble.objects.filter(EtapaID=obj, EdificioID=None).order_by('Number')
+
         serializer = InmuebleSerializer(
             instance=inmuebles_etapa, context={'url': self.context['request']}, many=True)
         return serializer.data
@@ -255,10 +256,12 @@ class EtapaSerializer(serializers.ModelSerializer):
             ContadoMontoCuotas=proyecto.ContadoMontoCuotas,
             ContadoMontoEscrituraContado=proyecto.ContadoMontoEscrituraContado,
             ContadoAhorroPlus=proyecto.ContadoAhorroPlus,
+            ContadoAhorroPlusMaxDiscounts=proyecto.ContadoAhorroPlusMaxDiscounts,
             CreditoMontoPromesa=proyecto.CreditoMontoPromesa,
             CreditoMontoCuotas=proyecto.CreditoMontoCuotas,
             CreditoMontoEscrituraContado=proyecto.CreditoMontoEscrituraContado,
             CreditoAhorroPlus=proyecto.CreditoAhorroPlus,
+            CreditoAhorroPlusMaxDiscounts=proyecto.CreditoAhorroPlusMaxDiscounts,
             DiscountMaxPercent=proyecto.DiscountMaxPercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
@@ -627,10 +630,12 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             ContadoMontoCuotas=proyecto.ContadoMontoCuotas,
             ContadoMontoEscrituraContado=proyecto.ContadoMontoEscrituraContado,
             ContadoAhorroPlus=proyecto.ContadoAhorroPlus,
+            ContadoAhorroPlusMaxDiscounts=proyecto.ContadoAhorroPlusMaxDiscounts,
             CreditoMontoPromesa=proyecto.CreditoMontoPromesa,
             CreditoMontoCuotas=proyecto.CreditoMontoCuotas,
             CreditoMontoEscrituraContado=proyecto.CreditoMontoEscrituraContado,
             CreditoAhorroPlus=proyecto.CreditoAhorroPlus,
+            CreditoAhorroPlusMaxDiscounts=proyecto.CreditoAhorroPlusMaxDiscounts,
             DiscountMaxPercent=proyecto.DiscountMaxPercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
@@ -951,10 +956,12 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             ContadoMontoCuotas=proyecto.ContadoMontoCuotas,
             ContadoMontoEscrituraContado=proyecto.ContadoMontoEscrituraContado,
             ContadoAhorroPlus=proyecto.ContadoAhorroPlus,
+            ContadoAhorroPlusMaxDiscounts=proyecto.ContadoAhorroPlusMaxDiscounts,
             CreditoMontoPromesa=proyecto.CreditoMontoPromesa,
             CreditoMontoCuotas=proyecto.CreditoMontoCuotas,
             CreditoMontoEscrituraContado=proyecto.CreditoMontoEscrituraContado,
             CreditoAhorroPlus=proyecto.CreditoAhorroPlus,
+            CreditoAhorroPlusMaxDiscounts=proyecto.CreditoAhorroPlusMaxDiscounts,
             DiscountMaxPercent=proyecto.DiscountMaxPercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,
@@ -1287,10 +1294,12 @@ class UpdateEtapaSerializer(serializers.ModelSerializer):
             ContadoMontoCuotas=proyecto.ContadoMontoCuotas,
             ContadoMontoEscrituraContado=proyecto.ContadoMontoEscrituraContado,
             ContadoAhorroPlus=proyecto.ContadoAhorroPlus,
+            ContadoAhorroPlusMaxDiscounts=proyecto.ContadoAhorroPlusMaxDiscounts,
             CreditoMontoPromesa=proyecto.CreditoMontoPromesa,
             CreditoMontoCuotas=proyecto.CreditoMontoCuotas,
             CreditoMontoEscrituraContado=proyecto.CreditoMontoEscrituraContado,
             CreditoAhorroPlus=proyecto.CreditoAhorroPlus,
+            CreditoAhorroPlusMaxDiscounts=proyecto.CreditoAhorroPlusMaxDiscounts,
             DiscountMaxPercent=proyecto.DiscountMaxPercent,
             PlanMediosState=proyecto.PlanMediosState,
             BorradorPromesaState=proyecto.BorradorPromesaState,

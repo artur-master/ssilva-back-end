@@ -159,6 +159,32 @@ class InmuebleSerializer(serializers.ModelSerializer):
         else:
             return ""
 
+    def update(self, instance, validated_data):
+        if 'Floor' in validated_data:
+            instance.Floor = validated_data.get('Floor')
+        if 'BathroomQuantity' in validated_data:
+            instance.BathroomQuantity = validated_data.get('BathroomQuantity')
+        if 'BedroomsQuantity' in validated_data:
+            instance.BedroomsQuantity = validated_data.get('BedroomsQuantity')
+        if 'UtilSquareMeters' in validated_data:
+            instance.UtilSquareMeters = validated_data.get('UtilSquareMeters')
+        if 'TerraceSquareMeters' in validated_data:
+            instance.TerraceSquareMeters = validated_data.get('TerraceSquareMeters')
+        if 'LodgeSquareMeters' in validated_data:
+            instance.LodgeSquareMeters = validated_data.get('LodgeSquareMeters')
+        if 'TotalSquareMeters' in validated_data:
+            instance.TotalSquareMeters = validated_data.get('TotalSquareMeters')
+        if 'IsNotUsoyGoce' in validated_data:
+            instance.IsNotUsoyGoce = validated_data.get('IsNotUsoyGoce')
+        if 'Price' in validated_data:
+            instance.Price = validated_data.get('Price')
+        if 'MaximunDiscount' in validated_data:
+            instance.MaximunDiscount = validated_data.get('MaximunDiscount')
+
+        instance.save()
+
+        return instance
+        
 class CreateInmuebleSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.UUIDField(
         write_only=True,

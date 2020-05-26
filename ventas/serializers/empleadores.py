@@ -11,7 +11,10 @@ class EmpleadorSerializer(serializers.ModelSerializer):
 
 class CreateEmpleadorSerializer(serializers.ModelSerializer):
     Rut = serializers.CharField(
-        allow_null=True
+        write_only=True,
+        allow_null=True,        
+        required=False,
+        allow_blank=True
     )
 
     class Meta:

@@ -102,9 +102,24 @@ class InmuebleViewSet(viewsets.ModelViewSet):
         serializer = InmuebleSerializer(queryset, context={'url': request}, many=True)
         return Response({"entities":serializer.data, "message": "success uploaded"}, status=status.HTTP_200_OK)
 
+    def partial_update(self, request, InmuebleID):
+        serializer = InmuebleSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            etapaID = Inmueble.objects.get(InmuebleID=InmuebleID).EtapaID
+            queryset = Inmueble.objects.filter(EtapaID=etapaID).order_by('Number')
+            serializer = InmuebleSerializer(queryset, context={'url': request}, many=True)
+            return Response({"entities":serializer.data, "message": "success uploaded"}, status=status.HTTP_200_OK)
+
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
 
 class UpdateInmueblesViewSet(APIView):
-
     def update_changed_fields(self, item, changed, orientations):
         for k in changed.get('Changes', {}):
             if k.lower() == 'orientation':

@@ -75,8 +75,8 @@ class ReservaViewSet(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         many = isinstance(data, list)
-        serializer = CreateReservaSerializer(
-            data=data, many=many, context={'request': request})
+        
+        serializer = CreateReservaSerializer(data=data, many=many, context={'request': request})
 
         if serializer.is_valid():
             instance = serializer.save()
