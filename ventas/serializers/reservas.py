@@ -1,4 +1,5 @@
 import decimal
+import datetime
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -247,7 +248,6 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         source='VendedorID',
         allow_null=True
     )
-
     CodeudorID = serializers.UUIDField(
         source='CodeudorID.UserID',
         allow_null=True
@@ -310,6 +310,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     Logs = serializers.SerializerMethodField('get_logs')
+    MaxCuotas = serializers.SerializerMethodField('get_maxcuotas')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -359,7 +360,8 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'IsFinished',
             'Graph',
             'Patrimony',
-            'Logs')
+            'Logs',
+            'MaxCuotas')
 
     def get_patrimony(self, obj):
         patrimonies = Patrimony.objects.filter(ClienteID=obj.ClienteID)
@@ -403,6 +405,13 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             Folio=obj.Folio).order_by('-id')
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data
+
+    def get_maxcuotas(self, obj):        
+        curDate = datetime.date.today()
+        modDate = obj.ProyectoID.ModifiedDate
+        diff = (curDate.year-modDate.year)*12+curDate.month-modDate.month
+        
+        return obj.ProyectoID.MaxCuotas-diff
 
 
 class CreateReservaInmuebleSerializer(serializers.ModelSerializer):
@@ -1087,6 +1096,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 DocumentCotizacion = cotizacion_pdf_generated,
             )
         return instance
+
 
 class UpdateReservaSerializer(serializers.ModelSerializer):
     EmpresaCompradora = CreateEmpresaCompradoraSerializer(
@@ -2178,6 +2188,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentAcredittacionActivo = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     # Coduedor
     DocumentCodeudorFirmadoCheques = serializers.FileField(
         allow_empty_file=True,
@@ -2283,6 +2297,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentTituloProfesional',
             'DocumentAcredittacionAhorros',
             'DocumentAcredittacionDeudas',
+            'DocumentAcredittacionActivo',
             'DocumentCodeudorFirmadoCheques',
             'DocumentCodeudorFichaPreAprobacion',
             'DocumentCodeudorSimulador',
@@ -2367,6 +2382,8 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentAcredittacionAhorros = validated_data['DocumentAcredittacionAhorros']
         if 'DocumentAcredittacionDeudas' in validated_data:
             documents.DocumentAcredittacionDeudas = validated_data['DocumentAcredittacionDeudas']
+        if 'DocumentAcredittacionActivo' in validated_data:
+            documents.DocumentAcredittacionActivo = validated_data['DocumentAcredittacionActivo']
         
         #Codeudor
         if 'DocumentCodeudorFirmadoCheques' in validated_data:
@@ -2412,6 +2429,7 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
 
         return documents
 
+
 class DownloadPreApprobationSerializer(serializers.ModelSerializer):
     ReservaID = serializers.UUIDField(
         write_only=True
@@ -2423,6 +2441,7 @@ class DownloadPreApprobationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserva
         fields = ('ReservaID', 'LetterSize')
+
 
 class ListReservaActionSerializer(serializers.ModelSerializer):
     Date = serializers.SerializerMethodField('get_date')

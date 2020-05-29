@@ -92,22 +92,19 @@ class Proyecto(models.Model):
         related_name="comuna_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True )
     InmobiliariaID = models.ForeignKey(
         Inmobiliaria,
         related_name="inmobiliaria_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True)
     ConstructoraID = models.ForeignKey(
         Constructora,
         related_name="constructora_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True)
     ProyectoAseguradoraID = models.ForeignKey(
         'ProyectoAseguradora',
         related_name='aseguradora_proyecto',
@@ -119,8 +116,7 @@ class Proyecto(models.Model):
         related_name="estado_aprobacion_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True)
     CotizacionDuration = models.IntegerField(blank=True, null=True)
     GuaranteeAmount = models.IntegerField(null=True, blank=True)
     
@@ -130,8 +126,7 @@ class Proyecto(models.Model):
     ContadoAhorroPlus = models.IntegerField(null=True, blank=True)
     ContadoAhorroPlusMaxDiscounts = models.DecimalField(        
         max_digits=10, decimal_places=2,
-        null=True, blank=True
-    )
+        null=True, blank=True)
     
     CreditoMontoPromesa = models.IntegerField(null=True, blank=True)
     CreditoMontoCuotas = models.IntegerField(null=True, blank=True)
@@ -139,35 +134,30 @@ class Proyecto(models.Model):
     CreditoAhorroPlus = models.IntegerField(null=True, blank=True)
     CreditoAhorroPlusMaxDiscounts = models.DecimalField(        
         max_digits=10, decimal_places=2,
-        null=True, blank=True
-    )
+        null=True, blank=True )
 
     DiscountMaxPercent = models.DecimalField(        
         max_digits=10, decimal_places=2,
-        null=True, blank=True
-    )
+        null=True, blank=True )
     MoreThanOneEtapa = models.BooleanField(default=False)
     PlanMediosState = models.ForeignKey(
         PlanMediosState,
         related_name="estado_plan_medios_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True )
     BorradorPromesaState = models.ForeignKey(
         BorradorPromesaState,
         related_name="estado_borrador_promesa_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True )
     IngresoComisionesState = models.ForeignKey(
         IngresoComisionesState,
         related_name="estado_ingreso_comisiones_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True )
     UserProyecto = models.ManyToManyField(
         User,
         related_name='usuario_proyecto',
@@ -184,18 +174,17 @@ class Proyecto(models.Model):
         related_name="etapastate_proyecto",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
-    )
+        blank=True )
     EntregaInmediata = models.BooleanField(default=False)
     Documents = models.ManyToManyField(
         ProjectDocument,
-        related_name='document_project'
-    )
+        related_name='document_project' )
     
     MetasUf = models.FloatField(default=0, null=True, blank=True)
     MetasPromesas = models.IntegerField(null=True, blank=True)
 
-    MaxQuotation = models.IntegerField(null=True, blank=True)
+    MaxCuotas = models.IntegerField(null=True, blank=True, default=24)
+    ModifiedDate = models.DateField(auto_now=True)
 
     objects = ProyectosManager()
 

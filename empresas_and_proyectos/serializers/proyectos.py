@@ -592,7 +592,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'ComunaID',
             'Etapa',
             'Metadata',
-            'MaxQuotation',
+            'MaxCuotas',
             'MetasUf',
             'MetasPromesas',
             'EscrituraProyectoState',
@@ -1257,7 +1257,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'EtapaStateID',
             'EntregaInmediata',
             'Arquitecto',
-            'MaxQuotation',
+            'MaxCuotas',
             'MetasUf',
             'MetasPromesas'
         )
@@ -1327,7 +1327,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             EntregaInmediata=validated_data.get('EntregaInmediata', False),
             MetasUf=validated_data.get('MetasUf', 0),
             MetasPromesas=validated_data.get('MetasPromesas', 0),
-            MaxQuotation=validated_data.get('MaxQuotation', 0)
+            MaxCuotas=validated_data.get('MaxCuotas', 0)
         )
         if validated_data.get('EntregaInmediata') is True:
             notification_type = NotificationType.objects.get(
@@ -1781,7 +1781,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'EntregaInmediata',
             'MetasUf',
             'MetasPromesas',
-            'MaxQuotation',
+            'MaxCuotas',
         )
 
     def update(self, instance, validated_data):
@@ -2141,8 +2141,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.MetasUf = validated_data.get('MetasUf', 0)
         if 'MetasPromesas' in validated_data:
             instance.MetasPromesas = validated_data.get('MetasPromesas', 0)
-        if 'MaxQuotation' in validated_data:
-            instance.MaxQuotation = validated_data.get('MaxQuotation', 0)
+        if 'MaxCuotas' in validated_data:
+            instance.MaxCuotas = validated_data.get('MaxCuotas', 0)
 
         instance.save()
         log.save()

@@ -65,6 +65,8 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentAcredittacionDeudas = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
+    DocumentAcredittacionActivo = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)  
 
     #Codeudor
     DocumentCodeudorFirmadoCheques = models.FileField(
