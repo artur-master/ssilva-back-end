@@ -58,7 +58,6 @@ def validar_rut(rut):
 # Funcion que verifica que la contraseña cumpla con los requisitos especificados: Minimo 7 caracteres,
 # al menos 1 mayuscula y al menos 1 numero
 
-
 def validar_contrasena(password):
     if len(password) >= 7 and re.search(
         '[0-9]',
@@ -125,8 +124,10 @@ def get_or_none(classmodel, **kwargs):
 def valor_uf_actual():
     date = datetime.datetime.now()
     now = date.date()
+    
     try:
-        uf = UF.objects.get(Date=now)
+        # uf = UF.objects.get(Date=now)
+        uf = UF.objects.order_by('-Date').first()
     except UF.DoesNotExist:
         return Decimal()
     return uf.Value
@@ -245,19 +246,22 @@ def import_excel_inmuebles(file):
 
 
 # Funcion para procesar los datos y retornar el pdf de la cotizacion a descargar
-
-def download_pdf_views(cotizacion_id, letter_size, response):
+   
+def download_pdf_views(cotizacion_id, letter_size, response=None):
     cotizacion = Cotizacion.objects.get(CotizacionID=cotizacion_id)
     contacts = ProyectoContactInfo.objects.filter(
         ProyectoID=cotizacion.ProyectoID)
     inmuebles_a_cotizar = CotizacionInmueble.objects.filter(
-        CotizacionID=cotizacion)
+        CotizacionID=cotizacion).order_by("InmuebleID__InmuebleTypeID__id")
 
     total = 0
     total_uf = 0
     total_cuotas = 0
 
     # Años para calcular dividendo
+    plazo_8 = [8]
+    plazo_10 = [10]
+    plazo_15 = [15]
     plazo_20 = [20]
     plazo_25 = [25]
     plazo_30 = [30]
@@ -294,7 +298,7 @@ def download_pdf_views(cotizacion_id, letter_size, response):
         total += cotizacion.PaymentFirmaPromesa
         porcentaje_firma_promesa = cotizacion.PaymentFirmaPromesa * 100 / total_uf
     else:
-        porcentaje_firma_promesa = None
+        porcentaje_firma_promesa = 0
 
     total += cotizacion.PaymentFirmaEscritura
 
@@ -303,6 +307,57 @@ def download_pdf_views(cotizacion_id, letter_size, response):
     if cotizacion.PaymentInstitucionFinanciera:
         total += cotizacion.PaymentInstitucionFinanciera
         porcentaje_credito = cotizacion.PaymentInstitucionFinanciera * 100 / total_uf
+
+        # 8 años
+        # UF
+        dividend = dividend_calculation(
+            total, porcentaje_credito, tasa.Value, plazo_8[0])
+        plazo_8.append(dividend)
+
+        # Pesos
+        multiply = round(dividend * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_8.append(dividend_pesos)
+
+        # Renta Pesos
+        rent = 4 * dividend
+        multiply = round(rent * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_8.append(dividend_pesos)
+
+        # 10 años
+        # UF
+        dividend = dividend_calculation(
+            total, porcentaje_credito, tasa.Value, plazo_10[0])
+        plazo_10.append(dividend)
+
+        # Pesos
+        multiply = round(dividend * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_10.append(dividend_pesos)
+
+        # Renta Pesos
+        rent = 4 * dividend
+        multiply = round(rent * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_10.append(dividend_pesos)
+        
+        # 15 años
+        # UF
+        dividend = dividend_calculation(
+            total, porcentaje_credito, tasa.Value, plazo_15[0])
+        plazo_15.append(dividend)
+
+        # Pesos
+        multiply = round(dividend * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_15.append(dividend_pesos)
+
+        # Renta Pesos
+        rent = 4 * dividend
+        multiply = round(rent * valor_uf_actual(), 0)
+        dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+        plazo_15.append(dividend_pesos)
 
         # 20 años
         # UF
@@ -354,10 +409,15 @@ def download_pdf_views(cotizacion_id, letter_size, response):
         multiply = round(rent * valor_uf_actual(), 0)
         dividend_pesos = "{:,}".format(multiply).replace(',', '.')
         plazo_30.append(dividend_pesos)
-
     else:
-        porcentaje_credito = None
+        porcentaje_credito = 0
 
+    if cotizacion.AhorroPlus:
+        total += cotizacion.AhorroPlus
+        porcentaje_ahorro = cotizacion.AhorroPlus * 100 / total_uf
+    else:
+        porcentaje_ahorro = 0
+    
     # Datos para renderizar a pdf
     context_dict = {
         'cotizacion': cotizacion,
@@ -367,14 +427,19 @@ def download_pdf_views(cotizacion_id, letter_size, response):
         'total_pago': total,
         'total_cuotas': total_cuotas_solas,
         'total_firma_promesa': cotizacion.PaymentFirmaPromesa,
+        'total_credito': cotizacion.PaymentInstitucionFinanciera,
+        'ahorro_plus': cotizacion.AhorroPlus,
         'total_firma_escritura': cotizacion.PaymentFirmaEscritura,
         'date_firma_promesa': cotizacion.DateFirmaPromesa,
         'porcentaje_cuotas': porcentaje_cuotas,
         'porcentaje_firma_promesa': porcentaje_firma_promesa,
         'porcentaje_firma_escritura': porcentaje_firma_escritura,
         'porcentaje_credito': porcentaje_credito,
+        'porcentaje_ahorro': porcentaje_ahorro,
         'porcentaje_tasa': tasa.Value,
-        'total_credito': cotizacion.PaymentInstitucionFinanciera,
+        'plazo_8': plazo_8,
+        'plazo_10': plazo_10,
+        'plazo_15': plazo_15,
         'plazo_20': plazo_20,
         'plazo_25': plazo_25,
         'plazo_30': plazo_30,
@@ -382,11 +447,11 @@ def download_pdf_views(cotizacion_id, letter_size, response):
         'contactos': contacts,
         'tamaño_letra': letter_size
     }
-
     pdf = render_create_cotizacion_to_pdf(context_dict, response)
-
     name = "%s_COT" % (cotizacion.Folio)
-    return name
+    
+    return {'name':name, 'pdf':pdf}
+
 
 def download_pre_approbation_views(reserva_id, letter_size, response):
     reserva = Reserva.objects.get(ReservaID=reserva_id)

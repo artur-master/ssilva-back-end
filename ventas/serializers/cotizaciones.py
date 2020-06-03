@@ -283,6 +283,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
             return EmpresaCompradoraSerializer(instance=empresa_compradora[0]).data
         return None    
 
+
 class ListCotizacionSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'
@@ -303,9 +304,7 @@ class ListCotizacionSerializer(serializers.ModelSerializer):
     VendedorID = serializers.UUIDField(
         source='Vendedor.UserID'
     )
-
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
-
     PayType = serializers.CharField(
         source='PayType.Name'
     )

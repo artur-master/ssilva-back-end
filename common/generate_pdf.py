@@ -82,15 +82,24 @@ def render_update_etapa_to_pdf(data_render):
     return None
 
 
-def render_create_cotizacion_to_pdf(data_render, response):
+def render_create_cotizacion_to_pdf(data_render, response=None):
     template_path = 'cotizacion_add.html'
     html = render_to_string(template_path, data_render)
+
     result = BytesIO()
-    pdf = pisa.pisaDocument(
-        BytesIO(
-            html.encode('UTF-8')),
-        dest=response,
-        link_callback=link_callback)
+    if response:
+        pdf = pisa.pisaDocument(
+            BytesIO(
+                html.encode('UTF-8')),
+            dest=response,
+            link_callback=link_callback)
+    else:
+        pdf = pisa.pisaDocument(
+            BytesIO(
+                html.encode('UTF-8')),
+            result,
+            link_callback=link_callback)
+
     if not pdf.err:
         return result.getvalue()
     return None
@@ -109,9 +118,11 @@ def render_create_pre_approbation_to_pdf(data_render, response):
         return result.getvalue()
     return None
 
+
 def render_create_oferta_to_pdf(data_render):
     template_path = 'oferta_add.html'
     html = render_to_string(template_path, data_render)
+
     result = BytesIO()
     pdf = pisa.pisaDocument(
         BytesIO(

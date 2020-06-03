@@ -868,6 +868,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             reserva_inmuebles.append(reserva_inmueble)
 
         ReservaInmueble.objects.bulk_create(reserva_inmuebles)
+        reserva_inmuebles.sort(key=lambda x: x.InmuebleID.InmuebleTypeID.id)
 
         if instance.CuotaID.all():
             for cuota in instance.CuotaID.all():
@@ -925,7 +926,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'corredores': constants.COMPANY_NAME[1],
             'cliente': cliente,
             'telefono': phone_value,
+            'email': email_value,
             'proyecto': proyecto,
+            'uf': valor_uf_actual(),
             'inmuebles_a_reservar': reserva_inmuebles,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
@@ -1075,9 +1078,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             VentaLogTypeID=venta_log_type,
         )
         
-        cotizacion_pdf = download_pdf_views(cotizacion_id, 80, HttpResponse(content_type='application/pdf'))
+        cotizacion_pdf = download_pdf_views(cotizacion_id, 80)
         filename = "%s_CDC_%s.pdf" % (instance.Folio, cliente)
-        cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
+        cotizacion_pdf_generated = ContentFile(cotizacion_pdf['pdf'])
         cotizacion_pdf_generated.name = filename
 
         try:
@@ -1697,7 +1700,9 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'corredores': constants.COMPANY_NAME[1],
             'cliente': cliente,
             'telefono': phone_value,
+            'email': email_value,
             'proyecto': proyecto,
+            'uf': valor_uf_actual(),
             'inmuebles_a_reservar': reserva_inmuebles,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
@@ -1705,10 +1710,10 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'porcentaje_cuotas': porcentaje_cuotas,
             'porcentaje_firma': porcentaje_firma,
             'porcentaje_credito': porcentaje_credito,
-            'total_credito': instance.PaymentInstitucionFinanciera,
-            'total_pago': total,
             'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
             'ahorro_plus': instance.AhorroPlus,
+            'total_credito': instance.PaymentInstitucionFinanciera,
+            'total_pago': total,
             'conditions': conditions,
             'tamaño_letra': 100,
             'gestion': constants.COMPANY_NAME[0]

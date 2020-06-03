@@ -2,424 +2,406 @@
 {% load index %}
 {% load i18n %}
 <html>
-
-<head>
-    <title></title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <style>
+  <head>
+      <title></title>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <style>
         @page {
-            size: 180mm 275mm;
-            margin: 2mm;
+          size: 180mm 275mm;
+          margin: 10mm 20mm 10mm 20mm;
         }
-        html,
-        body {
-            height: 100%;
-        }
-        body {
-            height: 30px;
-            
+        html,  body {
+          height: 100%;
+          font-size: 12px;
         }
         .bold {
-            font-weight: 300;
+          font-weight: 300;
         }
         .highlight {
-            background-color: #FFFF00;
+          background-color: #FFFF00;
         }
         .logo{
-            width: 120px;
-            height: 50px;
+          width: 120px;
+          height: 40px;
         }
-    </style>
-</head>
-
-<body>
+        p {
+          font-size: {{ tamaño_letra }}%;
+          font-weight: lighter;
+        }
+        table {
+          width: 100%; 
+          font-size: {{ tamaño_letra }}%;
+          border-spacing: 0;
+        }
+        tr {
+          height: 15px;
+        }
+        th, td {
+          padding: 0;
+          border: none;
+        }
+      </style>
+  </head>
+  <body>
     {% language 'es' %}
-    <table>
-        <tr style="height:50px;">
-            <th><img class="logo" align="left" src="{% static 'logo.png' %}" /></th>
-            <th style="font-size: {{ tamaño_letra }}%;line-height: 80%">
-                <h6 style="text-align: right"> COTIZACIÓN </h6>
-                <p style="text-align: right;font-weight: lighter;"> {{ cotizacion.Folio }}</p>
-                {% now "d" as day %}
-                {% now "F" as month %}
-                {% now "Y" as year %}
-                <p style="text-align: right;font-weight: lighter;">
-                    {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
-                </p>
-            </th>
-        </tr>
+    <table >
+      <tr style="height:50px;">
+        <th>
+          <img class="logo" align="left" src="{% static 'logo.png' %}">
+        </th>
+        <th style="font-size: {{ tamaño_letra }}%; vertical-align:bottom; text-align: right; margin-bottom: 0;">
+          <h4 style="margin:0; font-weight:bold">COTIZACIÓN</h4>
+          <h4 style="margin:0;font-weight:lighter">{{ cotizacion.Folio }}</h4>
+          {% now "d" as day %}
+          {% now "F" as month %}
+          {% now "Y" as year %}
+          <h4 style="margin:0;font-weight:lighter">
+            {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
+          </h4>
+        </th>
+      </tr>
     </table>
-    </br>
-    <table>
-        <tr style="height:15px;">
-            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
-                <p> Señor(a) </p>
-            </th>
-        </tr>
-        <tr style="height:15px;">
-            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
-                <p> {{ cotizacion.ClienteID }} </p>
-            </th>
-        </tr>
-        <tr style="height:15px;">
-            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
-                <p style="font-weight: lighter;text-decoration:underline"> Presente </p>
-            </th>
-        </tr>
-        <tr style="height:30px;">
-            <th style="padding-top:2px;font-size: {{ tamaño_letra }}%;text-align: left">
-                <p style="font-weight: lighter"> Estimado(a) cliente:</p>
-            </th>
-        </tr>
-        <tr style="height:40px;">
-            <th style="padding-top:2px;font-size: {{ tamaño_letra }}%;font-weight: lighter;text-align: left">
-                <p>
-                    De acuerdo a lo solicitado, nos es muy grato cotizar por los inmuebles que se indican,
-                    correspondientes al proyecto <strong> {{ cotizacion.ProyectoID.Name }}, </strong>
-                    ubicado en {{ cotizacion.ProyectoID.Address }}, comuna de {{ cotizacion.ProyectoID.ComunaID.Name}}, 
-                    provincia de {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}:
-                </p>
-            </th>
-        </tr>
-    </table>
-    <h2 style="font-size: {{ tamaño_letra }}%"><strong>1. <span style="text-decoration:underline"> INMUEBLES </span></strong></h2>
-    <table style="height: 20px">
-        <thead>
-            <tr style="border: 0.8px solid #000000">
-                <th style ="font-size: {{ tamaño_letra }}%;width: 120px"> Tipo </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 90px"> N° </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 90px"> Piso </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 140px"> Orientación (es) </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 130px"> Precio Lista (UF) </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 120px"> Descuento (%) </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 130px"> Precio Final (UF) </th>
-                <th style ="font-size: {{ tamaño_letra }}%;width: 130px"> Precio Final ($) </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cotizacion_inmueble in inmuebles_a_cotizar %}
-                <tr style="font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000;">
-                    <td style="text-align: center;"> {{ cotizacion_inmueble.InmuebleID.InmuebleTypeID.Name }} </td>
-                    <td style="text-align: center;"> {{ cotizacion_inmueble.InmuebleID.Number }} </td>
-                    <td style="text-align: center;"> 
-                        {% if cotizacion_inmueble.InmuebleID.Floor %}
-                            {{ cotizacion_inmueble.InmuebleID.Floor }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% for orientacion in cotizacion_inmueble.InmuebleID.OrientationID.all %}
-                            {{ orientacion.Name }}
-                        {% endfor %}
-                    </td>
-                    <td style="text-align: center;">
-                        {{ cotizacion_inmueble.InmuebleID.Price | floatformat:2 }}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cotizacion_inmueble.Discount %}
-                            {{ cotizacion_inmueble.Discount }}
-                        {% else %}
-                            -
-                        {% endif %}                   
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cotizacion_inmueble.Discount %}
-                            {% with discount_uf=cotizacion_inmueble.InmuebleID.Price|discount:cotizacion_inmueble.Discount %}
-                                {% with total_uf=cotizacion_inmueble.InmuebleID.Price|subtract:discount_uf %}
-                                        {{ total_uf | floatformat:2 }}
-                                {% endwith %}
-                            {% endwith %}
-                        {% else %}
-                            {{ cotizacion_inmueble.InmuebleID.Price | floatformat:2 }}
-                        {% endif %}    
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cotizacion_inmueble.Discount %}
-                            {% with cotizacion_inmueble.InmuebleID.Price|discount:cotizacion_inmueble.Discount as discount_uf %}
-                                {% with total_uf=cotizacion_inmueble.InmuebleID.Price|subtract:discount_uf %}
-                                    {% with total_pesos=total_uf|multiply:uf %}
-                                        {{ total_pesos | numberformat }}
-                                    {% endwith %}
-                                {% endwith %}
-                            {% endwith %}
-                        {% else %}
-                            {% with cotizacion_inmueble.InmuebleID.Price|multiply:uf as valor %}
-                                {{ valor | numberformat }}
-                            {% endwith %}
-                        {% endif %}    
-                    </td>
-                </tr>
-            {% endfor %}
-            <tr style="font-size: {{ tamaño_letra }}%;">
-                <td style="font-weight: bold;text-align: right;margin-right: 5px;" colspan="6">
-                    TOTAL
-                </td>
-                <td style="font-weight: bold;text-align: center;border: 0.8px solid #000000;">
-                    {{ total | floatformat:2 }}
-                </td>
-                <td style="font-weight: bold;text-align: center;border: 0.8px solid #000000;">
-                    {% with total_pesos=total|multiply:uf %}
-                        {{ total_pesos | numberformat }}
-                    {% endwith %}
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <h2 style="font-size: {{ tamaño_letra }}%"><strong>2. <span style="text-decoration:underline"> FORMA DE PAGO </strong></span></h2>
-    <table style="height: 40px">
-        {% if total_cuotas %}
-            <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
-                <td style="padding-left: 10px;width: 130px">
-                    En {{ cotizacion.CuotaID.all.count }} cuota(s)
-                </td>
-                <td style="width: 15px;">
-                </td>
-                <td style="width: 80px;text-align: left">
-                    {{ porcentaje_cuotas | floatformat:0 }} %
-                </td>
-                <td style="width: 80px;text-align: right">
-                    UF
-                </td>
-                <td style="width: 50px;text-align: right">
-                    {{ total_cuotas | floatformat:2 }}
-                </td>
-                <td style="width: 10px;text-align: right">
-                    $
-                </td>
-                <td style="width: 80px;text-align: right">
-                    {% with total_cuotas_pesos=total_cuotas|multiply:uf %}
-                        {{ total_cuotas_pesos | numberformat }}
-                    {% endwith %}
-                </td>
-            </tr>
-        {% endif %}
-        {% if total_firma_promesa %}
-         <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
-             <td style="padding-left: 10px;width: 130px">
-                A la firma de promesa
-            </td>
-            <td style="width: 15px;">
-            </td>
-            <td style="width: 80px;text-align: left">
-                {{ porcentaje_firma_promesa | floatformat:0 }} %
-            </td>
-            <td style="width: 80px;text-align: right">
-                UF
-            </td>
-            <td style="width: 50px;text-align: right">
-                {{ total_firma_promesa | floatformat:2 }}
-            </td>
-            <td style="width: 10px;text-align: right">
-                $
-            </td>
-            <td style="width: 80px;text-align: right">
-                {% with total_firma_pesos=total_firma_promesa|multiply:uf %}
-                    {{ total_firma_pesos | numberformat }}
-                {% endwith %}
-            </td>
-        </tr>
-       {% endif %}
-        <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
-            <td style="padding-left: 10px;width: 130px">
-                A la firma de escritura
-            </td>
-            <td style="width: 15px;">
-            </td>
-            <td style="width: 80px;text-align: left">
-                {{ porcentaje_firma_escritura | floatformat:0 }} %
-            </td>
-            <td style="width: 80px;text-align: right">
-                UF
-            </td>
-            <td style="width: 50px;text-align: right">
-                {{ total_firma_escritura | floatformat:2 }}
-            </td>
-            <td style="width: 10px;text-align: right">
-                $
-            </td>
-            <td style="width: 80px;text-align: right">
-                {% with total_firma_pesos=total_firma_escritura|multiply:uf %}
-                    {{ total_firma_pesos | numberformat }}
-                {% endwith %}
-            </td>
-        </tr>
-        {% if total_credito %}
-            <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
-                <td style="padding-left: 10px;width: 130px">
-                    Crédito Inst. Financiera
-                </td>
-                <td style="width: 15px;text-align: left">
-                    (*)
-                </td>
-                <td style="width: 80px;text-align: left">
-                    {{ porcentaje_credito | floatformat:0 }} %
-                </td>
-                <td style="width: 80px;text-align: right">
-                    UF
-                </td>
-                <td style="width: 50px;text-align: right">
-                    {{ total_credito | floatformat:2 }}
-                </td>
-                <td style="width: 10px;text-align: right">
-                    $
-                </td>
-                <td style="width: 80px;text-align: right">
-                    {% with total_credito_pesos=total_credito|multiply:uf %}
-                        {{ total_credito_pesos | numberformat }}
-                    {% endwith %}
-                </td>
-            </tr>
-        {% endif %}
-        <tr style="height: 20px;font-size: {{ tamaño_letra }}%;">
-            <td colspan="3">
-            </td>
-            <td style="padding-top: 1px;width: 30px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
-                UF
-            </td>
-            <td style="padding-top: 1px;width: 50px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
-                {{ total_pago | floatformat:2 }}
-            </td>
-            <td style="padding-top: 1px;width: 10px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
-                $
-            </td>
-            <td style="padding-top: 1px;width: 80px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
-                {% with total_pago_pesos=total_pago|multiply:uf %}
-                    {{ total_pago_pesos | numberformat }}
-                {% endwith %}
-            </td>
-        </tr>
-    </table>
-    {% if date_firma_promesa %}
-        <table>
-            <tr style="font-size: {{ tamaño_letra }}%,">
-                 <td style="text-align: left;">
-                     <p>
-                         (*) Fecha firma promesa: {{ date_firma_promesa | date:'d/m/Y' }}
-                     </p>
-                 </td>
-            </tr>
-         </table>
-     {%  endif %}
-    {% if total_credito %}
-        <table>
-            <tr style="font-size: {{ tamaño_letra }}%,">
-                <td style="text-align: left;">
-                    <p>
-                        (*) El (la) cotizante declara conocer cuáles son los requerimientos exigidos para optar a un crédito o mutuo
-                        hipotecario y que las instituciones financieras los cursan con la tasa vigente a la fecha en que se formalice 
-                        la compraventa.
-                    </p>
-                </td>
-            </tr>
-        </table>
-    {% endif %}
-    {% if total_credito %}
-        <h2 style="font-size: {{ tamaño_letra }}%"><strong>3. <span style="text-decoration:underline"> DIVIDENDO APROXIMADO REFERENCIAL </span></strong></h2>
-        <p style="padding-left: 5px;font-size: {{ tamaño_letra }}%;font-weight: lighter">
-                Calculado a la tasa referencial de este día, sin considerar seguros: {{ porcentaje_tasa }} %
-        </p>
-        <table style="height: 15px">
-            <thead>
-                <tr style="border: 0.8px solid #000000;height: 20px;">
-                    <th style ="font-size: {{ tamaño_letra }}%;width: 120px"> Plazo (años) </th>
-                    <th style ="font-size: {{ tamaño_letra }}%;width: 120px"> Dividendo (UF) </th>
-                    <th style ="font-size: {{ tamaño_letra }}%;width: 120px"> Dividendo ($) </th>
-                    <th style ="font-size: {{ tamaño_letra |subtract:5 }}%;width: 140px"> Renta mínima aproximada ($) </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="height: 20px;font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000">
-                    {% for plazo in plazo_20 %}
-                        <td style="text-align: center;padding-top: 2px">{{ plazo }}</td>
-                    {% endfor %}
-                </tr>
-                <tr style="height: 20px;font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000">
-                    {% for plazo in plazo_25 %}
-                        <td style="text-align: center;padding-top: 2px">{{ plazo }}</td>
-                    {% endfor %}
-                </tr>
-                <tr style="height: 20px;font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000">
-                    {% for plazo in plazo_30 %}
-                        <td style="text-align: center;padding-top: 2px">{{ plazo }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    {% endif %}
     <br>
+    <div>
+      <p style="margin:0; font-weight:bold"> Señor(a) </p>
+      <p style="margin:0; font-weight:bold"> {{ cotizacion.ClienteID }} </p>
+      <p style="text-decoration:underline;margin:0"> Presente</p>
+      <p style="margin-top:2px;"> Estimado(a) cliente:</p>
+      <p style="margin-top:1px;">
+          De acuerdo a lo solicitado, nos es muy grato cotizar por los inmuebles que se indican, correspondientes al proyecto
+          <strong> {{ cotizacion.ProyectoID.Name }},</strong>
+          ubicado en {{ cotizacion.ProyectoID.Address }}, comuna de {{ cotizacion.ProyectoID.ComunaID.Name}}, provincia de {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}:
+      </p>
+    </div>
+    <h2 style="font-size: 80%; margin-bottom:0">
+        <strong>
+            1. <span style="text-decoration:underline">INMUEBLES</span>
+        </strong>
+    </h2>
     <table>
-        <tr style="height: 40px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                <p>
-                    Al concretar su decisión de compra el cotizante provisionará ${{ cotizacion.ProyectoID.GuaranteeAmount | numberformat }}
-                    imputables a gastos operacionales del proceso de ESCRITURACIÓN, de dicho monto $50.000 serán imputados a todo evento,
-                    como gastos por concepto de tramitación de su crédito hipotecario.
-                </p>
-            </td>
+      {% for cotizacion_inmueble in inmuebles_a_cotizar %}
+        <tr>
+          <td style="padding-left: 5px">
+            {{ cotizacion_inmueble.InmuebleID.InmuebleTypeID.Name }}
+            {% if cotizacion_inmueble.InmuebleID.IsNotUsoyGoce %}
+              (UyG)
+            {% endif %}
+          </td>
+          <td >N°{{ cotizacion_inmueble.InmuebleID.Number }}</td>
+          <td>
+            {% if cotizacion_inmueble.InmuebleID.Floor %}
+              del Piso N°{{ cotizacion_inmueble.InmuebleID.Floor }}
+            {% else %}
+              del 1er. Piso
+            {% endif %}
+
+            {% if cotizacion_inmueble.InmuebleID.Orientation %}
+              ( {% for ori in cotizacion_inmueble.InmuebleID.Orientation %}
+                  {{ori.Description}} -
+                {% endfor %} )
+            {% endif %}
+
+            {% ifequal cotizacion_inmueble.InmuebleID.InmuebleTypeID.Name "Departamento" %}
+            , {{ cotizacion_inmueble.InmuebleID.BedroomsQuantity }}D{{ cotizacion_inmueble.InmuebleID.BathroomQuantity }}B
+            {% endifequal %}
+          </td>
+          <td style="text-align: center;">UF</td>
+          <td style="text-align: right;">
+            {% if cotizacion_inmueble.Discount %}
+              {% with discount_uf=cotizacion_inmueble.InmuebleID.Price|discount:cotizacion_inmueble.Discount %}
+                {% with total_uf=cotizacion_inmueble.InmuebleID.Price|subtract:discount_uf %}
+                  {{ total_uf | floatformat:2 }}
+                {% endwith %}
+              {% endwith %}
+            {% else %}
+                {{ cotizacion_inmueble.InmuebleID.Price | floatformat:2 }}
+            {% endif %}   
+          </td>            
+          <td style="text-align: center;">$</td>
+          <td style="text-align: right; padding-right: 5px;">
+            {% if cotizacion_inmueble.Discount %}
+              {% with cotizacion_inmueble.InmuebleID.Price|discount:cotizacion_inmueble.Discount as discount_uf %}
+                  {% with total_uf=cotizacion_inmueble.InmuebleID.Price|subtract:discount_uf %}
+                      {% with total_pesos=total_uf|multiply:uf %}
+                          {{ total_pesos | numberformat }}
+                      {% endwith %}
+                  {% endwith %}
+              {% endwith %}
+            {% else %}
+              {% with cotizacion_inmueble.InmuebleID.Price|multiply:uf as valor %}
+                  {{ valor | numberformat }}
+              {% endwith %}
+            {% endif %}    
+          </td>
         </tr>
-        <tr style="height: 40px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                <p>
-                    Quedamos atentos a cualquier requerimiento adicional y dispuesto a aclararle cualquier duda. Nuestro objetivo es atenderlo
-                    con esmero y entregarle la información que usted requiere para que su decisión y en definitiva su compra, se haga realidad.
-                </p>
-            </td>
-        </tr>
-        <tr style="height: 40px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                <p>
-                    Agradecidos por su visita y confiados en poder atenderlo con el profesionalismo que su decisión de compra merece, le saludamos
-                    atentamente.
-                </p>
-            </td>
-        </tr>
-        <tr style="height: 15px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                <p>NOTAS:</p>
-            </td>
-        </tr>
-        <tr style="height: 30px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                {% now "d" as day %}
-                {% now "m" as month %}
-                {% now "Y" as year %}
-                <p> 
-                    - Los montos en pesos corresponden al valor de la UF al {{ day }}/{{ month }}/{{ year }} de ${{ uf }},
-                    por lo cual se citan sólo como referencia.
-                </p>
-            </td>
-        </tr>
-        <tr style="height: 15px;font-size: {{ tamaño_letra }}%">
-            <td style="text-align: left;">
-                <p> 
-                    - Cotización válida por {{ cotizacion.ProyectoID.CotizacionDuration }} dia(s), según disponibilidad de los
-                    inmuebles.
-                </p>
-            </td>
+        {% endfor %}
+        <tr style="height: 20px; width: 100%;">
+          <td style="width: 25%">&nbsp;</td>
+          <td style="width: 10%">&nbsp;</td>
+          <td style="width: 25%;font-weight:bold;">PRECIO DE VENTA</td>
+          <td style="width: 8%;text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">UF</td>
+          <td style="width: 12%;text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">
+            {{ total | floatformat:2 }}
+          </td>
+          <td style="width: 7%;text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">$</td>
+          <td style="width: 13%;text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000; padding-right: 5px;">
+            {% with total_pesos=total|multiply:uf %}
+              {{ total_pesos | numberformat }}
+            {% endwith %}
+          </td>
         </tr>
     </table>
-    <table style="margin-top: 30px">
-        <tr style="height:80px;font-size: {{ tamaño_letra }}%;font-weight: bold;">
-            <td style="width: 10px;" colspan="3"></td>
-            <td style="border-top: 1.2px solid #000000;padding-top:0.3px;text-align: center;width: 270px">
-                <p>
-                    {{ cotizacion.CotizadorID }} <br>
-                    {{ nombre_empresa }} <br>
-                    {% for contacto in contactos %}
-                        {% if contacto.ContactInfoTypeID.Name == 'Phone' %}
-                            {{ contacto.Value }}
-                        {% endif %}
-                    {% endfor %}  <br>
-                    {% for contacto in contactos %}
-                        {% if contacto.ContactInfoTypeID.Name == 'Email' %}
-                            {{ contacto.Value }}
-                        {% endif %}
-                    {% endfor %}
-                </p>
-            </td>
-        </tr>
+
+    <h2 style="font-size: 80%">
+      <strong>
+        2. <span style="text-decoration:underline"> FORMA DE PAGO </span>
+      </strong>
+    </h2>
+
+    <table style="left: 15px; position: relative;">
+      {% if total_firma_promesa %}
+      <tr>
+        <td style="padding-left: 5px">A la firma de Promesa</td>
+        <td style="text-align: right;">
+          {{ porcentaje_firma_promesa | floatformat:2 }}%
+        </td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">
+          {{ total_firma_promesa | floatformat:2 }}
+        </td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=total_firma_promesa|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>
+      {% endif %}
+      {% if total_credito %}
+      <tr>
+        <td style="padding-left: 5px">Crédito Inst. Financiera</td>
+        <td style="text-align: right;">
+          {{ porcentaje_credito | floatformat:2 }}%
+        </td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">
+          {{ total_credito | floatformat:2 }}
+        </td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=total_credito|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+        <td style="text-align: right;width: 20px;">(*)</td>
+      </tr>
+      {% endif %}
+      {% if ahorro_plus %}
+      <tr>
+        <td style="padding-left: 5px">Ahorro Plus</td>
+        <td style="text-align: right;">
+          {{ porcentaje_ahorro | floatformat:2 }}%
+        </td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">
+          {{ ahorro_plus | floatformat:2 }}
+        </td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=ahorro_plus|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>
+      {% endif %}
+      <tr style="height: 20px; width: 100%;">
+        <td style="width: 25%">&nbsp;</td>
+        <td style="width: 10%">&nbsp;</td>
+        <td style="width: 22%">&nbsp;</td>
+        <td style="width: 8%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">UF</td>
+        <td style="width: 12%;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
+          {{ total | floatformat:2 }}
+        </td>
+        <td style="width: 7%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">$</td>
+        <td style="width: 13%;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
+          {% with total_pesos=total|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+        <td style="width: 3%">&nbsp;</td>
+      </tr>
     </table>
+    {% if total_credito %}
+    <table>
+      <tr style="height: 30px;">
+        <td style="vertical-align:top; width:20px">(*)</td>
+        <td>El (la) cotizante declara conocer cuáles son los requerimientos exigidos para optar a un crédito o mutuo hipotecario y
+          que las instituciones financieras los cursan con la tasa vigente a la fecha en que se formalice la compraventa.</td>
+      </tr>
+    </table>
+    {% endif %}
+
+    {% if total_credito %}
+    <h2 style="font-size: 80%">
+      <strong>
+        3. <span style="text-decoration:underline"> DIVIDENDO APROXIMADO REFERENCIAL </span>
+      </strong>
+    </h2>
+    <p style="padding-left:5px">
+      Calculado a la tasa referencial de este día, sin considerar seguros: {{ porcentaje_tasa }}%.
+    </p>
+
+    <table style="text-align:center; width:fit-content;">
+      <tr style="height: 30px;">
+        <th style="width: 5px; border-right: 0.8px solid #000;">&nbsp;</th>
+        <th style="width: 90px; padding-top: 2px; border: 0.8px solid #000; border-left: none;">Plazo Crédito Inst. Financiera</th>
+        <th style="width: 60px; padding-top: 2px; border: 0.8px solid #000; border-left: none;">Dividendo en UF</th>
+        <th style="width: 60px; padding-top: 2px; border:0.8px solid #000000; border-left: none;">Dividendo en $</th>
+        <th style="width: 90px; padding-top: 2px; border:0.8px solid #000000;border-left: none;">Renta mínima aproximada $</th>
+      </tr>      
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          8 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_8.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_8.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_8.3 | numberformat }}
+        </td>
+      </tr>
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          10 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_10.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_10.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_10.3 | numberformat }}
+        </td>
+      </tr>
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          15 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_15.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_15.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_15.3 | numberformat }}
+        </td>
+      </tr>
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          20 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_20.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_20.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_20.3 | numberformat }}
+        </td>
+      </tr>
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          25 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_25.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_25.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_25.3 | numberformat }}
+        </td>
+      </tr>
+      <tr>
+        <td style="border-right: 0.8px solid #000;">&nbsp;</td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          30 años
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_30.1 | floatformat:2 }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_30.2 | numberformat }}
+        </td>
+        <td style="border-right:0.8px solid #000000; border-bottom:0.8px solid #000000; padding-top: 2px;">
+          {{ plazo_30.3 | numberformat }}
+        </td>
+      </tr>
+    </table>
+    {% endif %}
+    <p>
+      Al concretar su decisión de compra el cotizante provisionará ${{ cotizacion.ProyectoID.GuaranteeAmount | numberformat }} imputables a gastos operacionales del proceso de
+      ESCRITURACION, de dicho monto $50.000 serán imputados a todo evento, como gastos por concepto de tramitación de
+      su crédito Hipotecario.
+    </p>
+    <p>
+      Quedamos atentos a cualquier requerimiento adicional y dispuesto a aclararle cualquier duda. Nuestro objetivo es atenderlo
+      con esmero y entregarle la información que usted requiere para que su decisión de compra y en definitiva su compra, se
+      haga realidad.
+    </p>
+    <p>
+      Agradecidos por su visita y confiados en poder atenderlo con el profesionalismo que su decisión de compra merece, le
+      saludamos atentamente.
+    </p>
+    <p>
+      {% now "d" as day %}
+      {% now "m" as month %}
+      {% now "Y" as year %}
+      NOTAS :<br />
+      - Los montos en pesos corresponden al valor de la UF. a esta fecha, por lo cual se citan sólo como referencia.<br />
+      • Valor de la UF al {{ day }}/{{ month }}/{{ year }} es de ${{ uf }}.<br />
+      - Cotización válida por {{ cotizacion.ProyectoID.CotizacionDuration }} días, según disponibilidad de los inmuebles
+    </p>
+
+    <table style="margin-top: 30px; font-size: 100%;">
+      <tr style="height:80px;">
+        <td style="width: 10px;" colspan="3"></td>
+        <td style="border-top: 1.2px solid #000000;padding-top:0.3px;text-align: center;width: 270px">
+          <p style="font-weight: bold;">
+            {{ cotizacion.CotizadorID }}
+            <br>
+            {{ nombre_empresa }}
+            <br>
+            {% for contacto in contactos %}
+              {% if contacto.ContactInfoTypeID.Name == 'Phone' %}
+                {{ contacto.Value }}
+              {% endif %}
+            {% endfor %}  <br>
+            {% for contacto in contactos %}
+              {% if contacto.ContactInfoTypeID.Name == 'Email' %}
+                {{ contacto.Value }}
+              {% endif %}
+            {% endfor %}
+          </p>
+        </td>
+      </tr>
+    </table>
+
     {% endlanguage %}
-</body>
+  </body>
 </html>

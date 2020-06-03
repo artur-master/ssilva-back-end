@@ -1,0 +1,301 @@
+{% load static %}
+{% load index %}
+{% load i18n %}
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style>
+        @page {
+            size: 180mm 275mm;
+            margin: 2mm;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            height: 30px;
+
+        }
+        .logo {
+            width: 120px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+{% language 'es' %}
+    <table>
+        <tr style="height:50px;">
+            <th><img class="logo" align="left" src="{% static 'logo.png' %}"/></th>
+            <th style="font-size: {{ tamaño_letra }}%;line-height: 80%">
+                <h6 style="text-align: right"> OFERTA DE COMPRA </h6>
+                <p style="text-align: right;font-weight: lighter;"> {{ reserva.Folio }}</p>
+                {% now "d" as day %}
+                {% now "F" as month %}
+                {% now "Y" as year %}
+                <p style="text-align: right;font-weight: lighter;">
+                    {{ reserva.ProyectoID.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
+                </p>
+            </th>
+        </tr>
+    </table>
+    </br>
+    <table>
+        <tr style="height:15px;">
+            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
+                <p> Señores </p>
+            </th>
+        </tr>
+        <tr style="height:15px;">
+            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
+                <p> {{ corredores }} </p>
+            </th>
+        </tr>
+        <tr style="height:15px;">
+            <th style="font-size: {{ tamaño_letra }}%;text-align: left">
+                <p style="font-weight: lighter;text-decoration:underline"> Presente </p>
+            </th>
+        </tr>
+        <tr style="height:30px;">
+            <th style="padding-top:2px;font-size: {{ tamaño_letra }}%;text-align: left">
+                <p style="font-weight: lighter"> De vuestra consideración:</p>
+            </th>
+        </tr>
+        <tr style="height:80px;">
+            <th style="padding-top:2px;font-size: {{ tamaño_letra }}%;font-weight: lighter;text-align: left">
+                <p>
+                    Por su intermedio yo, {{ cliente }}, cédula de identidad N° {{ cliente.Rut | rutformat }},
+                    {{ cliente.CivilStatusID }}, {{ cliente.Nationality }}, {{ cliente.Occupation }}, domiciliado(a) en
+                    {{ cliente.Address }}, {{ cliente.ComunaID }}, {{ cliente.ComunaID.ProvinciaID.Name }}, teléfono
+                    {{ telefono }}, me permito formular la siguiente proposición de compra por los inmuebles
+                    correspondientes al proyecto {{ proyecto.Name }}, ubicado en {{ proyecto.Address }}, comuna de
+                    {{ proyecto.ComunaID.Name }}, provincia de {{ proyecto.ComunaID.ProvinciaID.Name }}, de propiedad de
+                    <strong> {{ proyecto.InmobiliariaID.RazonSocial }}: </strong>
+                </p>
+            </th>
+        </tr>
+    </table>
+    <h2 style="font-size: {{ tamaño_letra }}%"><strong>1. <span style="text-decoration:underline"> INMUEBLES </span></strong></h2>
+    <table style="height: 20px">
+        <thead>
+        <tr style="border: 0.8px solid #000000">
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Tipo</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Edificio</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> N°</th>
+            <th style="font-size: {{ tamaño_letra }}%;width: 90px"> Piso</th>
+            <th style="font-size: {{ tamaño_letra |subtract:5 }}%;width: 90px"> Orientación (es)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for reserva_inmueble in inmuebles_a_reservar %}
+            <tr style="font-size: {{ tamaño_letra }}%;border: 0.8px solid #000000;">
+                <td style="text-align: center;"> {{ reserva_inmueble.InmuebleID.InmuebleTypeID.Name }} </td>
+                {% if reserva_inmueble.InmuebleID.EdificioID %}
+                    <td style="text-align: center;"> {{ reserva_inmueble.InmuebleID.EdificioID.Name }} </td>
+                {% else %}
+                    <td style="text-align: center;"> -</td>
+                {% endif %}
+                <td style="text-align: center;"> {{ reserva_inmueble.InmuebleID.Number }} </td>
+                <td style="text-align: center;">
+                    {% if reserva_inmueble.InmuebleID.Floor %}
+                        {{ reserva_inmueble.InmuebleID.Floor }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% for orientacion in reserva_inmueble.InmuebleID.OrientationID.all %}
+                        {{ orientacion.Name }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h2 style="font-size: {{ tamaño_letra }}%"><strong>2. <span style="text-decoration:underline">PRECIO Y FORMA DE PAGO </span></strong>  </h2>
+    <p style="text-indent: 6px"> El precio de los inmuebles que propongo comprar será de UF <strong>{{ total_uf | floatformat:2 }},</strong>
+        que pagaré de la siguiente forma:
+    </p>
+    <table style="height: 40px">
+        {% if total_cuotas %}
+            <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
+                <td style="padding-left: 10px;width: 130px">
+                    En {{ reserva.CuotaID.all.count }} cuota(s)
+                </td>
+                <td style="width: 15px;">
+                </td>
+                <td style="width: 80px;text-align: left">
+                    {{ porcentaje_cuotas | floatformat:0 }} %
+                </td>
+                <td style="width: 80px;text-align: right">
+                    UF
+                </td>
+                <td style="width: 50px;text-align: right">
+                    {{ total_cuotas | floatformat:2 }}
+                </td>
+            </tr>
+        {% endif %}
+        <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
+            <td style="padding-left: 10px;width: 130px">
+                A la firma de escritura
+            </td>
+            <td style="width: 15px;">
+            </td>
+            <td style="width: 80px;text-align: left">
+                {{ porcentaje_firma | floatformat:0 }} %
+            </td>
+            <td style="width: 80px;text-align: right">
+                UF
+            </td>
+            <td style="width: 50px;text-align: right">
+                {{ total_firma | floatformat:2 }}
+        </tr>
+        {% if total_credito %}
+            <tr style="height:15px;font-size: {{ tamaño_letra }}%;">
+                <td style="padding-left: 10px;width: 130px">
+                    Crédito Inst. Financiera
+                </td>
+                <td style="width: 15px;text-align: left">
+                    (*)
+                </td>
+                <td style="width: 80px;text-align: left">
+                    {{ porcentaje_credito | floatformat:0 }} %
+                </td>
+                <td style="width: 80px;text-align: right">
+                    UF
+                </td>
+                <td style="width: 50px;text-align: right">
+                    {{ total_credito | floatformat:2 }}
+                </td>
+            </tr>
+        {% endif %}
+        <tr style="height: 20px;font-size: {{ tamaño_letra }}%;">
+            <td colspan="3">
+            </td>
+            <td style="padding-top: 1px;width: 30px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
+                UF
+            </td>
+            <td style="padding-top: 1px;width: 50px;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
+                {{ total_pago | floatformat:2 }}
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;">
+                    3. La referida oferta está sujeta a las siguientes condiciones:
+                </p>
+            </td>
+        </tr>
+        <tr style="height:15px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    a) Aceptación por parte del vendedor, caso en la cual quedará irrevocablemente firmado el consentimiento.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:15px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    b) Que los títulos de dominio de los inmuebles se encuentren ajustados a derecho.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:15px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    c) Que la entrega material del inmueble se efectúe conjuntamente a la suscripción de
+                    todas las partes de la escritura de compraventa.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:60px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    4. Para formalizar la oferta de compra, hago entrega para su cobro la suma de $
+                    {{ proyecto.GuaranteeAmount | numberformat }}, en Cheque serie N° del en efectivo, de mi cuenta
+                    corriente N°, a nombre de {{ corredores }} con el objeto de que esa suma, sirva para cubrir todos
+                    o parte de mis gastos de operación por esta compra.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:40px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    5. Mi proposición de compra tendrá una validez de 10 días a contar de esta fecha;
+                    aceptada ésta, suscribiré la respectiva promesa de compra y venta el día
+                    {{ reserva.DateFirmaPromesa |date:"d/m/Y" }}.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:80px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    6. ACEPTADA LA OFERTA, SI NO SUSCRIBIERE DICHA PROMESA O ME DESISTIERA DE LA COMPRA, ME OBLIGO A
+                    PAGAR A FAVOR DE {{ gestion | upper }} UNA COMISIÓN DE 0.5% DEL PRECIO DE VENTA DE LOS INMUEBLES
+                    MATERIA DE ESTA OFERTA. FACULTANDO A ESTA EMPRESA PARA RETENER LA SUMA SEÑALADA EN EL N°2 PRECEDENTE,
+                    EN PAGO DE LA MISMA. Aceptada la oferta y celebrado que fuere el contrato prometido, no existirá
+                    pago de comisión alguna para el corredor. En el evento de que mi proposición no fuere aceptada,
+                    ustedes deberán devolverme la suma entregada en señal de seriedad de la presente proposición de
+                    compra.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:40px;">
+            <td>
+                <p style="font-size: {{ tamaño_letra }}%;text-indent: 6px">
+                    7. Declaro estar en conocimiento de que la numeración de la bodega y del estacionamiento queda
+                    sujeta a cambios, como también que pueden existir cambios en el proyecto de construcción
+                    por exigencias municipales o necesidad de adecuación.
+                </p>
+            </td>
+        </tr>
+        <tr style="height:30px;">
+            <td>
+                <h2 style="font-size: {{ tamaño_letra }}%">
+                    <strong>8.<span style="text-decoration:underline"> NOTAS </span></strong>
+                </h2>
+            </td>
+            <br>
+        </tr>
+        {% if conditions %}
+            {% for condition in conditions %}
+                <tr style="height:15px;">
+                    <td>
+                        <p style="text-indent: 6px">
+                           • {{ condition.Description }}
+                        </p>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <br>
+    <br>
+    <br>
+    <table>
+        <tr style="height:60px;">
+            <td style="border-top: 1.2px solid #000000;padding-left: 5px;text-align: center;width: 300px">
+                <p style="font-size:{{ tamaño_letra }}%;font-weight: bold;">
+                    {{ cliente }} <br>  C.I {{ cliente.Rut | rutformat }}
+                </p>
+            </td>
+            <td style="width: 2px;" colspan="1"></td>
+            <td style="border-top: 1.2px solid #000000;padding-right: 5px;text-align: center;width: 300px">
+                <p style="font-size:{{ tamaño_letra }}%;font-weight: bold;">
+                    {{ reserva.VendedorID }} <br> {{ corredores }}
+                </p>
+            </td>
+        </tr>
+    </table>
+{% endlanguage %}
+</body>
+</html>

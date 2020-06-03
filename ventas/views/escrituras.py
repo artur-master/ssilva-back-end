@@ -12,7 +12,7 @@ from common.permissions import (
     CheckAdminOrVendedorOrMoniProyectosPermission,
     CheckAdminOrConsCliPermission,
     CheckAdminOrConsUsersPermission)
-from common.services import download_pdf_views
+
 from empresas_and_proyectos.models.proyectos import Proyecto
 from users.models import User
 
