@@ -51,6 +51,9 @@ class VentaLog(models.Model):
     Comment = models.TextField(
         null=True,
         blank=True)
+    CommentBySystem = models.BooleanField(
+        blank=True,
+        default=True)
     Date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

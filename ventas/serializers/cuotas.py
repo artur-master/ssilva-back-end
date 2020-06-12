@@ -34,7 +34,6 @@ class CreateCuotaSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True,
         allow_blank=True,
-
     )
 
     class Meta:

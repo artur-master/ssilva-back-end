@@ -25,7 +25,9 @@ from common.services import (
     return_current_user, get_or_none)
 from common.snippets.graphs.ofertas import return_graph
 from common.validations import CustomValidation
-from empresas_and_proyectos.models.inmuebles import InmuebleState
+from empresas_and_proyectos.models.inmuebles import (
+    Inmueble,
+    InmuebleState)
 from empresas_and_proyectos.models.proyectos import (
     UserProyectoType,
     UserProyecto,
@@ -44,6 +46,7 @@ from ventas.models.payment_forms import (
     PayType)
 from ventas.models.reservas import (
     Reserva,
+    ReservaState,
     ReservaInmueble)
 from ventas.models.ventas_logs import (
     VentaLog,
@@ -60,7 +63,8 @@ from ventas.serializers.empresas_compradoras import (
     CreateEmpresaCompradoraSerializer)
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.promesas import create_promesa
-
+from .cuotas import CreateCuotaSerializer
+from .reservas import CreateReservaInmuebleSerializer
 
 def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, folio, cotizacion_type,
                   contact_method_type, payment_firma_promesa, payment_firma_escritura,
@@ -343,6 +347,7 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
             Comment=comment,
+            CommentBySystem=False
         )
 
         send_to_confeccion_promesa(instance, current_user)
@@ -493,25 +498,33 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         )
 
     def get_patrimony(self, obj):
-        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
-        if patrimonies.exists():
+        try:
+            reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+            patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
+
             return PatrimonySerializer(instance=patrimonies[0]).data
-        return None
+        except:
+            return None
 
     def get_conditions(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        conditions = reserva.ConditionID.all()
-        serializer = ConditionSerializer(
-            instance=conditions, many=True)
-        return serializer.data
+        try:
+            conditions = reserva.ConditionID.all()
+            serializer = ConditionSerializer(
+                instance=conditions, many=True)
+            return serializer.data
+        except:
+            return None
 
     def get_cuotas(self, obj):
-        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        cuotas = reserva.CuotaID.all()
-        serializer = ListCuotaSerializer(
-            instance=cuotas, many=True)
-        return serializer.data
+        try:
+            reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+            cuotas = reserva.CuotaID.all()
+            serializer = ListCuotaSerializer(
+                instance=cuotas, many=True)
+            return serializer.data
+        except:
+            return None
 
     def get_inmuebles(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
@@ -680,6 +693,10 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentPreApprobal = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     Result = serializers.CharField(
         allow_null=True,
         required=False
@@ -688,7 +705,9 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreAprobacionCredito
         fields = (
-            'PreAprobacionCreditoID', 'InstitucionFinanciera', 'OfertaID', 'Date', 'Observacion', 'DocumentCredit',
+            'PreAprobacionCreditoID', 'InstitucionFinanciera', 
+            'OfertaID', 'Date', 'Observacion',
+            'DocumentCredit', 'DocumentPreApprobal',
             'Result')
 
     def create(self, validated_data):
@@ -701,6 +720,7 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
             InstitucionFinanciera=validated_data['InstitucionFinanciera'],
             Observacion=validated_data.get('Observacion', ''),
             DocumentCredit=validated_data.get('DocumentCredit', ''),
+            DocumentPreApprobal=validated_data.get('DocumentPreApprobal', ''),
             Result=validated_data.get('Result', '')
         )
 
@@ -708,10 +728,14 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
 
 
 class ListPreAprobacionCreditoSerializer(serializers.ModelSerializer):
+    Date = serializers.SerializerMethodField('get_Date')
+    DocumentCredit = serializers.SerializerMethodField('get_DocumentCredit')
+    DocumentPreApprobal = serializers.SerializerMethodField('get_DocumentPreApprobal')
+    
     class Meta:
         model = PreAprobacionCredito
         fields = ('PreAprobacionCreditoID', 'InstitucionFinanciera',
-                  'Date', 'Result', 'Observacion', 'DocumentCredit')
+                  'Date', 'Result', 'Observacion', 'DocumentCredit', 'DocumentPreApprobal')
 
     def get_Date(self, obj):
         try:
@@ -722,6 +746,12 @@ class ListPreAprobacionCreditoSerializer(serializers.ModelSerializer):
     def get_DocumentCredit(self, obj):
         if obj.DocumentCredit:
             return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentCredit.url
+        else:
+            return ""
+
+    def get_DocumentPreApprobal(self, obj):
+        if obj.DocumentPreApprobal:
+            return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPreApprobal.url
         else:
             return ""
 
@@ -924,6 +954,7 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
             Comment=comment,
+            CommentBySystem=False
         )
 
         instance.save()
@@ -1137,6 +1168,319 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
     ValueProductoFinanciero = serializers.IntegerField(
         write_only=True
     )
+    Cuotas = CreateCuotaSerializer(
+        source='CuotaID',
+        many=True,
+        required=False
+    )
+    Inmuebles = CreateReservaInmuebleSerializer(
+        source='InmuebleID',
+        many=True,
+        required=False
+    )
+
+    class Meta:
+        model = Oferta
+        fields = (
+            'ProyectoID',
+            'ClienteID',
+            'CodeudorID',
+            'PayTypeID',
+            'EmpresaCompradora',
+            'ContactMethodTypeID',
+            'PaymentFirmaPromesa',
+            'PaymentFirmaEscritura',
+            'PaymentInstitucionFinanciera',
+            'AhorroPlus',
+            'DateFirmaPromesa',
+            'ValueProductoFinanciero',
+            'Cuotas',
+            'Inmuebles',
+        )
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        if instance.OfertaState == constants.OFERTA_STATE[3]:
+            raise CustomValidation(
+                "Oferta en estado promesa, debe modificar promesa",
+                status_code=status.HTTP_409_CONFLICT)
+
+        proyecto_id = validated_data['ProyectoID']
+        cliente_id = validated_data['ClienteID']
+        codeudor_id = validated_data['CodeudorID']
+        pay_type_id = validated_data['PayTypeID']
+        contact_method_type_id = validated_data['ContactMethodTypeID']
+        date_firma_promesa = validated_data['DateFirmaPromesa']
+        value_producto_financiero = validated_data['ValueProductoFinanciero']
+
+        empresa_compradora_data = validated_data.pop('EmpresaCompradoraID')
+        if empresa_compradora_data:
+            razon_social_empresa_compradora = empresa_compradora_data['RazonSocial']
+            rut_empresa_compradora = empresa_compradora_data['Rut']
+            direccion_empresa_compradora = empresa_compradora_data['Address']
+
+        pay_type = get_or_none(PayType, PayTypeID=pay_type_id)
+        # Validaciones campos obligatorios
+        if not pay_type:
+            raise CustomValidation(
+                "Debe ingresar tipo de pago",
+                status_code=status.HTTP_409_CONFLICT)
+
+        proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
+        cliente = Cliente.objects.get(UserID=cliente_id)
+        contact_method_type = ContactMethodType.objects.get(
+            ContactMethodTypeID=contact_method_type_id)
+
+        if codeudor_id:
+            codeudor = Cliente.objects.get(UserID=codeudor_id)
+        else:
+            codeudor = None
+
+        if empresa_compradora_data:
+            empresa_compradora = EmpresaCompradora.objects.get(
+                ClienteID=cliente
+            )
+            empresa_compradora.RazonSocial = razon_social_empresa_compradora
+            empresa_compradora.Rut = rut_empresa_compradora
+            empresa_compradora.Address = direccion_empresa_compradora
+            empresa_compradora.save()
+        else:
+            empresa_compradora = None
+
+        instance.ClienteID = cliente
+        instance.VendedorID = current_user
+        instance.CodeudorID = codeudor
+        instance.ContactMethodTypeID = contact_method_type
+        instance.EmpresaCompradoraID = empresa_compradora
+
+        # Modificado state
+        instance.OfertaState = constants.OFERTA_STATE[5]
+        instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[0]
+        instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[0]
+        instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
+        instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
+        instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
+        instance.AhorroPlus = validated_data['AhorroPlus']
+        instance.PayTypeID = pay_type
+        instance.DateFirmaPromesa = date_firma_promesa
+        instance.ValueProductoFinanciero = value_producto_financiero
+        instance.IsApproveInmobiliaria = False
+        instance.AprobacionInmobiliaria = {}
+        # if pay_type.Name == constants.PAY_TYPE[0] or empresa_compradora:
+        if pay_type.Name == constants.PAY_TYPE[0]:
+            instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[0]
+        else:
+            instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[1]
+
+        reserva = Reserva.objects.get(Folio=instance.Folio)
+
+        reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[1])
+        reserva.ReservaStateID = reserva_state
+        reserva.save()
+
+        # inmuebles update        
+        inmuebles_data = validated_data.get('InmuebleID', [])
+        
+        reserva_inmuebles = list()
+
+        for inmueble_data in inmuebles_data:
+            inmueble = Inmueble.objects.get(
+                InmuebleID=inmueble_data['InmuebleID']
+            )
+            inmueble_state = InmuebleState.objects.get(
+                Name=constants.INMUEBLE_STATE[2]
+            )
+
+            inmueble.InmuebleStateID = inmueble_state
+            inmueble.save()
+
+            if inmueble_data['Discount']:
+                discount = inmueble_data['Discount']
+            else:
+                discount = 0
+
+            reserva_inmuebles_qs = ReservaInmueble.objects.filter(
+                ReservaID=reserva)
+
+            if reserva_inmuebles_qs.exists():
+                reserva_inmuebles_qs.delete()
+
+            reserva_inmueble = ReservaInmueble()
+            reserva_inmueble.ReservaID = reserva
+            reserva_inmueble.InmuebleID = inmueble
+            reserva_inmueble.Discount = discount
+
+            reserva_inmuebles.append(reserva_inmueble)
+
+        ReservaInmueble.objects.bulk_create(reserva_inmuebles)
+
+        # Crear notificaciones
+        jefe_proyecto_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[1])
+        jefe_proyecto = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=jefe_proyecto_type)
+
+        vendedor_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[2])
+        vendedor = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=vendedor_type)
+
+        asistente_comercial_type = UserProyectoType.objects.get(
+            Name=constants.USER_PROYECTO_TYPE[3])
+        asistente_comercial = UserProyecto.objects.filter(
+            ProyectoID=instance.ProyectoID,
+            UserProyectoTypeID=asistente_comercial_type)
+
+        crear_notificacion_oferta_modificada(
+            instance, jefe_proyecto, vendedor, asistente_comercial)
+
+        # Registro Bitacora de Ventas
+        venta_log_type = VentaLogType.objects.get(
+            Name=constants.VENTA_LOG_TYPE[15])
+
+        VentaLog.objects.create(
+            VentaID=instance.OfertaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=cliente,
+            ProyectoID=proyecto,
+            VentaLogTypeID=venta_log_type,
+        )
+
+        instance.save()
+
+        return instance
+
+
+class ListOfertaActionSerializer(serializers.ModelSerializer):
+
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    Date = serializers.SerializerMethodField('get_date')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+    VentaID = serializers.CharField(
+        source='OfertaID'
+    )
+
+    class Meta:
+        model = Oferta
+        fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
+                  'Date', 'ApprovedUserInfo', 'SaleState', 'VentaID')
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
+        try:
+            user = venta_log.UserID
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        except:
+            return []
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_state(self, obj):
+        try:
+            return obj.OfertaState+" oferta"
+        except AttributeError:
+            return ""
+
+
+class UserOfertaActionSerializer(serializers.ModelSerializer):
+
+    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
+    Date = serializers.SerializerMethodField('get_date')
+    SaleState = serializers.SerializerMethodField('get_state')
+    ProyectoID = serializers.CharField(
+        source='ProyectoID.ProyectoID'
+    )
+
+    class Meta:
+        model = Oferta
+        fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
+                  'Date', 'ApprovedUserInfo', 'SaleState')
+
+    def get_user(self, obj):
+        venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
+        if venta_log:
+            user = getattr(venta_log, 'UserID')
+            UserProFileSerializer = UserProfileSerializer(instance=user)
+            return UserProFileSerializer.data
+        else:
+            return None
+
+    def get_date(self, obj):
+        try:
+            return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_state(self, obj):
+        try:
+            return obj.OfertaState + " oferta"
+        except AttributeError:
+            return ""
+
+
+class ModifyOfertaSerializer(serializers.ModelSerializer):
+    EmpresaCompradora = CreateEmpresaCompradoraSerializer(
+        source='EmpresaCompradoraID',
+        allow_null=True,
+        required=False
+    )
+    ProyectoID = serializers.UUIDField(
+        write_only=True
+    )
+    ClienteID = serializers.UUIDField(
+        write_only=True
+    )
+    CodeudorID = serializers.UUIDField(
+        write_only=True,
+        allow_null=True
+    )
+    PayTypeID = serializers.UUIDField(
+        write_only=True
+    )
+    ContactMethodTypeID = serializers.UUIDField(
+        write_only=True
+    )
+    PaymentFirmaPromesa = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+    )
+    PaymentFirmaEscritura = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+    )
+    PaymentInstitucionFinanciera = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True
+    )
+    AhorroPlus = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True
+    )
+    DateFirmaPromesa = serializers.DateTimeField(
+        write_only=True,
+        allow_null=True
+    )
+    ValueProductoFinanciero = serializers.IntegerField(
+        write_only=True
+    )
 
     class Meta:
         model = Oferta
@@ -1267,78 +1611,3 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
-
-class ListOfertaActionSerializer(serializers.ModelSerializer):
-
-    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
-    Date = serializers.SerializerMethodField('get_date')
-    SaleState = serializers.SerializerMethodField('get_state')
-    ProyectoID = serializers.CharField(
-        source='ProyectoID.ProyectoID'
-    )
-    VentaID = serializers.CharField(
-        source='OfertaID'
-    )
-
-    class Meta:
-        model = Oferta
-        fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
-                  'Date', 'ApprovedUserInfo', 'SaleState', 'VentaID')
-
-    def get_user(self, obj):
-        venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
-        try:
-            user = venta_log.UserID
-            UserProFileSerializer = UserProfileSerializer(instance=user)
-            return UserProFileSerializer.data
-        except:
-            return []
-
-    def get_date(self, obj):
-        try:
-            return obj.Date.strftime("%Y-%m-%d %H:%M")
-        except AttributeError:
-            return ""
-
-    def get_state(self, obj):
-        try:
-            return obj.OfertaState+" oferta"
-        except AttributeError:
-            return ""
-
-
-class UserOfertaActionSerializer(serializers.ModelSerializer):
-
-    ApprovedUserInfo = serializers.SerializerMethodField('get_user')
-    Date = serializers.SerializerMethodField('get_date')
-    SaleState = serializers.SerializerMethodField('get_state')
-    ProyectoID = serializers.CharField(
-        source='ProyectoID.ProyectoID'
-    )
-
-    class Meta:
-        model = Oferta
-        fields = ('OfertaID', 'Folio', 'OfertaState', 'ProyectoID',
-                  'Date', 'ApprovedUserInfo', 'SaleState')
-
-    def get_user(self, obj):
-        venta_log = VentaLog.objects.filter(VentaID=obj.OfertaID).order_by('-Date').first()
-        if venta_log:
-            user = getattr(venta_log, 'UserID')
-            UserProFileSerializer = UserProfileSerializer(instance=user)
-            return UserProFileSerializer.data
-        else:
-            return None
-
-    def get_date(self, obj):
-        try:
-            return obj.Date.strftime("%Y-%m-%d %H:%M")
-        except AttributeError:
-            return ""
-
-    def get_state(self, obj):
-        try:
-            return obj.OfertaState + " oferta"
-        except AttributeError:
-            return ""

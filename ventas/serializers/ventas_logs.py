@@ -134,7 +134,7 @@ class VentaLogSerializer(serializers.ModelSerializer):
         model = VentaLog
         fields = ('VentaLogID', 'ClienteName', 'ClienteLastNames',
                   'ClienteRut', 'VendedorName', 'VendedorLastNames',
-                  'VendedorRut', 'VentaLogType', 'Date', 'Comment',
+                  'VendedorRut', 'VentaLogType', 'Date', 'Comment','CommentBySystem',
                   'User')
 
     def get_date(self, obj):

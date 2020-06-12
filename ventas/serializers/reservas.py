@@ -90,7 +90,7 @@ from .empresas_compradoras import (
     EmpresaCompradoraSerializer,
     CreateEmpresaCompradoraSerializer)
 from ventas.serializers.ventas_logs import VentaLogSerializer
-
+from ventas.models.ofertas import Oferta
 
 class ListReservaInmuebleSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.CharField(
@@ -1928,10 +1928,17 @@ class ControlReservaSerializer(serializers.ModelSerializer):
                 ProyectoID=instance.ProyectoID,
                 VentaLogTypeID=venta_log_type,
                 Comment=comment,
+                CommentBySystem=False
             )
 
             eliminar_notificacion_reserva_pendiente_control(instance)
-            ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
+
+            try:
+                oferta = Oferta.objects.filter(Folio=instance.Folio)        
+                oferta.OfertaState=constants.OFERTA_STATE[0]
+                oferta.save()
+            except:
+                ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
                                   instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
                                   instance.ContactMethodTypeID,
                                   instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
@@ -1957,6 +1964,7 @@ class ControlReservaSerializer(serializers.ModelSerializer):
                 ProyectoID=instance.ProyectoID,
                 VentaLogTypeID=venta_log_type,
                 Comment=comment,
+                CommentBySystem=False
             )
 
             # Crear/Eliminar notificaciones
@@ -2030,7 +2038,8 @@ class CancelReservaSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
-            Comment=comment
+            Comment=comment,
+            CommentBySystem=False
         )
 
         # Volver inmuebles asociados a estado disponible

@@ -556,29 +556,37 @@ class RetrievePromesaSerializer(serializers.ModelSerializer):
             return {}
 
     def get_patrimony(self, obj):
-        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
-        if patrimonies.exists():
+        try:
+            reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+            patrimonies = Patrimony.objects.filter(ClienteID=reserva.ClienteID)
+
             return PatrimonySerializer(instance=patrimonies[0]).data
-        return None
+        except:
+            return None
 
     def get_cuotas(self, obj):
-        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        cuotas = reserva.CuotaID.all()
-        serializer = ListCuotaSerializer(
-            instance=cuotas, many=True)
-        return serializer.data
+        try:
+            reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+            cuotas = reserva.CuotaID.all()
+            serializer = ListCuotaSerializer(
+                instance=cuotas, many=True)
+            return serializer.data
+        except:
+            return None
 
     def get_oferta_id(self, obj):
         oferta = Oferta.objects.filter(Folio=obj.Folio).first()
         return oferta.OfertaID
 
     def get_conditions(self, obj):
-        reserva = Reserva.objects.filter(Folio=obj.Folio).first()
-        conditions = reserva.ConditionID.all()
-        serializer = ConditionSerializer(
-            instance=conditions, many=True)
-        return serializer.data
+        try:
+            reserva = Reserva.objects.filter(Folio=obj.Folio).first()
+            conditions = reserva.ConditionID.all()
+            serializer = ConditionSerializer(
+                instance=conditions, many=True)
+            return serializer.data
+        except:
+            return None
 
     def get_factura(self, obj):
         factura = Factura.objects.filter(Folio=obj.Folio).first()
@@ -667,6 +675,7 @@ class ApproveMaquetaPromesaSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
             Comment=comment,
+            CommentBySystem=False
         )
 
         instance.save()
@@ -790,7 +799,8 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
-            Comment=comment
+            Comment=comment,
+            CommentBySystem=False
         )
 
         instance.PromesaState = promesa_state
@@ -1475,23 +1485,24 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
 
 class SendNegociacionINSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
-        read_only=True
-    )
-
+        read_only=True )
     Condition = ConditionSerializer(
         required=False,
         many=True,
         allow_null=True,
-        write_only=True
-    )
+        write_only=True )    
+    Comment = serializers.CharField(
+        write_only=True,
+        allow_blank=True )
 
     class Meta:
         model = Promesa
-        fields = ('PromesaState', 'Condition')
+        fields = ('PromesaState', 'Condition', 'Comment')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         conditions_data = validated_data.pop('Condition')
+        comment = validated_data.pop('Comment')
 
         # Usuarios
         jefe_proyecto_type = UserProyectoType.objects.get(
@@ -1531,7 +1542,10 @@ class SendNegociacionINSerializer(serializers.ModelSerializer):
                     IsApprove=condition_data.get('IsApprove', False)
                 )
                 reserva.ConditionID.add(condition)
+
         instance.PromesaState = constants.PROMESA_STATE[14]
+        instance.Comment = comment
+
         instance.save()
 
         crear_notificacion_promesa_control_negociacion(instance, instance.ProyectoID, jefe_proyecto, vendedor_proyecto,
@@ -1545,7 +1559,8 @@ class SendNegociacionINSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
                 Name=constants.VENTA_LOG_TYPE[34]),
-            Comment=''
+            Comment=comment,
+            CommentBySystem=False
         )
 
         return instance
@@ -1555,14 +1570,12 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
         read_only=True
     )
-
     Condition = ApproveConditionSerializer(
         required=False,
         many=True,
         allow_null=True,
         write_only=True
     )
-
     Comment = serializers.CharField(
         write_only=True,
         allow_blank=True
@@ -1642,7 +1655,8 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
-            Comment='',
+            Comment=comment,
+            CommentBySystem=False
         )
 
         instance.save()
@@ -1725,6 +1739,7 @@ class ApproveRejectNegociacionSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=venta_log_type,
             Comment=comment,
+            CommentBySystem=False
         )
 
         instance.save()

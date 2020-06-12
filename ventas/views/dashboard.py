@@ -28,9 +28,9 @@ class PendingActionsViewSet(viewsets.ModelViewSet):
         return serializer.data
 
     def list(self, request):
-        cotizacion_data = Cotizacion.objects.all()
-        cotizacion_queryset = cotizacion_data.filter(CotizacionStateID__Name=constants.COTIZATION_STATE[0])
-        cotizationAction = self.get_data(ListCotizacionActionSerializer, cotizacion_queryset)
+        # cotizacion_data = Cotizacion.objects.all()
+        # cotizacion_queryset = cotizacion_data.filter(CotizacionStateID__Name=constants.COTIZATION_STATE[0])
+        # cotizationAction = self.get_data(ListCotizacionActionSerializer, cotizacion_queryset)
 
         reserva_data = Reserva.objects.all()
         reserva_pending_data = reserva_data.exclude(
@@ -66,8 +66,7 @@ class PendingActionsViewSet(viewsets.ModelViewSet):
                    ("Escrituras", {'total': oferta_data.count(),
                                   'Pending': oferta_pending_data.count()})]
         
-        PendingActions = dict(Cotizacion=cotizationAction,
-                              Reserva=reservaAction,
+        PendingActions = dict(Reserva=reservaAction,
                               Ofertas=oferta_serializer.data,
                               Promesa=promesa_serializer.data)
         
@@ -83,6 +82,6 @@ class AllUserViewSet(viewsets.ModelViewSet):
 class AllLogsViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    serializer_class = VentaLogUserSerializer
     log_queryset = VentaLog.objects.all().order_by('-Date')
     queryset = VentaLogUserSerializer.setup_eager_loading(log_queryset)
-    serializer_class = VentaLogUserSerializer

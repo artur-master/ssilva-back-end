@@ -71,10 +71,10 @@ class PreAprobacionCredito(models.Model):
     InstitucionFinanciera = models.CharField(max_length=100)
     Date = models.DateField(null=True, blank=True)
     Result = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True)
+        max_length=100, null=True, blank=True)
     DocumentCredit = models.FileField(
+        upload_to="PreAprobacionCredito", null=True, blank=True)
+    DocumentPreApprobal = models.FileField(
         upload_to="PreAprobacionCredito", null=True, blank=True)
     Observacion = models.CharField(null=True, max_length=300)
     def __str__(self):
