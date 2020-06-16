@@ -53,7 +53,8 @@ class PendingActionsViewSet(viewsets.ModelViewSet):
                 constants.PROMESA_STATE[0], 
                 constants.PROMESA_STATE[9], 
                 constants.PROMESA_STATE[11],
-                constants.PROMESA_STATE[13]]
+                constants.PROMESA_STATE[13]
+            ]
         )
         promesa_serializer = ListPromesaActionSerializer(promesa_queryset, many=True)
         
