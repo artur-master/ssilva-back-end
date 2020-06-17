@@ -989,9 +989,12 @@ class ConfirmProyectoSerializer(serializers.ModelSerializer):
         instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
         promesas = Promesa.objects.filter(
             ProyectoID=instance,
-            PromesaState=constants.PROMESA_STATE[4])
+            PromesaState=constants.PROMESA_STATE[7])
         if promesas.exists():
             for promesa in promesas:
+                promesa.PromesaState=constants.PROMESA_STATE[8]
+                promesa.save()
+                
                 create_escritura(instance, promesa)
             
         # Usuarios
