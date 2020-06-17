@@ -986,15 +986,15 @@ class ConfirmProyectoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
 
-        instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
         promesas = Promesa.objects.filter(
             ProyectoID=instance,
             PromesaState=constants.PROMESA_STATE[7])
+        
         if promesas.exists():
             for promesa in promesas:
                 promesa.PromesaState=constants.PROMESA_STATE[8]
                 promesa.save()
-                
+
                 create_escritura(instance, promesa)
             
         # Usuarios
@@ -1007,6 +1007,7 @@ class ConfirmProyectoSerializer(serializers.ModelSerializer):
         #     crear_notificacion_proyecto_sin_jefe_proyecto(
         #         instance, creator, usuarios_monitorea_proyectos)
 
+        instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
         instance.save()
  
         return instance
