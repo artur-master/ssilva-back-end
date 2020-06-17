@@ -1007,8 +1007,8 @@ class ConfirmProyectoSerializer(serializers.ModelSerializer):
         #     crear_notificacion_proyecto_sin_jefe_proyecto(
         #         instance, creator, usuarios_monitorea_proyectos)
 
-        # instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
-        # instance.save()
+        instance.EscrituraProyectoState = validated_data.get('EscrituraProyectoState')
+        instance.save()
  
         return instance
 
