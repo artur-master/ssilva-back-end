@@ -728,28 +728,28 @@ class RegisterInstitucionFinancieraSerializer(serializers.ModelSerializer):
 
 
 class ListPreAprobacionCreditoSerializer(serializers.ModelSerializer):
-    Date = serializers.SerializerMethodField('get_Date')
-    DocumentCredit = serializers.SerializerMethodField('get_DocumentCredit')
-    DocumentPreApprobal = serializers.SerializerMethodField('get_DocumentPreApprobal')
+    Date = serializers.SerializerMethodField('get_date')
+    DocumentCredit = serializers.SerializerMethodField('get_documentCredit')
+    DocumentPreApprobal = serializers.SerializerMethodField('get_documentPreApprobal')
     
     class Meta:
         model = PreAprobacionCredito
         fields = ('PreAprobacionCreditoID', 'InstitucionFinanciera',
                   'Date', 'Result', 'Observacion', 'DocumentCredit', 'DocumentPreApprobal')
 
-    def get_Date(self, obj):
+    def get_date(self, obj):
         try:
             return obj.Date.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
 
-    def get_DocumentCredit(self, obj):
+    def get_documentCredit(self, obj):
         if obj.DocumentCredit:
             return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentCredit.url
         else:
             return ""
 
-    def get_DocumentPreApprobal(self, obj):
+    def get_documentPreApprobal(self, obj):
         if obj.DocumentPreApprobal:
             return "http://" + get_current_site(self.context.get('request')).domain + obj.DocumentPreApprobal.url
         else:

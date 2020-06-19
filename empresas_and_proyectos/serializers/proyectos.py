@@ -1571,15 +1571,15 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         if jefe_proyecto:
             base_url = "http://" + get_current_site(self.context.get('request')).domain
             file_url = base_url + settings.MEDIA_URL + log.ProyectoDetailDocument.name
-            send_mail(message=file_url,
-                      subject="You are assigned to '%s'" % instance.Name,
-                      from_email=settings.EMAIL_HOST_USER,
-                      recipient_list=[user.UserID.Email for user in jefe_proyecto],
-                      html_message="Dear director, <br/><br/>The project {project_name} was created. "
-                                   "As a director, you will have responsibilities to supervise this project.<br/><br/>"
-                                   "Please review it at the link below<br/><br/>"
-                                   "<a href='{file_url}'>FILE PDF</a>".format(project_name=instance.Name,
-                                                                              file_url=file_url))
+            # send_mail(message=file_url,
+            #           subject="You are assigned to '%s'" % instance.Name,
+            #           from_email=settings.EMAIL_HOST_USER,
+            #           recipient_list=[user.UserID.Email for user in jefe_proyecto],
+            #           html_message="Dear director, <br/><br/>The project {project_name} was created. "
+            #                        "As a director, you will have responsibilities to supervise this project.<br/><br/>"
+            #                        "Please review it at the link below<br/><br/>"
+            #                        "<a href='{file_url}'>FILE PDF</a>".format(project_name=instance.Name,
+            #                                                                   file_url=file_url))
         # end sending email
 
         crear_notificacion_proyecto_sin_inmuebles(
@@ -2494,11 +2494,11 @@ class UpdateProyectoMarketingSerializer(UploadFileSerialier):
             if project_director:
                 base_url = "http://" + get_current_site(self.context.get('request')).domain
                 file_url = base_url + settings.MEDIA_URL + log.ProyectoDetailDocument.name
-                send_mail(message=file_url,
-                          subject="Uploaded Marketing Document",
-                          from_email=settings.EMAIL_HOST_USER,
-                          recipient_list=[user.UserID.Email for user in project_director],
-                          html_message="<a href='%s'>PDF FILE</a>" % file_url)
+                # send_mail(message=file_url,
+                #           subject="Uploaded Marketing Document",
+                #           from_email=settings.EMAIL_HOST_USER,
+                #           recipient_list=[user.UserID.Email for user in project_director],
+                #           html_message="<a href='%s'>PDF FILE</a>" % file_url)
         instance.save()
         self.reset_state(instance)
         return instance
@@ -2551,11 +2551,11 @@ class UpdateProyectoLegalSerializer(UploadFileSerialier):
             if project_director:
                 base_url = "http://" + get_current_site(self.context.get('request')).domain
                 file_url = base_url + settings.MEDIA_URL + log.ProyectoDetailDocument.name
-                send_mail(message=file_url,
-                          subject="Uploaded Legal Document",
-                          from_email=settings.EMAIL_HOST_USER,
-                          recipient_list=[user.UserID.Email for user in project_director],
-                          html_message="<a href='%s'>PDF FILE</a>" % file_url)
+                # send_mail(message=file_url,
+                #           subject="Uploaded Legal Document",
+                #           from_email=settings.EMAIL_HOST_USER,
+                #           recipient_list=[user.UserID.Email for user in project_director],
+                #           html_message="<a href='%s'>PDF FILE</a>" % file_url)
         instance.save()
         self.reset_state(instance)
         return instance

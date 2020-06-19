@@ -696,12 +696,12 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         for contact_info in cliente_data.get('Contact'):
             if contact_info.get('ContactInfoType') == 'Email':
                 contact_emails.append(contact_info.get('Value'))
-
-        send_mail(message="To Clente",
-                  subject="creating new Cotizacion",
-                  from_email=settings.EMAIL_HOST_USER,
-                  recipient_list=contact_emails,
-                  html_message="message")
+        
+        # send_mail(message="To Clente",
+        #           subject="creating new Cotizacion",
+        #           from_email=settings.EMAIL_HOST_USER,
+        #           recipient_list=contact_emails,
+        #           html_message="message")
 
         # end sending email
 

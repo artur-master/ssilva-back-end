@@ -180,13 +180,13 @@ def enviar_contrasena_por_email(user, password):
         'password': password
     })
 
-    send_mail(
-        subject,
-        message,
-        from_email=settings.EMAIL_HOST_USER,
-        html_message=message,
-        recipient_list=[
-            user.Email])
+    # send_mail(
+    #     subject,
+    #     message,
+    #     from_email=settings.EMAIL_HOST_USER,
+    #     html_message=message,
+    #     recipient_list=[
+    #         user.Email])
 
 
 # Funcion para enviar email a inmobiliaria
@@ -199,13 +199,13 @@ def send_email_to_inmobiliaria(subject, template, recipients, extra_data=None):
             'name': extra_data['name']
         }
         message = render_to_string(template, context_dict)
-        send_mail(
-            subject,
-            message,
-            from_email=settings.EMAIL_HOST_USER,
-            html_message=message,
-            recipient_list=[
-                recipient.Email])
+        # send_mail(
+        #     subject,
+        #     message,
+        #     from_email=settings.EMAIL_HOST_USER,
+        #     html_message=message,
+        #     recipient_list=[
+        #         recipient.Email])
 
 
 # Funcion para realizar el calculo del dividendo para el simulador de credito

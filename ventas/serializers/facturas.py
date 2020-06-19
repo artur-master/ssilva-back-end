@@ -148,11 +148,11 @@ class CreateComisionesSerializer(serializers.ModelSerializer):
             base_url = "http://" + get_current_site(self.context.get('request')).domain
             if project_director:
                 file_url = base_url + settings.MEDIA_URL + log.ProyectoDetailDocument.name
-                send_mail(message=file_url,
-                          subject="Created a sale commission",
-                          from_email=settings.EMAIL_HOST_USER,
-                          recipient_list=[user.UserID.Email for user in project_director],
-                          html_message="<a href='%s'>PDF FILE</a>" % file_url)
+                # send_mail(message=file_url,
+                #           subject="Created a sale commission",
+                #           from_email=settings.EMAIL_HOST_USER,
+                #           recipient_list=[user.UserID.Email for user in project_director],
+                #           html_message="<a href='%s'>PDF FILE</a>" % file_url)
             proyecto.save()
 
         return comisiones

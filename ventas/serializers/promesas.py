@@ -1842,14 +1842,14 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
         # send email to project director
         if len(contact_emails) > 0:
             base_url = "http://" + get_current_site(self.context.get('request')).domain
-            file_url = base_url + instance.DocumentPromesa
-            send_mail(message=file_url,
-                      subject="You are assigned to '%s'" % instance.Name,
-                      from_email=settings.EMAIL_HOST_USER,
-                      recipient_list=contact_emails,
-                      html_message="Dear client, <br/><br/>"
-                                   "Please check this.<br/><br/>"
-                                   "<a href='{file_url}'>FILE PDF</a>".format(file_url=file_url))
+            file_url = base_url + instance.DocumentPromesa.url
+            # send_mail(message=file_url,
+            #           subject="You are assigned to '%s'" % instance.Name,
+            #           from_email=settings.EMAIL_HOST_USER,
+            #           recipient_list=contact_emails,
+            #           html_message="Dear client, <br/><br/>"
+            #                        "Please check this.<br/><br/>"
+            #                        "<a href='{file_url}'>FILE PDF</a>".format(file_url=file_url))
         #end sending email
 
         return instance

@@ -1058,11 +1058,12 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 instance, jefe_proyecto, asistente_comercial)
         
         # send email to AC
-        send_mail(message="To Asistente Comercial",
-                  subject="creating new Reservation",
-                  from_email=settings.EMAIL_HOST_USER,
-                  recipient_list=[user.UserID.Email for user in asistente_comercial],
-                  html_message="message")
+        
+        # send_mail(message="To Asistente Comercial",
+        #           subject="creating new Reservation",
+        #           from_email=settings.EMAIL_HOST_USER,
+        #           recipient_list=[user.UserID.Email for user in asistente_comercial],
+        #           html_message=message)
         # end sending email
 
         # Registro Bitacora de Ventas
