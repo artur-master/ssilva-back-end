@@ -6,9 +6,6 @@
 - Virtualenv https://pypi.org/project/virtualenv/
 
 ## setup
-- clone project
-```
-> git clone https://gitlab.com/avalanchastudio/ssilva/ssilva-backend.git
 ```
 - access root directory
 - create virtual environment
