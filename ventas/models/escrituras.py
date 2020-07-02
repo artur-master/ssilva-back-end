@@ -124,7 +124,11 @@ class Escritura(models.Model):
         null=True,
         max_digits=10,
         decimal_places=2)
-    SignDate = models.DateTimeField(
+    SignDateEscritura = models.DateTimeField(
+        null=True, blank=True)
+    SignDatePagare = models.DateTimeField(
+        null=True, blank=True)
+    SignDateCompensacion = models.DateTimeField(
         null=True, blank=True)
     PaymentMethodBalance = models.IntegerField(
         blank=True, default=0)
@@ -132,6 +136,10 @@ class Escritura(models.Model):
         null=True,
         max_digits=10,
         decimal_places=2)
+    ChequeFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
     Valor = models.DecimalField(
         null=True,
         max_digits=10,
@@ -273,6 +281,34 @@ class Escritura(models.Model):
         null=True, blank=True)    
     DeclarePhysicalFolderState = models.BooleanField(
         blank=True, default=False)
+    Notaria_VII_I_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VII_II_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VII_III_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VII_IV_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VII_V_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_I_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_II_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_III_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_IV_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_V_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_VI_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_VII_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_VIII_Date = models.DateTimeField(
+        null=True, blank=True)
+    Notaria_VIII_IX_Date = models.DateTimeField(
+        null=True, blank=True)
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.PromesaID.Folio)

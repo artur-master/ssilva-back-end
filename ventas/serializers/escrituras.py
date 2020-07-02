@@ -11,6 +11,7 @@ from ventas.models.ventas_logs import VentaLog, VentaLogType
 from users.models import User, Permission
 from ventas.serializers.clientes import ClienteSerializer
 from ventas.serializers.reservas import ListReservaInmuebleSerializer
+from ventas.serializers.ventas_logs import VentaLogSerializer
 
 def create_escritura(proyecto, promesa):
     instance = Escritura.objects.filter(PromesaID=promesa)
@@ -197,13 +198,16 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         decimal_places=2,
         coerce_to_string=False,
         read_only=True)
-    SignDate = serializers.SerializerMethodField('get_sign_date')
+    SignDateEscritura = serializers.SerializerMethodField('get_sign_date_escritura')
+    SignDatePagare = serializers.SerializerMethodField('get_sign_date_pegare')
+    SignDateCompensacion = serializers.SerializerMethodField('get_sign_compensacion')
     Valor = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False,
         read_only=True)
     FetchaPago = serializers.SerializerMethodField('get_pago_date')
+    ChequeFile = serializers.SerializerMethodField('get_cheque_file_url')
     ProofDeposite = serializers.SerializerMethodField('get_proof_deposite_url')
     StartDate = serializers.SerializerMethodField('get_start_date')
     InvoiceFile = serializers.SerializerMethodField('get_invoice_url')
@@ -235,6 +239,22 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
     DeliveryPropertyDate = serializers.SerializerMethodField('get_delivery_date')
     GPLoginRegistrationFile = serializers.SerializerMethodField('get_GP_url')
     AprobacionCreditos = serializers.SerializerMethodField('get_aprobacion_creditos')
+    Logs = serializers.SerializerMethodField('get_logs')
+
+    Notaria_VII_I_Date = serializers.SerializerMethodField('get_date_1')
+    Notaria_VII_II_Date = serializers.SerializerMethodField('get_date_2')
+    Notaria_VII_III_Date = serializers.SerializerMethodField('get_date_3')
+    Notaria_VII_IV_Date = serializers.SerializerMethodField('get_date_4')
+    Notaria_VII_V_Date = serializers.SerializerMethodField('get_date_5')
+    Notaria_VIII_I_Date = serializers.SerializerMethodField('get_date_6')
+    Notaria_VIII_II_Date = serializers.SerializerMethodField('get_date_7')
+    Notaria_VIII_III_Date = serializers.SerializerMethodField('get_date_8')
+    Notaria_VIII_IV_Date = serializers.SerializerMethodField('get_date_9')
+    Notaria_VIII_V_Date = serializers.SerializerMethodField('get_date_10')
+    Notaria_VIII_VI_Date = serializers.SerializerMethodField('get_date_11')
+    Notaria_VIII_VII_Date = serializers.SerializerMethodField('get_date_12')
+    Notaria_VIII_VIII_Date = serializers.SerializerMethodField('get_date_13')
+    Notaria_VIII_IX_Date = serializers.SerializerMethodField('get_date_14')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -282,9 +302,12 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'NoticeToClientSignDate',
             'BalanceFeeUF',
             'BalanceFund',
-            'SignDate',
+            'SignDateEscritura',
+            'SignDatePagare',
+            'SignDateCompensacion',
             'PaymentMethodBalance',
             'ChequeNumber',
+            'ChequeFile',
             'Valor',
             'FetchaPago',
             'ProofDeposite',
@@ -348,7 +371,23 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'DeliveryPropertyDate',
             'GPLoginRegistration',
             'GPLoginRegistrationFile',
-            'AprobacionCreditos'
+            'AprobacionCreditos',
+            'Logs',
+
+            'Notaria_VII_I_Date',
+            'Notaria_VII_II_Date',
+            'Notaria_VII_III_Date',
+            'Notaria_VII_IV_Date',
+            'Notaria_VII_V_Date',
+            'Notaria_VIII_I_Date',
+            'Notaria_VIII_II_Date',
+            'Notaria_VIII_III_Date',
+            'Notaria_VIII_IV_Date',
+            'Notaria_VIII_V_Date',
+            'Notaria_VIII_VI_Date',
+            'Notaria_VIII_VII_Date',
+            'Notaria_VIII_VIII_Date',
+            'Notaria_VIII_IX_Date'
         )
 
     def get_date(self, obj):
@@ -440,6 +479,13 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.ProofDeposite.url)
         else:
             return ""
+    def get_cheque_file_url(self, obj):
+        if obj.ChequeFile and hasattr(
+                obj.ChequeFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.ChequeFile.url)
+        else:
+            return ""
     def get_notice_client_date(self, obj):
         try:
             return obj.NoticeToClientDate.strftime("%Y-%m-%d")
@@ -450,9 +496,19 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return obj.NoticeToClientSignDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
-    def get_sign_date(self, obj):
+    def get_sign_date_escritura(self, obj):
         try:
-            return obj.SignDate.strftime("%Y-%m-%d")
+            return obj.SignDateEscritura.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_sign_date_pegare(self, obj):
+        try:
+            return obj.SignDatePagare.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_sign_compensacion(self, obj):
+        try:
+            return obj.SignDateCompensacion.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_pago_date(self, obj):
@@ -631,7 +687,85 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return [{'FormalCredit': '1', 'BankName': 'Banco Estado'}]
         except AttributeError:
             return [{'FormalCredit': '1', 'BankName': 'Banco Estado'}]
+    
+    def get_logs(self, obj):
+        venta_log = VentaLog.objects.filter(
+            # VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE_PROMESA),
+            Folio=obj.PromesaID.Folio).order_by('-id')
+        serializer = VentaLogSerializer(instance=venta_log, many=True)
+        return serializer.data
 
+    def get_date_1(self, obj):
+        try:
+            return obj.Notaria_VII_I_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_2(self, obj):
+        try:
+            return obj.Notaria_VII_II_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_3(self, obj):
+        try:
+            return obj.Notaria_VII_III_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_4(self, obj):
+        try:
+            return obj.Notaria_VII_IV_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_5(self, obj):
+        try:
+            return obj.Notaria_VII_V_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_6(self, obj):
+        try:
+            return obj.Notaria_VIII_I_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_7(self, obj):
+        try:
+            return obj.Notaria_VIII_II_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_8(self, obj):
+        try:
+            return obj.Notaria_VIII_III_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_9(self, obj):
+        try:
+            return obj.Notaria_VIII_IV_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_10(self, obj):
+        try:
+            return obj.Notaria_VIII_V_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_11(self, obj):
+        try:
+            return obj.Notaria_VIII_VI_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_12(self, obj):
+        try:
+            return obj.Notaria_VIII_VII_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_13(self, obj):
+        try:
+            return obj.Notaria_VIII_VIII_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    def get_date_14(self, obj):
+        try:
+            return obj.Notaria_VIII_IX_Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+    
 
 class UpdateEscrituraSerializer(serializers.ModelSerializer):
     EscrituraState  = serializers.DecimalField(
@@ -672,9 +806,12 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'NoticeToClientSignDate',
             'BalanceFeeUF',
             'BalanceFund',
-            'SignDate',
+            'SignDateEscritura',
+            'SignDatePagare',
+            'SignDateCompensacion',
             'PaymentMethodBalance',
             'ChequeNumber',
+            'ChequeFile',
             'Valor',
             'FetchaPago',
             'ProofDeposite',
@@ -738,13 +875,28 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'DeliveryPropertyDate',
             'GPLoginRegistration',
             'GPLoginRegistrationFile',
-            'DeclarePhysicalFolderState'
+            'DeclarePhysicalFolderState',
+
+            'Notaria_VII_I_Date',
+            'Notaria_VII_II_Date',
+            'Notaria_VII_III_Date',
+            'Notaria_VII_IV_Date',
+            'Notaria_VII_V_Date',
+            'Notaria_VIII_I_Date',
+            'Notaria_VIII_II_Date',
+            'Notaria_VIII_III_Date',
+            'Notaria_VIII_IV_Date',
+            'Notaria_VIII_V_Date',
+            'Notaria_VIII_VI_Date',
+            'Notaria_VIII_VII_Date',
+            'Notaria_VIII_VIII_Date',
+            'Notaria_VIII_IX_Date'
         )
     
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         proyecto = instance.ProyectoID
-
+        
         if 'EscrituraState' in validated_data:
             instance.EscrituraState = validated_data['EscrituraState']
         if 'CarepetaFisicaState' in validated_data:
@@ -801,12 +953,18 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.BalanceFeeUF = validated_data['BalanceFeeUF']
         if 'BalanceFund' in validated_data:
             instance.BalanceFund = validated_data['BalanceFund']
-        if 'SignDate' in validated_data:
-            instance.SignDate = validated_data['SignDate']
+        if 'SignDateEscritura' in validated_data:
+            instance.SignDateEscritura = validated_data['SignDateEscritura']
+        if 'SignDatePagare' in validated_data:
+            instance.SignDatePagare = validated_data['SignDatePagare']
+        if 'SignDateCompensacion' in validated_data:
+            instance.SignDateCompensacion = validated_data['SignDateCompensacion']
         if 'PaymentMethodBalance' in validated_data:
             instance.PaymentMethodBalance = validated_data['PaymentMethodBalance']
         if 'ChequeNumber' in validated_data:
             instance.ChequeNumber = validated_data['ChequeNumber']
+        if 'ChequeFile' in validated_data:
+            instance.ChequeFile = validated_data['ChequeFile']
         if 'Valor' in validated_data:
             instance.Valor = validated_data['Valor']
         if 'FetchaPago' in validated_data:
@@ -935,6 +1093,35 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.GPLoginRegistrationFile = validated_data['GPLoginRegistrationFile']         
         if 'DeclarePhysicalFolderState' in validated_data:
             instance.DeclarePhysicalFolderState = validated_data['DeclarePhysicalFolderState']         
+        
+        if 'Notaria_VII_I_Date' in validated_data:
+            instance.Notaria_VII_I_Date = validated_data['Notaria_VII_I_Date']         
+        if 'Notaria_VII_II_Date' in validated_data:
+            instance.Notaria_VII_II_Date = validated_data['Notaria_VII_II_Date']         
+        if 'Notaria_VII_III_Date' in validated_data:
+            instance.Notaria_VII_III_Date = validated_data['Notaria_VII_III_Date']         
+        if 'Notaria_VII_IV_Date' in validated_data:
+            instance.Notaria_VII_IV_Date = validated_data['Notaria_VII_IV_Date']         
+        if 'Notaria_VII_V_Date' in validated_data:
+            instance.Notaria_VII_V_Date = validated_data['Notaria_VII_V_Date']         
+        if 'Notaria_VIII_I_Date' in validated_data:
+            instance.Notaria_VIII_I_Date = validated_data['Notaria_VIII_I_Date']         
+        if 'Notaria_VIII_II_Date' in validated_data:
+            instance.Notaria_VIII_II_Date = validated_data['Notaria_VIII_II_Date']         
+        if 'Notaria_VIII_III_Date' in validated_data:
+            instance.Notaria_VIII_III_Date = validated_data['Notaria_VIII_III_Date']         
+        if 'Notaria_VIII_IV_Date' in validated_data:
+            instance.Notaria_VIII_IV_Date = validated_data['Notaria_VIII_IV_Date']         
+        if 'Notaria_VIII_V_Date' in validated_data:
+            instance.Notaria_VIII_V_Date = validated_data['Notaria_VIII_V_Date']         
+        if 'Notaria_VIII_VI_Date' in validated_data:
+            instance.Notaria_VIII_VI_Date = validated_data['Notaria_VIII_VI_Date']         
+        if 'Notaria_VIII_VII_Date' in validated_data:
+            instance.Notaria_VIII_VII_Date = validated_data['Notaria_VIII_VII_Date']         
+        if 'Notaria_VIII_VIII_Date' in validated_data:
+            instance.Notaria_VIII_VIII_Date = validated_data['Notaria_VIII_VIII_Date']         
+        if 'Notaria_VIII_IX_Date' in validated_data:
+            instance.Notaria_VIII_IX_Date = validated_data['Notaria_VIII_IX_Date']         
 
         instance.save()
 

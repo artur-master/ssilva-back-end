@@ -122,6 +122,7 @@ class EscrituraViewSet(viewsets.ModelViewSet):
         data = request.data
 
         many = isinstance(data, list)
+        
         serializer = UpdateEscrituraSerializer(
             self.get_object(), data=data, partial=True,
             context={'request': request}
