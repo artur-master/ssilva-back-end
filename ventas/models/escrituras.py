@@ -152,6 +152,12 @@ class Escritura(models.Model):
         blank=True)
     InstructionObservacion = models.CharField(
         max_length=200, null=True, blank=True)
+    InstructionDate = models.DateTimeField(
+        null=True, blank=True)
+    InstructionFile = models.FileField(
+        upload_to="DocumentVentas",
+        null=True,
+        blank=True)
     RepertoireNumber = models.CharField(
         max_length=200, blank=True, null=True)
     StartDate = models.DateTimeField(
@@ -281,6 +287,12 @@ class Escritura(models.Model):
         null=True, blank=True)    
     DeclarePhysicalFolderState = models.BooleanField(
         blank=True, default=False)
+    Notaria_I_Date = models.DateField(
+        null=True, blank=True)
+    Notaria_II_Date = models.DateField(
+        null=True, blank=True)
+    Notaria_III_Date = models.DateField(
+        null=True, blank=True)
     Notaria_VII_I_Date = models.DateTimeField(
         null=True, blank=True)
     Notaria_VII_II_Date = models.DateTimeField(

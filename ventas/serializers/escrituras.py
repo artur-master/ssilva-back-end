@@ -207,6 +207,8 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True)
     FetchaPago = serializers.SerializerMethodField('get_pago_date')
+    InstructionDate = serializers.SerializerMethodField('get_instruction_date')
+    InstructionFile = serializers.SerializerMethodField('get_instruction_file_url')
     ChequeFile = serializers.SerializerMethodField('get_cheque_file_url')
     ProofDeposite = serializers.SerializerMethodField('get_proof_deposite_url')
     StartDate = serializers.SerializerMethodField('get_start_date')
@@ -240,6 +242,10 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
     GPLoginRegistrationFile = serializers.SerializerMethodField('get_GP_url')
     AprobacionCreditos = serializers.SerializerMethodField('get_aprobacion_creditos')
     Logs = serializers.SerializerMethodField('get_logs')
+
+    Notaria_I_Date = serializers.SerializerMethodField('get_notariadate_1')
+    Notaria_II_Date = serializers.SerializerMethodField('get_notariadate_2')
+    Notaria_III_Date = serializers.SerializerMethodField('get_notariadate_3')
 
     Notaria_VII_I_Date = serializers.SerializerMethodField('get_date_1')
     Notaria_VII_II_Date = serializers.SerializerMethodField('get_date_2')
@@ -312,6 +318,8 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'FetchaPago',
             'ProofDeposite',
             'InstructionObservacion',
+            'InstructionDate',
+            'InstructionFile',
             'RepertoireNumber',
             'StartDate',
             'RealEstateBilling',
@@ -374,6 +382,9 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             'AprobacionCreditos',
             'Logs',
 
+            'Notaria_I_Date',
+            'Notaria_II_Date',
+            'Notaria_III_Date',
             'Notaria_VII_I_Date',
             'Notaria_VII_II_Date',
             'Notaria_VII_III_Date',
@@ -486,6 +497,13 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.ChequeFile.url)
         else:
             return ""
+    def get_instruction_file_url(self, obj):
+        if obj.InstructionFile and hasattr(
+                obj.InstructionFile, 'url'):
+            absolute_url = get_full_path_x(self.context['request'])
+            return "%s%s" % (absolute_url, obj.InstructionFile.url)
+        else:
+            return ""
     def get_notice_client_date(self, obj):
         try:
             return obj.NoticeToClientDate.strftime("%Y-%m-%d")
@@ -514,6 +532,11 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
     def get_pago_date(self, obj):
         try:
             return obj.FetchaPago.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+    def get_instruction_date(self, obj):
+        try:
+            return obj.InstructionDate.strftime("%Y-%m-%d")
         except AttributeError:
             return ""
     def get_start_date(self, obj):
@@ -695,6 +718,25 @@ class RetrieveEscrituraSerializer(serializers.ModelSerializer):
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data
 
+
+    def get_notariadate_1(self, obj):
+        try:
+            return obj.Notaria_I_Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+
+    def get_notariadate_2(self, obj):
+        try:
+            return obj.Notaria_II_Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+            
+    def get_notariadate_3(self, obj):
+        try:
+            return obj.Notaria_III_Date.strftime("%Y-%m-%d")
+        except AttributeError:
+            return ""
+
     def get_date_1(self, obj):
         try:
             return obj.Notaria_VII_I_Date.strftime("%Y-%m-%d %H:%M")
@@ -816,6 +858,8 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'FetchaPago',
             'ProofDeposite',
             'InstructionObservacion',
+            'InstructionDate',
+            'InstructionFile',
             'RepertoireNumber',
             'StartDate',
             'RealEstateBilling',
@@ -877,6 +921,9 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             'GPLoginRegistrationFile',
             'DeclarePhysicalFolderState',
 
+            'Notaria_I_Date',
+            'Notaria_II_Date',
+            'Notaria_III_Date',
             'Notaria_VII_I_Date',
             'Notaria_VII_II_Date',
             'Notaria_VII_III_Date',
@@ -973,6 +1020,10 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
             instance.ProofDeposite = validated_data['ProofDeposite']
         if 'InstructionObservacion' in validated_data:
             instance.InstructionObservacion = validated_data['InstructionObservacion']
+        if 'InstructionDate' in validated_data:
+            instance.InstructionDate = validated_data['InstructionDate']
+        if 'InstructionFile' in validated_data:
+            instance.InstructionFile = validated_data['InstructionFile']
         if 'RepertoireNumber' in validated_data:
             instance.RepertoireNumber = validated_data['RepertoireNumber']
         if 'StartDate' in validated_data:
@@ -1094,6 +1145,13 @@ class UpdateEscrituraSerializer(serializers.ModelSerializer):
         if 'DeclarePhysicalFolderState' in validated_data:
             instance.DeclarePhysicalFolderState = validated_data['DeclarePhysicalFolderState']         
         
+        if 'Notaria_I_Date' in validated_data:
+            instance.Notaria_I_Date = validated_data['Notaria_I_Date']       
+        if 'Notaria_II_Date' in validated_data:
+            instance.Notaria_II_Date = validated_data['Notaria_II_Date']
+        if 'Notaria_III_Date' in validated_data:
+            instance.Notaria_III_Date = validated_data['Notaria_III_Date']
+
         if 'Notaria_VII_I_Date' in validated_data:
             instance.Notaria_VII_I_Date = validated_data['Notaria_VII_I_Date']         
         if 'Notaria_VII_II_Date' in validated_data:
