@@ -158,7 +158,7 @@ class Inmueble(models.Model):
     Price = models.DecimalField(
         max_digits=10,
         decimal_places=2)
-    MaximunDiscount = models.DecimalField(
+    MaximumDiscount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=100,

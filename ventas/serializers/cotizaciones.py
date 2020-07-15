@@ -8,6 +8,8 @@ from common.validations import CustomValidation
 from empresas_and_proyectos.models.inmuebles import Inmueble
 from empresas_and_proyectos.models.inmuebles_restrictions import InmuebleInmueble
 from empresas_and_proyectos.models.proyectos import Proyecto
+from empresas_and_proyectos.models.instituciones_financieras import (
+    InstitucionFinanciera)
 from empresas_and_proyectos.serializers.inmuebles import ListOrientationSerializer
 from empresas_and_proyectos.serializers.proyectos import RestrictionSerializer
 from users.models import User
@@ -28,7 +30,9 @@ from ventas.models.payment_forms import Cuota, PayType
 from ventas.models.ventas_logs import (
     VentaLogType,
     VentaLog)
-from ventas.serializers.clientes import ListClienteSerializer, CreateClienteContactInfoSerializer
+from ventas.serializers.clientes import (
+    ListClienteSerializer, 
+    CreateClienteContactInfoSerializer)
 from .cuotas import (
     ListCuotaSerializer,
     CreateCuotaSerializer)
@@ -188,9 +192,23 @@ class CotizacionSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True
     ) 
+    Subsidio = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True
+    ) 
+    Libreta = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True
+    )
+    InstitucionFinanciera = serializers.UUIDField(
+        source='InstitucionFinanciera.InstitucionFinancieraID'
+    )
     Cuotas = ListCuotaSerializer(
-        source='CuotaID',
-        many=True
+        source='CuotaID', many=True
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     Date = serializers.SerializerMethodField('get_date')
@@ -241,6 +259,9 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'PaymentInstitucionFinanciera',
             'PaymentCuotas',
             'AhorroPlus',
+            'Subsidio',
+            'Libreta',
+            'InstitucionFinanciera',
             'IsNotInvestment',
             'Cuotas',
             'Inmuebles',
@@ -493,6 +514,21 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         decimal_places=2,
         allow_null=True
     )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True
+    ) 
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True
+    )
+    InstitucionFinanciera = serializers.UUIDField(
+        allow_null=True
+    )
     VendedorID = serializers.UUIDField(
         allow_null=True
     )
@@ -513,6 +549,9 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'Libreta',
+            'InstitucionFinanciera',
             'IsNotInvestment',
             'VendedorID',
             'PayType'
@@ -520,7 +559,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         current_user = return_current_user(self)
-
+		
         cuotas_data = validated_data.pop('CuotaID')
         inmuebles_data = validated_data.pop('InmuebleID')
 
@@ -593,7 +632,9 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         vendedor = get_or_none(User, UserID=validated_data['VendedorID'])
         paytype = get_or_none(PayType, PayTypeID=validated_data.get('PayType'))
         folio = proyecto.Symbol + str(counter_folio.Count)
-        
+
+        libretaBank=get_or_none(InstitucionFinanciera, InstitucionFinancieraID=validated_data.get('InstitucionFinanciera'))
+
         instance = Cotizacion.objects.create(
             ProyectoID=proyecto,
             ClienteID=cliente,
@@ -609,7 +650,10 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             PaymentFirmaPromesa=validated_data['PaymentFirmaPromesa'],
             PaymentFirmaEscritura=validated_data['PaymentFirmaEscritura'],
             PaymentInstitucionFinanciera=validated_data['PaymentInstitucionFinanciera'],
-            AhorroPlus=validated_data['AhorroPlus']
+            AhorroPlus=validated_data['AhorroPlus'],
+            Subsidio=validated_data['Subsidio'],
+            Libreta=validated_data['Libreta'],
+            InstitucionFinanciera=libretaBank
         )
         for cuota_data in cuotas_data:
             cuota = Cuota.objects.create(
@@ -673,10 +717,10 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         y otras con Python en el BE
         '''
         
-        if not abs(total_uf - total) <= constants.DEFAULT_PRECISION:
-            raise CustomValidation(
-                "Monto por pagar debe ser igual a monto total a pagar",
-                status_code=status.HTTP_409_CONFLICT)
+        # if not abs(total_uf - total) <= constants.DEFAULT_PRECISION:
+        #     raise CustomValidation(
+        #         "Monto por pagar debe ser igual a monto total a pagar",
+        #         status_code=status.HTTP_409_CONFLICT)
 
         # Registro Bitacora de Ventas
         venta_log_type = VentaLogType.objects.get(

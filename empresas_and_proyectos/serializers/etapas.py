@@ -326,12 +326,12 @@ class EtapaSerializer(serializers.ModelSerializer):
                 inmueble_type = InmuebleType.objects.get(
                     InmuebleTypeID=inmueble_data['InmuebleTypeID'])
                 tipologia_id = inmueble_data['TipologiaID']
-                maximun_discount = inmueble_data['MaximunDiscount']
+                maximum_discount = inmueble_data['MaximumDiscount']
 
                 tipologia = get_or_none(Tipologia, TipologiaID=tipologia_id)
 
-                if not maximun_discount:
-                    maximun_discount = None
+                if not maximum_discount:
+                    maximum_discount = None
 
                 if inmueble_type.Name == constants.INMUEBLE_TYPE[0] and not tipologia_id:
                     raise CustomValidation(
@@ -357,7 +357,7 @@ class EtapaSerializer(serializers.ModelSerializer):
                 inmueble_creado.TotalSquareMeters = 0
                 inmueble_creado.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
                 inmueble_creado.Price = inmueble_data['Price']
-                inmueble_creado.MaximunDiscount = maximun_discount
+                inmueble_creado.MaximumDiscount = maximum_discount
                 inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
 
                 if inmueble_id:
@@ -387,7 +387,7 @@ class EtapaSerializer(serializers.ModelSerializer):
                 inmueble_hist.TotalSquareMeters = 0
                 inmueble_hist.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
                 inmueble_hist.Price = inmueble_data['Price']
-                inmueble_hist.MaximunDiscount = maximun_discount
+                inmueble_hist.MaximumDiscount = maximum_discount
                 inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
 
                 if inmueble_id:
@@ -419,7 +419,7 @@ class EtapaSerializer(serializers.ModelSerializer):
             tipologia_id = inmueble_data['TipologiaID']
 
             tipologia = get_or_none(Tipologia, TipologiaID=tipologia_id)
-            maximun_discount = inmueble_data['MaximunDiscount']
+            maximum_discount = inmueble_data['MaximumDiscount']
 
             if inmueble_type.Name == constants.INMUEBLE_TYPE[0] and not tipologia_id:
                 raise CustomValidation(
@@ -445,7 +445,7 @@ class EtapaSerializer(serializers.ModelSerializer):
             inmueble_creado.TotalSquareMeters = 0
             inmueble_creado.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
             inmueble_creado.Price = inmueble_data['Price']
-            inmueble_creado.MaximunDiscount = maximun_discount
+            inmueble_creado.MaximumDiscount = maximum_discount
             inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
 
             if inmueble_id:
@@ -475,7 +475,7 @@ class EtapaSerializer(serializers.ModelSerializer):
             inmueble_hist.TotalSquareMeters = 0
             inmueble_hist.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
             inmueble_hist.Price = inmueble_data['Price']
-            inmueble_hist.MaximunDiscount = maximun_discount
+            inmueble_hist.MaximumDiscount = maximum_discount
             inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
 
             if inmueble_id:
@@ -686,7 +686,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
                 inmueble_type = InmuebleType.objects.get(
                     InmuebleTypeID=inmueble_data['InmuebleTypeID'])
                 tipologia_id = inmueble_data['TipologiaID']
-                maximun_discount = inmueble_data['MaximunDiscount']
+                maximum_discount = inmueble_data['MaximumDiscount']
 
                 if tipologia_id:
                     tipologia = Tipologia.objects.get(
@@ -694,8 +694,8 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
                 else:
                     tipologia = None
 
-                if not maximun_discount:
-                    maximun_discount = None
+                if not maximum_discount:
+                    maximum_discount = None
 
                 if inmueble_type.Name == constants.INMUEBLE_TYPE[0] and not tipologia_id:
                     raise CustomValidation(
@@ -721,7 +721,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
                 inmueble_creado.TotalSquareMeters = 0
                 inmueble_creado.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
                 inmueble_creado.Price = inmueble_data['Price']
-                inmueble_creado.MaximunDiscount = maximun_discount
+                inmueble_creado.MaximumDiscount = maximum_discount
                 inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
 
                 for orientation_data in inmueble_data['OrientationID']:
@@ -748,7 +748,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
                 inmueble_hist.TotalSquareMeters = 0
                 inmueble_hist.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
                 inmueble_hist.Price = inmueble_data['Price']
-                inmueble_hist.MaximunDiscount = maximun_discount
+                inmueble_hist.MaximumDiscount = maximum_discount
                 inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
 
                 historicos.append(inmueble_hist)
@@ -767,7 +767,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             inmueble_type = InmuebleType.objects.get(
                 InmuebleTypeID=inmueble_data['InmuebleTypeID'])
             tipologia_id = inmueble_data['TipologiaID']
-            maximun_discount = inmueble_data['MaximunDiscount']
+            maximum_discount = inmueble_data['MaximumDiscount']
 
             if tipologia_id:
                 tipologia = Tipologia.objects.get(
@@ -775,8 +775,8 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             else:
                 tipologia = None
 
-            if not maximun_discount:
-                maximun_discount = None
+            if not maximum_discount:
+                maximum_discount = None
 
             if inmueble_type.Name == constants.INMUEBLE_TYPE[0] and not tipologia_id:
                 raise CustomValidation(
@@ -802,7 +802,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             inmueble_creado.TotalSquareMeters = 0
             inmueble_creado.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
             inmueble_creado.Price = inmueble_data['Price']
-            inmueble_creado.MaximunDiscount = maximun_discount
+            inmueble_creado.MaximumDiscount = maximum_discount
             inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
 
             if inmueble_data.get('OrientationID'):
@@ -830,7 +830,7 @@ class CreateEtapaSerializer(serializers.ModelSerializer):
             inmueble_hist.TotalSquareMeters = 0
             inmueble_hist.IsNotUsoyGoce = inmueble_data['IsNotUsoyGoce']
             inmueble_hist.Price = inmueble_data['Price']
-            inmueble_hist.MaximunDiscount = maximun_discount
+            inmueble_hist.MaximumDiscount = maximum_discount
             inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
 
             historicos.append(inmueble_hist)
@@ -1070,7 +1070,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             inmueble_creado.TotalSquareMeters = 0
             inmueble_creado.IsNotUsoyGoce = uso_goce
             inmueble_creado.Price = price
-            inmueble_creado.MaximunDiscount = max_discount
+            inmueble_creado.MaximumDiscount = max_discount
             inmueble_creado.CotizacionDuration = proyecto.CotizacionDuration
             inmueble_creado.BluePrint = blueprint
 
@@ -1093,7 +1093,7 @@ class CreateMassiveEtapaInmueblesSerializer(serializers.ModelSerializer):
             inmueble_hist.TotalSquareMeters = 0
             inmueble_hist.IsNotUsoyGoce = uso_goce
             inmueble_hist.Price = price
-            inmueble_hist.MaximunDiscount = max_discount
+            inmueble_hist.MaximumDiscount = max_discount
             inmueble_hist.CotizacionDuration = proyecto.CotizacionDuration
             inmueble_hist.BluePrint = blueprint
 

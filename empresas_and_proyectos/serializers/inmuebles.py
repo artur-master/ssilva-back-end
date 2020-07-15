@@ -116,7 +116,7 @@ class InmuebleSerializer(serializers.ModelSerializer):
         decimal_places=2,
         coerce_to_string=False
     )
-    MaximunDiscount = serializers.DecimalField(
+    MaximumDiscount = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False
@@ -143,7 +143,7 @@ class InmuebleSerializer(serializers.ModelSerializer):
             'TotalSquareMeters',
             'IsNotUsoyGoce',
             'Price',
-            'MaximunDiscount',
+            'MaximumDiscount',
             'CotizacionDuration',
             'InmuebleStateID',
             'BluePrint',
@@ -178,8 +178,8 @@ class InmuebleSerializer(serializers.ModelSerializer):
             instance.IsNotUsoyGoce = validated_data.get('IsNotUsoyGoce')
         if 'Price' in validated_data:
             instance.Price = validated_data.get('Price')
-        if 'MaximunDiscount' in validated_data:
-            instance.MaximunDiscount = validated_data.get('MaximunDiscount')
+        if 'MaximumDiscount' in validated_data:
+            instance.MaximumDiscount = validated_data.get('MaximumDiscount')
 
         instance.save()
 
@@ -256,7 +256,7 @@ class CreateInmuebleSerializer(serializers.ModelSerializer):
         decimal_places=2,
         coerce_to_string=False
     )
-    MaximunDiscount = serializers.DecimalField(
+    MaximumDiscount = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False,
@@ -285,7 +285,7 @@ class CreateInmuebleSerializer(serializers.ModelSerializer):
             'TotalSquareMeters',
             'IsNotUsoyGoce',
             'Price',
-            'MaximunDiscount',
+            'MaximumDiscount',
             'CotizacionDuration',
             'InmuebleStateID',
             'InmuebleState')

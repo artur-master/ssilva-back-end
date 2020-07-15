@@ -146,7 +146,7 @@ class UpdateInmueblesViewSet(APIView):
             elif k.lower() == 'price':
                 item.Price = changed.get('Price')
             elif k.lower() == 'discount':
-                item.MaximunDiscount = changed.get('MaximunDiscount')
+                item.MaximumDiscount = changed.get('MaximumDiscount')
             elif k.lower() == 'tipologia':
                 item.TipologiaID = Tipologia.objects.get(
                     TipologiaID=changed.get('TipologiaID'))
