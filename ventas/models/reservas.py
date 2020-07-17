@@ -117,7 +117,7 @@ class Reserva(models.Model):
         max_digits=10,
         decimal_places=2,
         null=True,
-        blank=True)     
+        blank=True)
     PayTypeID = models.ForeignKey(
         PayType,
         related_name='tipo_pago_reserva',

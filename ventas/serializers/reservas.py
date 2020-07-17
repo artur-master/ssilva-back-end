@@ -161,6 +161,7 @@ class ListReservaInmuebleSerializer(serializers.ModelSerializer):
         else:
             return ""
 
+
 class ListReservaSerializer(serializers.ModelSerializer):
     ProyectoID = serializers.CharField(
         source='ProyectoID.ProyectoID'

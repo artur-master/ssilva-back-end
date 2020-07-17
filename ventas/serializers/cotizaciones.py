@@ -204,9 +204,6 @@ class CotizacionSerializer(serializers.ModelSerializer):
         coerce_to_string=False,
         read_only=True
     )
-    InstitucionFinanciera = serializers.UUIDField(
-        source='InstitucionFinanciera.InstitucionFinancieraID'
-    )
     Cuotas = ListCuotaSerializer(
         source='CuotaID', many=True
     )
@@ -261,7 +258,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'AhorroPlus',
             'Subsidio',
             'Libreta',
-            'InstitucionFinanciera',
+            'InstitucionFinancieraID',
             'IsNotInvestment',
             'Cuotas',
             'Inmuebles',
@@ -526,7 +523,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         decimal_places=2,
         allow_null=True
     )
-    InstitucionFinanciera = serializers.UUIDField(
+    InstitucionFinancieraID = serializers.UUIDField(
         allow_null=True
     )
     VendedorID = serializers.UUIDField(
@@ -551,7 +548,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             'AhorroPlus',
             'Subsidio',
             'Libreta',
-            'InstitucionFinanciera',
+            'InstitucionFinancieraID',
             'IsNotInvestment',
             'VendedorID',
             'PayType'
@@ -633,8 +630,6 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         paytype = get_or_none(PayType, PayTypeID=validated_data.get('PayType'))
         folio = proyecto.Symbol + str(counter_folio.Count)
 
-        libretaBank=get_or_none(InstitucionFinanciera, InstitucionFinancieraID=validated_data.get('InstitucionFinanciera'))
-
         instance = Cotizacion.objects.create(
             ProyectoID=proyecto,
             ClienteID=cliente,
@@ -653,7 +648,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             AhorroPlus=validated_data['AhorroPlus'],
             Subsidio=validated_data['Subsidio'],
             Libreta=validated_data['Libreta'],
-            InstitucionFinanciera=libretaBank
+            InstitucionFinancieraID=validated_data.get('InstitucionFinancieraID')
         )
         for cuota_data in cuotas_data:
             cuota = Cuota.objects.create(

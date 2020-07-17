@@ -2,8 +2,7 @@ import uuid
 from django.db import models
 from empresas_and_proyectos.models.proyectos import Proyecto
 from empresas_and_proyectos.models.inmuebles import Inmueble
-from empresas_and_proyectos.models.instituciones_financieras import (
-    InstitucionFinanciera)
+
 from ventas.models.clientes import Cliente
 from users.models import User
 from ventas.models.finding_contact import ContactMethodType
@@ -102,10 +101,9 @@ class Cotizacion(models.Model):
         decimal_places=2,
         null=True,
         blank=True)
-    InstitucionFinanciera = models.ForeignKey(
-        InstitucionFinanciera,
-        related_name="libreta_cotizacion",
-        on_delete=models.CASCADE,
+    InstitucionFinancieraID = models.UUIDField(
+        editable=True,
+        blank=True,
         null=True)
     Vendedor = models.ForeignKey(
         User,
@@ -116,8 +114,7 @@ class Cotizacion(models.Model):
         PayType,
         related_name="paytype_cotizacion",
         on_delete=models.CASCADE,
-        null=True
-    )
+        null=True)
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID, self.CotizacionTypeID)
