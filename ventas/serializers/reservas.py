@@ -1,5 +1,4 @@
 import decimal
-import datetime
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -305,13 +304,43 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
         read_only=True,
         allow_null=True
     )
+    Subsidio = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True,
+        allow_null=True
+    )
+    SubsidioType = serializers.CharField(
+        write_only=True,
+        allow_blank=True,
+        required=False
+    )
+    SubsidioCertificado = serializers.CharField(
+        write_only=True,
+        allow_blank=True,
+        required=False,
+        allow_null=True
+    )
+    Libreta = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        coerce_to_string=False,
+        read_only=True,
+        allow_null=True
+    )
+    LibretaNumber = serializers.CharField(
+        write_only=True,
+        allow_blank=True,
+        required=False,
+        allow_null=True
+    )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     Documents = serializers.SerializerMethodField('get_documents')
     IsFinished = serializers.SerializerMethodField('get_state_reserva')
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     Logs = serializers.SerializerMethodField('get_logs')
-    MaxCuotas = serializers.SerializerMethodField('get_maxcuotas')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -353,6 +382,12 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'IsNotInvestment',
             'Condition',
             'Cuotas',
@@ -361,8 +396,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'IsFinished',
             'Graph',
             'Patrimony',
-            'Logs',
-            'MaxCuotas')
+            'Logs')
 
     def get_patrimony(self, obj):
         patrimonies = Patrimony.objects.filter(ClienteID=obj.ClienteID)
@@ -406,13 +440,6 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             Folio=obj.Folio).order_by('-id')
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data
-
-    def get_maxcuotas(self, obj):        
-        curDate = datetime.date.today()
-        modDate = obj.ProyectoID.ModifiedDate
-        diff = (curDate.year-modDate.year)*12+curDate.month-modDate.month
-        
-        return obj.ProyectoID.MaxCuotas-diff
 
 
 class CreateReservaInmuebleSerializer(serializers.ModelSerializer):
@@ -510,6 +537,42 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False
     )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    SubsidioType = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False,
+        allow_blank=True
+    )
+    SubsidioCertificado = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False,
+        allow_blank=True
+    )
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    LibretaNumber = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False,
+        allow_blank=True
+    )
+    InstitucionFinancieraID = serializers.UUIDField(
+        allow_null=True,
+        required=False
+    )
     DateFirmaPromesa = serializers.DateTimeField(
         write_only=True,
         allow_null=True,
@@ -573,6 +636,12 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'DateFirmaPromesa',
             'Empleador',
             'CoEmpleador',
@@ -809,6 +878,12 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                             PaymentFirmaEscritura=validated_data.get('PaymentFirmaEscritura'),
                             PaymentInstitucionFinanciera=validated_data.get('PaymentInstitucionFinanciera'),
                             AhorroPlus=validated_data.get('AhorroPlus'),
+                            Subsidio=validated_data.get('Subsidio'),
+                            SubsidioType=validated_data.get('SubsidioType'),
+                            SubsidioCertificado=validated_data.get('SubsidioCertificado'),
+                            Libreta=validated_data.get('Libreta'),
+                            LibretaNumber=validated_data.get('LibretaNumber'),
+                            InstitucionFinancieraID=validated_data.get('InstitucionFinancieraID'),
                             PayTypeID=pay_type,
                             DateFirmaPromesa=date_firma_promesa,
                             ValueProductoFinanciero=value_producto_financiero)
@@ -1187,6 +1262,20 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False
     )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
     DateFirmaPromesa = serializers.DateTimeField(
         write_only=True,
         allow_null=True,
@@ -1247,6 +1336,12 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'DateFirmaPromesa',
             'Empleador',
             'CoEmpleador',
@@ -1483,6 +1578,18 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
         if 'AhorroPlus' in validated_data:
             instance.AhorroPlus = validated_data['AhorroPlus']
+        if 'Subsidio' in validated_data:
+            instance.Subsidio = validated_data['Subsidio']
+        if 'SubsidioType' in validated_data:
+            instance.SubsidioType = validated_data['SubsidioType']
+        if 'SubsidioCertificado' in validated_data:
+            instance.SubsidioCertificado = validated_data['SubsidioCertificado']
+        if 'Libreta' in validated_data:
+            instance.Libreta = validated_data['Libreta']
+        if 'LibretaNumber' in validated_data:
+            instance.LibretaNumber = validated_data['LibretaNumber']
+        if 'InstitucionFinancieraID' in validated_data:
+            instance.InstitucionFinancieraID = validated_data['InstitucionFinancieraID']
         if pay_type_name is not False:
             instance.PayTypeID = pay_type
         if date_firma_promesa is not False:

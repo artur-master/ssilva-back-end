@@ -253,7 +253,7 @@ class HistoricalInmueble(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True)
     IsNotUsoyGoce = models.BooleanField(default=False)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
-    MaximunDiscount = models.DecimalField(
+    MaximumDiscount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     CotizacionDuration = models.IntegerField(null=True, blank=True,default=0)
     InmuebleStateID = models.ForeignKey(

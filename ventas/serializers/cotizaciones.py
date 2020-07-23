@@ -197,12 +197,27 @@ class CotizacionSerializer(serializers.ModelSerializer):
         decimal_places=2,
         coerce_to_string=False,
         read_only=True
-    ) 
+    )
+    SubsidioType = serializers.CharField(
+        allow_blank=True,
+        required=False,
+        allow_null=True
+    )
+    SubsidioCertificado = serializers.CharField(
+        allow_blank=True,
+        required=False,
+        allow_null=True
+    )
     Libreta = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         coerce_to_string=False,
         read_only=True
+    )
+    LibretaNumber = serializers.CharField(
+        allow_blank=True,
+        required=False,
+        allow_null=True
     )
     Cuotas = ListCuotaSerializer(
         source='CuotaID', many=True
@@ -257,7 +272,10 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'PaymentCuotas',
             'AhorroPlus',
             'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
             'Libreta',
+            'LibretaNumber',
             'InstitucionFinancieraID',
             'IsNotInvestment',
             'Cuotas',
@@ -299,7 +317,7 @@ class CotizacionSerializer(serializers.ModelSerializer):
             ClienteID=obj.ClienteID)
         if empresa_compradora.exists():
             return EmpresaCompradoraSerializer(instance=empresa_compradora[0]).data
-        return None    
+        return None
 
 
 class ListCotizacionSerializer(serializers.ModelSerializer):
@@ -516,12 +534,27 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         max_digits=10,
         decimal_places=2,
         allow_null=True
-    ) 
+    )
+    SubsidioType = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False
+    )
+    SubsidioCertificado = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False
+    )
     Libreta = serializers.DecimalField(
         write_only=True,
         max_digits=10,
         decimal_places=2,
         allow_null=True
+    )
+    LibretaNumber = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False
     )
     InstitucionFinancieraID = serializers.UUIDField(
         allow_null=True
@@ -547,7 +580,10 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
             'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
             'Libreta',
+            'LibretaNumber',
             'InstitucionFinancieraID',
             'IsNotInvestment',
             'VendedorID',
@@ -647,7 +683,10 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
             PaymentInstitucionFinanciera=validated_data['PaymentInstitucionFinanciera'],
             AhorroPlus=validated_data['AhorroPlus'],
             Subsidio=validated_data['Subsidio'],
+            SubsidioType=validated_data.get('SubsidioType',""),
+            SubsidioCertificado=validated_data.get('SubsidioCertificado', ""),
             Libreta=validated_data['Libreta'],
+            LibretaNumber=validated_data.get('LibretaNumber', ""),
             InstitucionFinancieraID=validated_data.get('InstitucionFinancieraID')
         )
         for cuota_data in cuotas_data:

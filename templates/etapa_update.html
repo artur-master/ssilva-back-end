@@ -266,15 +266,15 @@
                       {% endif %} 
                   </td>
                   <td style="text-align: center; font-size: 70%;">
-                      {% if not nuevo.MaximunDiscount == antiguo.MaximunDiscount %}
-                        {% if nuevo.MaximunDiscount %}
-                          <span class = "highlight"> {{ nuevo.MaximunDiscount | floatformat }} % </span>  
+                      {% if not nuevo.MaximumDiscount == antiguo.MaximumDiscount %}
+                        {% if nuevo.MaximumDiscount %}
+                          <span class = "highlight"> {{ nuevo.MaximumDiscount | floatformat }} % </span>  
                         {% else %}
                           <span class = "highlight"> - </span>
                         {% endif %}
                       {% else %}
-                        {% if antiguo.MaximunDiscount %}
-                          {{ antiguo.MaximunDiscount | floatformat }} %
+                        {% if antiguo.MaximumDiscount %}
+                          {{ antiguo.MaximumDiscount | floatformat }} %
                         {% else %}
                             -
                         {% endif %}
@@ -352,7 +352,7 @@
                   {% endif %}
                 </td>
                 <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.Price | floatformat }} UF </span></td>
-                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximunDiscount | floatformat }} %</span></td>
+                <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximumDiscount | floatformat }} %</span></td>
                 <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleStateID.Name }}</span></td>                  
               {% endif %}
             {% endwith %}
@@ -530,15 +530,15 @@
                         {% endif %} 
                     </td>
                     <td style="text-align: center; font-size: 70%;">
-                        {% if not nuevo.MaximunDiscount == antiguo.MaximunDiscount %}
-                          {% if nuevo.MaximunDiscount %}
-                            <span class = "highlight"> {{ nuevo.MaximunDiscount | floatformat }} % </span>  
+                        {% if not nuevo.MaximumDiscount == antiguo.MaximumDiscount %}
+                          {% if nuevo.MaximumDiscount %}
+                            <span class = "highlight"> {{ nuevo.MaximumDiscount | floatformat }} % </span>  
                           {% else %}
                             <span class = "highlight"> - </span>
                           {% endif %}
                         {% else %}
-                          {% if antiguo.MaximunDiscount %}
-                            {{ antiguo.MaximunDiscount | floatformat }} %
+                          {% if antiguo.MaximumDiscount %}
+                            {{ antiguo.MaximumDiscount | floatformat }} %
                           {% else %}
                               -
                           {% endif %}
@@ -615,7 +615,7 @@
                     {% endif %}
                   </td>
                   <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.Price | floatformat }} UF </span></td>
-                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximunDiscount | floatformat }} %</span></td>
+                  <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.MaximumDiscount | floatformat }} %</span></td>
                   <td style="text-align: center; font-size: 70%;"><span class="highlight-add">{{ nuevo.InmuebleStateID.Name }}</span></td>                            
                 {% endif %}              
               {% endwith %}

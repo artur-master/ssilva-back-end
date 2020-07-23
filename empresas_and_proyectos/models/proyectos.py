@@ -139,6 +139,7 @@ class Proyecto(models.Model):
     DiscountMaxPercent = models.DecimalField(        
         max_digits=10, decimal_places=2,
         null=True, blank=True )
+    IsSubsidy = models.BooleanField(default=False)
     MoreThanOneEtapa = models.BooleanField(default=False)
     PlanMediosState = models.ForeignKey(
         PlanMediosState,

@@ -3,6 +3,7 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
+import datetime
 
 from common import constants
 from common.generate_pdf import render_create_proyecto_to_pdf, render_update_proyecto_to_pdf
@@ -501,6 +502,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    IsSubsidy = serializers.BooleanField()
     ContactInfo = serializers.SerializerMethodField('get_proyectos_contact_info')
     Aseguradora = serializers.SerializerMethodField('get_proyecto_aseguradora')
     UsersProyecto = serializers.SerializerMethodField('get_usuarios_proyectos')
@@ -535,6 +537,8 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
     SantanderObservations = serializers.JSONField( read_only=True,required=False )
     ChileBankReportFile = serializers.SerializerMethodField('get_chilebank_url')
     ChileBankObservations = serializers.JSONField(read_only=True,required=False)
+
+    MaxCuotas = serializers.SerializerMethodField('get_maxcuotas')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -581,6 +585,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'CreditoAhorroPlus',
             'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
+            'IsSubsidy',
             'Aseguradora',
             'UsersProyecto',
             'Notifications',
@@ -731,7 +736,13 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.ChileBankReportFile.url)
         else:
             return ""
-
+        
+    def get_maxcuotas(self, obj):        
+        curDate = datetime.date.today()
+        modDate = obj.ModifiedDate
+        diff = (curDate.year-modDate.year)*12+curDate.month-modDate.month
+        
+        return obj.MaxCuotas-diff
 
 class ApproveCreateProyectoLegalSerializer(serializers.ModelSerializer):
     ProyectoApprovalState = serializers.CharField(
@@ -1215,6 +1226,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         allow_null=True
     )
     EntregaInmediata = serializers.BooleanField(required=False, write_only=True)
+    IsSubsidy = serializers.BooleanField(required=False, write_only=True)
 
     class Meta:
         model = Proyecto
@@ -1251,6 +1263,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'CreditoAhorroPlus',
             'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
+            'IsSubsidy',
             'UsersProyecto',
             'Aseguradora',
             'MoreThanOneEtapa',
@@ -1319,6 +1332,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             CreditoAhorroPlus=validated_data.get('CreditoAhorroPlus', 20),
             CreditoAhorroPlusMaxDiscounts=validated_data.get('CreditoAhorroPlusMaxDiscounts', 1000),
             DiscountMaxPercent=validated_data.get('DiscountMaxPercent', 100),
+            IsSubsidy=validated_data.get('IsSubsidy', False),
             MoreThanOneEtapa=validated_data.get('MoreThanOneEtapa', False),
             PlanMediosState=plan_medios,
             BorradorPromesaState=borrador_promesa,
@@ -1739,6 +1753,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
         required=False, allow_null=True
     )
     EntregaInmediata = serializers.BooleanField(required=False)
+    IsSubsidy = serializers.BooleanField(required=False)
 
     class Meta:
         model = Proyecto
@@ -1773,6 +1788,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'CreditoAhorroPlus',
             'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
+            'IsSubsidy',
             'UsersProyecto',
             'Aseguradora',
             'MoreThanOneEtapa',
@@ -2131,6 +2147,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.CreditoAhorroPlusMaxDiscounts = validated_data.get('CreditoAhorroPlusMaxDiscounts')
         if 'DiscountMaxPercent' in validated_data:
             instance.DiscountMaxPercent = validated_data.get('DiscountMaxPercent')
+        if 'IsSubsidy' in validated_data:
+            instance.IsSubsidy = validated_data.get('IsSubsidy')
         if 'MoreThanOneEtapa' in validated_data:
             instance.MoreThanOneEtapa = validated_data.get('MoreThanOneEtapa')
         if etapa_state_id is not False:
