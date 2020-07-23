@@ -502,7 +502,9 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
-    IsSubsidy = serializers.BooleanField()
+    IsSubsidy = serializers.BooleanField(
+        read_only=True,
+        required=False)
     ContactInfo = serializers.SerializerMethodField('get_proyectos_contact_info')
     Aseguradora = serializers.SerializerMethodField('get_proyecto_aseguradora')
     UsersProyecto = serializers.SerializerMethodField('get_usuarios_proyectos')
