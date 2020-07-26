@@ -557,7 +557,8 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
         required=False
     )
     InstitucionFinancieraID = serializers.UUIDField(
-        allow_null=True
+        allow_null=True,
+        required=False
     )
     VendedorID = serializers.UUIDField(
         allow_null=True

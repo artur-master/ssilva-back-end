@@ -340,6 +340,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
     IsFinished = serializers.SerializerMethodField('get_state_reserva')
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
+    CoPatrimony = serializers.SerializerMethodField('get_copatrimony')
     Logs = serializers.SerializerMethodField('get_logs')
 
     @staticmethod
@@ -396,10 +397,17 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'IsFinished',
             'Graph',
             'Patrimony',
+            'CoPatrimony',
             'Logs')
 
     def get_patrimony(self, obj):
         patrimonies = Patrimony.objects.filter(ClienteID=obj.ClienteID)
+        if patrimonies.exists():
+            return PatrimonySerializer(instance=patrimonies[0]).data
+        return None
+
+    def get_copatrimony(self, obj):
+        patrimonies = Patrimony.objects.filter(ClienteID=obj.CodeudorID)
         if patrimonies.exists():
             return PatrimonySerializer(instance=patrimonies[0]).data
         return None
@@ -570,6 +578,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         allow_blank=True
     )
     InstitucionFinancieraID = serializers.UUIDField(
+        write_only=True,
         allow_null=True,
         required=False
     )
@@ -588,6 +597,10 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         required=False
     )
     Patrimony = PatrimonySerializer(
+        required=False,
+        allow_null=True
+    )
+    CoPatrimony = PatrimonySerializer(
         required=False,
         allow_null=True
     )
@@ -646,6 +659,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'Empleador',
             'CoEmpleador',
             'Patrimony',
+            'CoPatrimony',
             'ValueProductoFinanciero',
             'Date8',
             'Date10',
@@ -684,6 +698,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         cuotas_data = validated_data.get('CuotaID')
         conditions_data = validated_data.get('ConditionID')
         patrimony_data = validated_data.get('Patrimony')
+        copatrimony_data = validated_data.get('CoPatrimony', None)
         cliente_data = validated_data.get('Cliente')
         codeudor_data = validated_data.get('Codeudor')
 
@@ -844,6 +859,51 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             co_empleador.save()
         else:
             co_empleador = None
+
+#Co-Deudor Patrimony
+        co_patrimony = get_or_none(Patrimony, ClienteID=codeudor)
+
+        if copatrimony_data:
+            default_ = {
+                "Pasivos": 0,
+                "PagosMensuales": 0,
+                "Saldo": 0
+            }
+            if co_patrimony:
+                co_patrimony.RealState = copatrimony_data.get('RealState', 0)
+                co_patrimony.Vehicle = copatrimony_data.get('Vehicle', 0)
+                co_patrimony.DownPayment = copatrimony_data.get('DownPayment', 0)
+                co_patrimony.Other = copatrimony_data.get('Other', 0)
+                co_patrimony.CreditCard = copatrimony_data.get('CreditCard', default_)
+                co_patrimony.CreditoConsumo = copatrimony_data.get('CreditoConsumo', default_)
+                co_patrimony.CreditoHipotecario = copatrimony_data.get('CreditoHipotecario', default_)
+                co_patrimony.PrestamoEmpleador = copatrimony_data.get('PrestamoEmpleador', default_)
+                co_patrimony.CreditoComercio = copatrimony_data.get('CreditoComercio', default_)
+                co_patrimony.DeudaIndirecta = copatrimony_data.get('DeudaIndirecta', default_)
+                co_patrimony.AnotherCredit = copatrimony_data.get('AnotherCredit', default_)
+                co_patrimony.Deposits = copatrimony_data.get('Deposits', 0)
+                co_patrimony.Rent = copatrimony_data.get('Rent', 0)
+
+                co_patrimony.save()
+            else:
+                co_patrimony = Patrimony.objects.create(
+                    ClienteID=codeudor,
+                    RealState=copatrimony_data.get('RealState', 0),
+                    Vehicle=copatrimony_data.get('Vehicle', 0),
+                    DownPayment=copatrimony_data.get('DownPayment', 0),
+                    Other=copatrimony_data.get('Other', 0),
+                    CreditCard=copatrimony_data.get('CreditCard', default_),
+                    CreditoConsumo=copatrimony_data.get('CreditoConsumo', default_),
+                    CreditoHipotecario=copatrimony_data.get('CreditoHipotecario', default_),
+                    PrestamoEmpleador=copatrimony_data.get('PrestamoEmpleador', default_),
+                    CreditoComercio=copatrimony_data.get('CreditoComercio', default_),
+                    DeudaIndirecta=copatrimony_data.get('DeudaIndirecta', default_),
+                    AnotherCredit=copatrimony_data.get('AnotherCredit', default_),
+                    Deposits=copatrimony_data.get('Deposits', 0)
+                )
+        else:
+            co_patrimony = None
+#Co-Deudor Patrimony
 
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
@@ -1236,6 +1296,10 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True,
     )
+    CoPatrimony = PatrimonySerializer(
+        required=False,
+        allow_null=True,
+    )
     PaymentFirmaPromesa = serializers.DecimalField(
         write_only=True,
         max_digits=10,
@@ -1332,6 +1396,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'EmpresaCompradora',
             'ContactMethodTypeID',
             'Patrimony',
+            'CoPatrimony',
             'PaymentFirmaPromesa',
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
@@ -1383,6 +1448,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         cuotas_data = validated_data.get('CuotaID', False)
         conditions_data = validated_data.get('ConditionID', False)
         patrimony_data = validated_data.get('Patrimony', False)
+        copatrimony_data = validated_data.get('CoPatrimony', False)
         empleador_data = validated_data.get('Empleador', False)
         if empleador_data:
             rut_empleador = empleador_data['Rut']
@@ -1550,6 +1616,54 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             co_empleador.RazonSocial = razon_social_co_empleador
             co_empleador.Extra = extra_co_empleador
             co_empleador.save()
+
+#Co-Deudor Patrimonr
+        if codeudor is not False:
+            copatrimony = get_or_none(Patrimony, ClienteID=codeudor)
+        else:
+            copatrimony = None
+
+        if copatrimony_data is not False:
+            default_ = {
+                "Pasivos": 0,
+                "PagosMensuales": 0,
+                "Saldo": 0
+            }
+            if copatrimony:
+                copatrimony.RealState = copatrimony_data.get('RealState', 0)
+                copatrimony.Vehicle = copatrimony_data.get('Vehicle', 0)
+                copatrimony.DownPayment = copatrimony_data.get('DownPayment', 0)
+                copatrimony.Other = copatrimony_data.get('Other', 0)
+                copatrimony.CreditCard = copatrimony_data.get('CreditCard', default_)
+                copatrimony.CreditoConsumo = copatrimony_data.get('CreditoConsumo', default_)
+                copatrimony.CreditoHipotecario = copatrimony_data.get('CreditoHipotecario', default_)
+                copatrimony.PrestamoEmpleador = copatrimony_data.get('PrestamoEmpleador', default_)
+                copatrimony.CreditoComercio = copatrimony_data.get('CreditoComercio', default_)
+                copatrimony.DeudaIndirecta = copatrimony_data.get('DeudaIndirecta', default_)
+                copatrimony.AnotherCredit = copatrimony_data.get('AnotherCredit', default_)
+                copatrimony.Deposits = copatrimony_data.get('Deposits', 0)
+                copatrimony.Rent = copatrimony_data.get('Rent', 0)
+                copatrimony.save()
+            else:
+                copatrimony = Patrimony.objects.create(
+                    ClienteID=cliente,
+                    RealState=copatrimony_data.get('RealState', 0),
+                    Vehicle=copatrimony_data.get('Vehicle', 0),
+                    DownPayment=copatrimony_data.get('DownPayment', 0),
+                    Other=copatrimony_data.get('Other', 0),
+                    CreditCard=copatrimony_data.get('CreditCard', default_),
+                    CreditoConsumo=copatrimony_data.get('CreditoConsumo', default_),
+                    CreditoHipotecario=copatrimony_data.get('CreditoHipotecario', default_),
+                    PrestamoEmpleador=copatrimony_data.get('PrestamoEmpleador', default_),
+                    CreditoComercio=copatrimony_data.get('CreditoComercio', default_),
+                    DeudaIndirecta=copatrimony_data.get('DeudaIndirecta', default_),
+                    AnotherCredit=copatrimony_data.get('AnotherCredit', default_),
+                    Deposits=copatrimony_data.get('Deposits', 0),
+                    Rent=copatrimony_data.get('Rent', 0)
+                )
+        else:
+            copatrimony = None
+#Co-Deudor Patrimonr
 
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])

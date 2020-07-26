@@ -75,9 +75,7 @@
       <p style="margin-top:2px;"> De vuestra consideración:</p>
       <p style="margin-top:1px;">
         Por su intermedio yo, {{ cliente }}, cédula de identidad N° {{ cliente.Rut | rutformat }},
-        {{ cliente.CivilStatusID }}, {{ cliente.Nationality }}, {{ cliente.Occupation }}, domiciliado(a) en
-        {{ cliente.Address }}, {{ cliente.ComunaID }}, {{ cliente.ComunaID.ProvinciaID.Name }}, teléfono
-        {{ telefono }}, me permito formular la siguiente proposición de compra por los inmuebles
+        me permito formular la siguiente proposición de compra por los inmuebles
         correspondientes al proyecto {{ proyecto.Name }}, ubicado en {{ proyecto.Address }}, comuna de
         {{ proyecto.ComunaID.Name }}, provincia de {{ proyecto.ComunaID.ProvinciaID.Name }}, de propiedad de
         <strong> {{ proyecto.InmobiliariaID.RazonSocial }}: </strong>
@@ -298,7 +296,7 @@
         <td style="width: 15px; vertical-align:top; padding-left: 1px; padding-top: 0.5px;"> <strong>4.</strong> </td>
         <td>
           Para formalizar la oferta de compra, hago entrega para su cobro de la suma de ${{ proyecto.GuaranteeAmount | numberformat }}, 
-          en &FormaPago N° del en efectivo, de mi cuenta corriente N° , a nombre de {{ corredores }} con el objeto de que esa suma, 
+          a nombre de {{ corredores }} con el objeto de que esa suma, 
           sirva para cubrir todos o parte de mis gastos de operación por esta compra.
         </td>
       </tr>
