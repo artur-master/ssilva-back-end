@@ -187,6 +187,8 @@ class Proyecto(models.Model):
     MaxCuotas = models.IntegerField(null=True, blank=True, default=24)
     ModifiedDate = models.DateField(auto_now=True)
 
+    ProjectClauses = models.CharField(null=True, blank=True, max_length=1000)
+
     objects = ProyectosManager()
 
     #Escritura

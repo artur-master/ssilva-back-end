@@ -593,7 +593,7 @@ class CreateCotizacionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         current_user = return_current_user(self)
-		
+
         cuotas_data = validated_data.pop('CuotaID')
         inmuebles_data = validated_data.pop('InmuebleID')
 

@@ -351,6 +351,18 @@
       </tr>
     </table>
 
+    {% if proyecto.ProjectClauses and proyecto.ProjectClauses != "" %}
+    <table style="width: 100%; margin-top: 10px;">
+      <tr>
+        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>9.</strong> </td>
+        <td style="vertical-align: top;">
+          <strong> <span style="text-decoration:underline">Cláusulas del Proyecto</span></strong><br>
+          {{ proyecto.ProjectClauses }}
+        </td>
+      </tr>
+    </table>
+    {% endif %}
+
     <div id="footer_content">
       <table>
         <tr style="height:60px;">

@@ -588,6 +588,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
             'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
             'IsSubsidy',
+            'ProjectClauses',
             'Aseguradora',
             'UsersProyecto',
             'Notifications',
@@ -1173,6 +1174,10 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    ProjectClauses = serializers.CharField(
+        required=False,
+        allow_null=True
+    )
     GuaranteeAmount = serializers.IntegerField(
         required=False,
         allow_null=True
@@ -1266,6 +1271,7 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             'CreditoAhorroPlusMaxDiscounts',
             'DiscountMaxPercent',
             'IsSubsidy',
+            'ProjectClauses',
             'UsersProyecto',
             'Aseguradora',
             'MoreThanOneEtapa',
@@ -1343,7 +1349,8 @@ class CreateProyectoSerializer(serializers.ModelSerializer):
             EntregaInmediata=validated_data.get('EntregaInmediata', False),
             MetasUf=validated_data.get('MetasUf', 0),
             MetasPromesas=validated_data.get('MetasPromesas', 0),
-            MaxCuotas=validated_data.get('MaxCuotas', 0)
+            MaxCuotas=validated_data.get('MaxCuotas', 0),
+            ProjectClauses=validated_data.get('ProjectClauses', "")
         )
         if validated_data.get('EntregaInmediata') is True:
             notification_type = NotificationType.objects.get(
@@ -1756,6 +1763,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
     )
     EntregaInmediata = serializers.BooleanField(required=False)
     IsSubsidy = serializers.BooleanField(required=False)
+    ProjectClauses = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = Proyecto
@@ -1800,6 +1808,7 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             'MetasUf',
             'MetasPromesas',
             'MaxCuotas',
+            'ProjectClauses'
         )
 
     def update(self, instance, validated_data):
@@ -2163,6 +2172,8 @@ class UpdateProyectoSerializer(serializers.ModelSerializer):
             instance.MetasPromesas = validated_data.get('MetasPromesas', 0)
         if 'MaxCuotas' in validated_data:
             instance.MaxCuotas = validated_data.get('MaxCuotas', 0)
+        if 'ProjectClauses' in validated_data:
+            instance.ProjectClauses = validated_data.get('ProjectClauses', 0)
 
         instance.save()
         log.save()

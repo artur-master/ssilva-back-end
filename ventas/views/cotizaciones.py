@@ -109,6 +109,7 @@ class CotizacionViewSet(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         many = isinstance(data, list)
+
         serializer = CreateCotizacionSerializer(
             data=data, many=many, context={'request': request})
 
