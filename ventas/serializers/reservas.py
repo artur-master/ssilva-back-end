@@ -860,7 +860,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         else:
             co_empleador = None
 
-#Co-Deudor Patrimony
+        #Co-Deudor Patrimony
         co_patrimony = get_or_none(Patrimony, ClienteID=codeudor)
 
         if copatrimony_data:
@@ -903,7 +903,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 )
         else:
             co_patrimony = None
-#Co-Deudor Patrimony
+        #Co-Deudor Patrimony
 
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
@@ -979,7 +979,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             )
             inmueble_state = InmuebleState.objects.get(
                 Name=constants.INMUEBLE_STATE[2]
-            )
+            )            
+            price_discount = 0
+            discount = 0
             if inmueble_data['Discount']:
                 discount = inmueble_data['Discount']
                 price_discount = round(
@@ -987,11 +989,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                     discount /
                     100,
                     2)
-                price = inmueble.Price - price_discount
-                total_uf += price
-            else:
-                discount = 0
-                total_uf += inmueble.Price
+
+            price = inmueble.Price - price_discount
+            total_uf += price
 
             inmueble.InmuebleStateID = inmueble_state
             inmueble.save()
@@ -1005,7 +1005,9 @@ class CreateReservaSerializer(serializers.ModelSerializer):
 
         ReservaInmueble.objects.bulk_create(reserva_inmuebles)
         reserva_inmuebles.sort(key=lambda x: x.InmuebleID.InmuebleTypeID.id)
-
+        
+        total_cuotas_solas = 0
+        porcentaje_cuotas = 0
         if instance.CuotaID.all():
             for cuota in instance.CuotaID.all():
                 total_cuotas += cuota.Amount
@@ -1013,15 +1015,27 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             total_cuotas_solas = total_cuotas
             porcentaje_cuotas = (total_cuotas * 100) / total_uf
             total += total_cuotas
-        else:
-            total_cuotas_solas = 0
-            porcentaje_cuotas = 0
 
+        porcentaje_firma_escritura = 0
         if instance.PaymentFirmaEscritura:
             total += instance.PaymentFirmaEscritura
-            porcentaje_firma = (instance.PaymentFirmaEscritura * 100) / total_uf
-        else:
-            porcentaje_firma = 0
+            porcentaje_firma_escritura = (instance.PaymentFirmaEscritura * 100) / total_uf
+            
+        porcentaje_firma_promesa = 0
+        if instance.PaymentFirmaPromesa:
+            total += instance.PaymentFirmaPromesa
+            porcentaje_firma_promesa = (instance.PaymentFirmaPromesa * 100) / total_uf
+
+        porcentaje_subsidio = 0
+        if instance.Subsidio:
+            total += instance.Subsidio
+            porcentaje_subsidio = (instance.Subsidio * 100) / total_uf
+        
+        porcentaje_libreta = 0
+        if instance.Libreta:
+            total += instance.Libreta
+            porcentaje_libreta = (instance.Libreta * 100) / total_uf
+        
 
         if instance.PaymentInstitucionFinanciera:
             total += instance.PaymentInstitucionFinanciera
@@ -1068,9 +1082,15 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'inmuebles_a_reservar': reserva_inmuebles,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
-            'total_firma': instance.PaymentFirmaEscritura,
+            'total_firma_escritura': instance.PaymentFirmaEscritura,
+            'total_firma_promesa': instance.PaymentFirmaPromesa,
+            'total_subsidio': instance.Subsidio,
+            'total_libreta': instance.Libreta,
             'porcentaje_cuotas': porcentaje_cuotas,
-            'porcentaje_firma': porcentaje_firma,
+            'porcentaje_firma_escritura': porcentaje_firma_escritura,
+            'porcentaje_firma_promesa': porcentaje_firma_promesa,
+            'porcentaje_subsidio':porcentaje_subsidio,
+            'porcentaje_libreta':porcentaje_libreta,
             'porcentaje_credito': porcentaje_credito,
             'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
             'ahorro_plus': instance.AhorroPlus,
@@ -1811,6 +1831,8 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             cotizacion.CotizacionStateID = cotizacion_state
             cotizacion.save()
 
+        total_cuotas_solas = 0
+        porcentaje_cuotas = 0
         if instance.CuotaID.all():
             for cuota in instance.CuotaID.all():
                 total_cuotas += cuota.Amount
@@ -1818,9 +1840,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             total_cuotas_solas = total_cuotas
             porcentaje_cuotas = (total_cuotas * 100) / total_uf
             total += total_cuotas
-        else:
-            total_cuotas_solas = 0
-            porcentaje_cuotas = 0
 
         if instance.AhorroPlus:
             total += instance.AhorroPlus
@@ -1831,15 +1850,25 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         else:
             porcentaje_ahorro_plus = 0
 
+        porcentaje_firma_escritura = 0
         if instance.PaymentFirmaEscritura:
             total += instance.PaymentFirmaEscritura
-            try:
-                porcentaje_firma = (instance.PaymentFirmaEscritura * 100) / total_uf
-            except decimal.DivisionByZero:
-                porcentaje_firma = 0
-        else:
-            porcentaje_firma = 0
-            porcentaje_cuotas = 0
+            porcentaje_firma_escritura = (instance.PaymentFirmaEscritura * 100) / total_uf
+            
+        porcentaje_firma_promesa = 0
+        if instance.PaymentFirmaPromesa:
+            total += instance.PaymentFirmaPromesa
+            porcentaje_firma_promesa = (instance.PaymentFirmaPromesa * 100) / total_uf
+
+        porcentaje_subsidio = 0
+        if instance.Subsidio:
+            total += instance.Subsidio
+            porcentaje_subsidio = (instance.Subsidio * 100) / total_uf
+        
+        porcentaje_libreta = 0
+        if instance.Libreta:
+            total += instance.Libreta
+            porcentaje_libreta = (instance.Libreta * 100) / total_uf
 
         if instance.PaymentInstitucionFinanciera:
             total += instance.PaymentInstitucionFinanciera
@@ -1929,9 +1958,15 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'inmuebles_a_reservar': reserva_inmuebles,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
-            'total_firma': instance.PaymentFirmaEscritura,
+            'total_firma_escritura': instance.PaymentFirmaEscritura,
+            'total_firma_promesa': instance.PaymentFirmaPromesa,
+            'total_subsidio': instance.Subsidio,
+            'total_libreta': instance.Libreta,
             'porcentaje_cuotas': porcentaje_cuotas,
-            'porcentaje_firma': porcentaje_firma,
+            'porcentaje_firma_escritura': porcentaje_firma_escritura,
+            'porcentaje_firma_promesa': porcentaje_firma_promesa,
+            'porcentaje_subsidio':porcentaje_subsidio,
+            'porcentaje_libreta':porcentaje_libreta,
             'porcentaje_credito': porcentaje_credito,
             'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
             'ahorro_plus': instance.AhorroPlus,

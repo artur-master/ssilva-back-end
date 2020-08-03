@@ -38,6 +38,10 @@ def multiply(value, arg):
 def multiplydecimal(value, arg):
     return round(Decimal(value * arg), 0)
 
+@register.filter
+def div(value, arg):
+    return round(Decimal(value / arg), 2)
+
 
 @register.filter
 def discount(value, arg):

@@ -159,6 +159,26 @@
     </h2>
 
     <table style="left: 15px; position: relative;">
+      {% if total_cuotas %}
+      <tr>
+        <td style="padding-left: 5px">En {{ cotizacion.CuotaID.all.count }} cuota(s)</td>
+        <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }} %</td>
+        <td style="text-align: left;">Cuotas(s) de UF 
+          {% with div_val=total_cuotas|div:cotizacion.CuotaID.all.count %}
+            {{ div_val | floatformat:2 }}
+          {% endwith %} c/u.
+        </td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">{{ total_cuotas | floatformat:2 }}</td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">          
+          {% with total_pesos=total_cuotas|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>      
+      {% endif %}
+
       {% if total_firma_promesa %}
       <tr>
         <td style="padding-left: 5px">A la firma de Promesa</td>
@@ -178,6 +198,54 @@
         </td>
       </tr>
       {% endif %}
+      {% if total_firma_escritura %}
+      <tr>
+        <td style="padding-left: 5px">A la firma de Escritura</td>
+        <td style="text-align: right;">{{ porcentaje_firma_escritura | floatformat:2 }}%</td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">{{ total_firma_escritura | floatformat:2 }}</td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=total_firma_escritura|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>      
+      {% endif %}
+      
+      {% if total_subsidio %}
+      <tr>
+        <td style="padding-left: 5px">Pago con subsidio</td>
+        <td style="text-align: right;">{{ porcentaje_subsidio | floatformat:2 }}%</td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">{{ total_subsidio | floatformat:2 }}</td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=total_subsidio|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>      
+      {% endif %}
+
+      {% if total_libreta %}
+      <tr>
+        <td style="padding-left: 5px">Libreta de Ahorro</td>
+        <td style="text-align: right;">{{ porcentaje_libreta | floatformat:2 }}%</td>
+        <td></td>
+        <td style="text-align: center;">UF</td>
+        <td style="text-align: right;">{{ total_libreta | floatformat:2 }}</td>            
+        <td style="text-align: center;">$</td>
+        <td style="text-align: right;">
+          {% with total_pesos=total_libreta|multiply:uf %}
+            {{ total_pesos | numberformat }}
+          {% endwith %}
+        </td>
+      </tr>      
+      {% endif %}
+
       {% if total_credito %}
       <tr>
         <td style="padding-left: 5px">Crédito Inst. Financiera</td>
@@ -198,6 +266,7 @@
         <td style="text-align: right;width: 20px;">(*)</td>
       </tr>
       {% endif %}
+
       {% if ahorro_plus %}
       <tr>
         <td style="padding-left: 5px">Ahorro Plus</td>
@@ -218,14 +287,14 @@
       </tr>
       {% endif %}
       <tr style="height: 20px; width: 100%;">
-        <td style="width: 25%">&nbsp;</td>
+        <td style="width: 28%">&nbsp;</td>
         <td style="width: 10%">&nbsp;</td>
-        <td style="width: 22%">&nbsp;</td>
-        <td style="width: 8%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">UF</td>
+        <td style="width: 25%">&nbsp;</td>
+        <td style="width: 7%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">UF</td>
         <td style="width: 12%;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
           {{ total | floatformat:2 }}
         </td>
-        <td style="width: 7%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">$</td>
+        <td style="width: 5%;text-align: center;font-weight: bold;border-top: 0.8px solid #000000;">$</td>
         <td style="width: 13%;text-align: right;font-weight: bold;border-top: 0.8px solid #000000;">
           {% with total_pesos=total|multiply:uf %}
             {{ total_pesos | numberformat }}
