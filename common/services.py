@@ -294,16 +294,33 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
         total_cuotas_solas = None
         porcentaje_cuotas = None
 
+    # if cotizacion.PaymentFirmaPromesa:
+    #     total += cotizacion.PaymentFirmaPromesa
+    #     porcentaje_firma_promesa = cotizacion.PaymentFirmaPromesa * 100 / total_uf
+    # else:
+    #     porcentaje_firma_promesa = 0
+
+    # porcentaje_firma_escritura = cotizacion.PaymentFirmaEscritura * 100 / total_uf
+    porcentaje_firma_escritura = 0
+    if cotizacion.PaymentFirmaEscritura:
+        total += cotizacion.PaymentFirmaEscritura
+        porcentaje_firma_escritura = (cotizacion.PaymentFirmaEscritura * 100) / total_uf
+        
+    porcentaje_firma_promesa = 0
     if cotizacion.PaymentFirmaPromesa:
         total += cotizacion.PaymentFirmaPromesa
-        porcentaje_firma_promesa = cotizacion.PaymentFirmaPromesa * 100 / total_uf
-    else:
-        porcentaje_firma_promesa = 0
+        porcentaje_firma_promesa = (cotizacion.PaymentFirmaPromesa * 100) / total_uf
 
-    total += cotizacion.PaymentFirmaEscritura
+    porcentaje_subsidio = 0
+    if cotizacion.Subsidio:
+        total += cotizacion.Subsidio
+        porcentaje_subsidio = (cotizacion.Subsidio * 100) / total_uf
 
-    porcentaje_firma_escritura = cotizacion.PaymentFirmaEscritura * 100 / total_uf
-
+    porcentaje_libreta = 0
+    if cotizacion.Libreta:
+        total += cotizacion.Libreta
+        porcentaje_libreta = (cotizacion.Libreta * 100) / total_uf
+    
     if cotizacion.PaymentInstitucionFinanciera:
         total += cotizacion.PaymentInstitucionFinanciera
         porcentaje_credito = cotizacion.PaymentInstitucionFinanciera * 100 / total_uf
@@ -420,20 +437,26 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
     
     # Datos para renderizar a pdf
     context_dict = {
-        'cotizacion': cotizacion,
+        'Folio': cotizacion.Folio,
+        'proyecto': cotizacion.ProyectoID,
+        'cuotas_data': cotizacion.CuotaID.all,
         'inmuebles_a_cotizar': inmuebles_a_cotizar,
         'uf': valor_uf,
         'total': total_uf,
         'total_pago': total,
         'total_cuotas': total_cuotas_solas,
         'total_firma_promesa': cotizacion.PaymentFirmaPromesa,
+        'total_firma_escritura': cotizacion.PaymentFirmaEscritura,
+        'total_subsidio': cotizacion.Subsidio,
+        'total_libreta': cotizacion.Libreta,
         'total_credito': cotizacion.PaymentInstitucionFinanciera,
         'ahorro_plus': cotizacion.AhorroPlus,
-        'total_firma_escritura': cotizacion.PaymentFirmaEscritura,
         'date_firma_promesa': cotizacion.DateFirmaPromesa,
         'porcentaje_cuotas': porcentaje_cuotas,
         'porcentaje_firma_promesa': porcentaje_firma_promesa,
         'porcentaje_firma_escritura': porcentaje_firma_escritura,
+        'porcentaje_subsidio':porcentaje_subsidio,
+        'porcentaje_libreta':porcentaje_libreta,
         'porcentaje_credito': porcentaje_credito,
         'porcentaje_ahorro': porcentaje_ahorro,
         'porcentaje_tasa': tasa.Value,
