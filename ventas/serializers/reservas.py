@@ -3621,20 +3621,20 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
         cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
         cotizacion_pdf_generated.name = filename
 
-        try:
-            documents = get_object_or_404(DocumentVenta, Folio=folio)
-            documents.DocumentOferta = oferta_pdf_generated
-            documents.DocumentFichaPreAprobacion = ficha_pdf_generated
-            documents.DocumentSimulador = simulador_pdf_generated
-            documents.DocumentCotizacion = cotizacion_pdf_generated
-            documents.save()
-        except:
-            DocumentVenta.objects.create(
+        documents = get_object_or_404(DocumentVenta, Folio=folio)
+        if documents is None:
+            documents = DocumentVenta.objects.create(
                 Folio=folio,
                 DocumentOferta=oferta_pdf_generated,
                 DocumentFichaPreAprobacion=ficha_pdf_generated,
                 DocumentSimulador=simulador_pdf_generated,
                 DocumentCotizacion = cotizacion_pdf_generated,
             )
+        else:
+            documents.DocumentOferta = oferta_pdf_generated
+            documents.DocumentFichaPreAprobacion = ficha_pdf_generated
+            documents.DocumentSimulador = simulador_pdf_generated
+            documents.DocumentCotizacion = cotizacion_pdf_generated
+            documents.save()            
 
         return documents
