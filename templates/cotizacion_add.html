@@ -51,12 +51,12 @@
         </th>
         <th style="font-size: {{ tamaño_letra }}%; vertical-align:bottom; text-align: right; margin-bottom: 0;">
           <h4 style="margin:0; font-weight:bold">COTIZACIÓN</h4>
-          <h4 style="margin:0;font-weight:lighter">{{ cotizacion.Folio }}</h4>
+          <h4 style="margin:0;font-weight:lighter">{{ Folio }}</h4>
           {% now "d" as day %}
           {% now "F" as month %}
           {% now "Y" as year %}
           <h4 style="margin:0;font-weight:lighter">
-            {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
+            {{ proyecto.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
           </h4>
         </th>
       </tr>
@@ -64,13 +64,13 @@
     <br>
     <div>
       <p style="margin:0; font-weight:bold"> Señor(a) </p>
-      <p style="margin:0; font-weight:bold"> {{ cotizacion.ClienteID }} </p>
+      <p style="margin:0; font-weight:bold"> {{ cliente }} </p>
       <p style="text-decoration:underline;margin:0"> Presente</p>
       <p style="margin-top:2px;"> Estimado(a) cliente:</p>
       <p style="margin-top:1px;">
           De acuerdo a lo solicitado, nos es muy grato cotizar por los inmuebles que se indican, correspondientes al proyecto
-          <strong> {{ cotizacion.ProyectoID.Name }},</strong>
-          ubicado en {{ cotizacion.ProyectoID.Address }}, comuna de {{ cotizacion.ProyectoID.ComunaID.Name}}, provincia de {{ cotizacion.ProyectoID.ComunaID.ProvinciaID.Name }}:
+          <strong> {{ proyecto.Name }},</strong>
+          ubicado en {{ proyecto.Address }}, comuna de {{ proyecto.ComunaID.Name}}, provincia de {{ proyecto.ComunaID.ProvinciaID.Name }}:
       </p>
     </div>
     <h2 style="font-size: 80%; margin-bottom:0">
@@ -161,12 +161,14 @@
     <table style="left: 15px; position: relative;">
       {% if total_cuotas %}
       <tr>
-        <td style="padding-left: 5px">En {{ cotizacion.CuotaID.all.count }} cuota(s)</td>
+        <td style="padding-left: 5px">En {{ cuotas_data|length }} cuota(s)</td>
         <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }} %</td>
         <td style="text-align: left;">Cuotas(s) de UF 
-          {% with div_val=total_cuotas|div:cotizacion.CuotaID.all.count %}
-            {{ div_val | floatformat:2 }}
-          {% endwith %} c/u.
+          {% with len=cuotas_data|length %}
+            {% with div_val=total_cuotas|div:len %}
+              {{ div_val | floatformat:2 }}
+            {% endwith %} c/u.
+          {% endwith %}
         </td>
         <td style="text-align: center;">UF</td>
         <td style="text-align: right;">{{ total_cuotas | floatformat:2 }}</td>            
@@ -424,7 +426,7 @@
     </table>
     {% endif %}
     <p>
-      Al concretar su decisión de compra el cotizante provisionará ${{ cotizacion.ProyectoID.GuaranteeAmount | numberformat }} imputables a gastos operacionales del proceso de
+      Al concretar su decisión de compra el cotizante provisionará ${{ proyecto.GuaranteeAmount | numberformat }} imputables a gastos operacionales del proceso de
       ESCRITURACION, de dicho monto $50.000 serán imputados a todo evento, como gastos por concepto de tramitación de
       su crédito Hipotecario.
     </p>
@@ -444,7 +446,7 @@
       NOTAS :<br />
       - Los montos en pesos corresponden al valor de la UF. a esta fecha, por lo cual se citan sólo como referencia.<br />
       • Valor de la UF al {{ day }}/{{ month }}/{{ year }} es de ${{ uf }}.<br />
-      - Cotización válida por {{ cotizacion.ProyectoID.CotizacionDuration }} días, según disponibilidad de los inmuebles
+      - Cotización válida por {{ proyecto.CotizacionDuration }} días, según disponibilidad de los inmuebles
     </p>
 
     <table style="margin-top: 30px; font-size: 100%;">
@@ -452,7 +454,7 @@
         <td style="width: 10px;" colspan="3"></td>
         <td style="border-top: 1.2px solid #000000;padding-top:0.3px;text-align: center;width: 270px">
           <p style="font-weight: bold;">
-            {{ cotizacion.CotizadorID }}
+            {{ Cotizador }}
             <br>
             {{ nombre_empresa }}
             <br>

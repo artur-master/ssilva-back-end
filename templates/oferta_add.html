@@ -57,12 +57,12 @@
         </th>
         <th style="font-size: {{ tamaño_letra }}%; vertical-align:bottom; text-align: right; margin-bottom: 0;">
           <h4 style="margin:0; font-weight:bold">OFERTA DE COMPRA</h4>
-          <h4 style="margin:0;font-weight:lighter">{{ reserva.Folio }}</h4>
+          <h4 style="margin:0;font-weight:lighter">{{ Folio }}</h4>
           {% now "d" as day %}
           {% now "F" as month %}
           {% now "Y" as year %}
           <h4 style="margin:0;font-weight:lighter">
-            {{ reserva.ProyectoID.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
+            {{ proyecto.ComunaID.ProvinciaID.Name }}, {{ day }} de {{ month }} de {{ year }}
           </h4>
         </th>
       </tr>
@@ -201,12 +201,14 @@
     <table>
       {% if total_cuotas %}
       <tr>
-        <td style="padding-left: 10px">En {{ reserva.CuotaID.all.count }} cuota(s)</td>
+        <td style="padding-left: 10px">En {{ cuotas_data|length }} cuota(s)</td>
         <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }} %</td>
-        <td style="text-align: left;">Cuotas(s) de UF 
-          {% with div_val=total_cuotas|div:reserva.CuotaID.all.count %}
-            {{ div_val | floatformat:2 }}
-          {% endwith %} c/u.
+        <td style="text-align: left;">Cuotas(s) de UF
+          {% with len=cuotas_data|length %}
+            {% with div_val=total_cuotas|div:len %}
+              {{ div_val | floatformat:2 }}
+            {% endwith %} c/u.
+          {% endwith %}
         </td>
         <td style="text-align: center;">UF</td>
         <td style="text-align: right;">{{ total_cuotas | floatformat:2 }}</td>            
@@ -360,7 +362,7 @@
         <td style="width: 15px; vertical-align:top; padding-left: 1px; padding-top: 0.5px;"> <strong>5.</strong> </td>
         <td>
           Mi proposición de compra tendrá una validez de 10 días a contar de esta fecha; 
-          aceptada ésta, suscribiré la respectiva promesa de compra y venta el día {{ reserva.DateFirmaPromesa | date:"d/m/Y" }}..
+          aceptada ésta, suscribiré la respectiva promesa de compra y venta el día {{ DateFirmaPromesa | date:"d/m/Y" }}..
         </td>
       </tr>
     </table>
@@ -436,7 +438,7 @@
           <td style="width: 10%;"></td>
           <td style="border-top: 1.2px solid #000000;padding-top:3px;text-align: center; vertical-align: top;">
             <p style="font-weight: bold;">
-              {{ reserva.VendedorID }}<br>
+              {{ VendedorID }}<br>
               {{ corredores }} <br>
               {{ telefono }} <br>
               {{ email }}

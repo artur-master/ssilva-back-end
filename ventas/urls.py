@@ -57,7 +57,8 @@ from ventas.views.reservas import (
     SendControlReservaViewSet,
     ApproveControlReservaViewSet,
     UploadDocumentsReservaViewSet,
-    DownloadPreApprobationViewSet)
+    DownloadPreApprobationViewSet,
+    DownloadPdfViewSet)
 from ventas.views.utils import (
     UtilsClientesViewSet,
     UtilsCotizacionViewSet,
@@ -105,6 +106,7 @@ router.register(
     'reservas-approve-control',
     ApproveControlReservaViewSet)
 router.register('pre-approbation-download', DownloadPreApprobationViewSet)
+router.register('generate-pdf-files', DownloadPdfViewSet)
 
 router.register('ofertas', OfertaViewSet)
 router.register(

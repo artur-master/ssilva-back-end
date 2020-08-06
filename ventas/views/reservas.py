@@ -20,7 +20,8 @@ from ventas.serializers.reservas import (
     ControlReservaSerializer,
     CancelReservaSerializer,
     UploadDocumentsReservaSerializer,
-    DownloadPreApprobationSerializer
+    DownloadPreApprobationSerializer,
+    DownloadPdfSerializer
 )
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -220,6 +221,29 @@ class DownloadPreApprobationViewSet(viewsets.ModelViewSet):
             response['Content-Disposition'] = 'attachment; filename="%s.pdf"' % (
                 pdf)
             return response
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
+class DownloadPdfViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = DownloadPdfSerializer
+    queryset = Reserva.objects.all()
+    lookup_field = 'ReservaID'
+
+    def create(self, request):
+        data = request.data
+        serializer = DownloadPdfSerializer(
+            data=data, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+    
+            return Response({"Documents": DocumentVentaSerializer(instance,context={'url': request}).data}, 
+                            status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)

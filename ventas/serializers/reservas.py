@@ -11,11 +11,16 @@ from users.models import User
 from common import constants
 from common.services import (
     get_full_path_x,
-    download_pdf_views)
+    download_pdf_views,
+    dividend_calculation,
+    get_or_none, 
+    return_current_user, 
+    valor_uf_actual)
 from common.generate_pdf import (
     render_create_oferta_to_pdf,
     render_create_ficha_to_pdf,
-    render_create_simulador_to_pdf)
+    render_create_simulador_to_pdf,
+    render_create_cotizacion_to_pdf)
 from common.models import (
     ContactInfoType,
     ConstantNumeric)
@@ -31,7 +36,6 @@ from common.notifications import (
     eliminar_notificacion_reserva_informacion_pendiente,
     eliminar_notificacion_reserva_modificada_pendiente_control,
     eliminar_notificaciones_reserva)
-from common.services import get_or_none, return_current_user, valor_uf_actual
 from common.snippets.graphs.reservas import return_graph
 from common.validations import (
     CustomValidation)
@@ -41,6 +45,7 @@ from empresas_and_proyectos.models.inmuebles import (
 from empresas_and_proyectos.models.inmuebles_restrictions import InmuebleInmueble
 from empresas_and_proyectos.models.proyectos import (
     Proyecto,
+    ProyectoContactInfo,
     UserProyecto,
     UserProyectoType)
 from empresas_and_proyectos.serializers.inmuebles import ListOrientationSerializer
@@ -759,12 +764,14 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 ContactMethodTypeID=contact_method_type_id)
         else:
             contact_method_type = None
-
+        
+        cotizador = None
         if cotizacion_id:
             cotizacion = Cotizacion.objects.get(CotizacionID=cotizacion_id)
             cotizacion_state = CotizacionState.objects.get(
                 Name=constants.COTIZATION_STATE[2])
             cotizacion.CotizacionStateID = cotizacion_state
+            cotizador = cotizacion.CotizadorID
             cotizacion.save()
 
         if empresa_compradora_data:
@@ -1035,11 +1042,126 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         if instance.Libreta:
             total += instance.Libreta
             porcentaje_libreta = (instance.Libreta * 100) / total_uf
-        
+
+        # Años para calcular dividendo
+        plazo_8 = [8]
+        plazo_10 = [10]
+        plazo_15 = [15]
+        plazo_20 = [20]
+        plazo_25 = [25]
+        plazo_30 = [30]
+
+        tasa = get_or_none(
+            ConstantNumeric,
+            Name__iexact=constants.SEARCH_NAME_CONSTANT_NUMERIC[0]
+        )
 
         if instance.PaymentInstitucionFinanciera:
             total += instance.PaymentInstitucionFinanciera
             porcentaje_credito = (instance.PaymentInstitucionFinanciera * 100) / total_uf
+
+            # 8 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_8[0])
+            plazo_8.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_8.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_8.append(dividend_pesos)
+
+            # 10 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_10[0])
+            plazo_10.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_10.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_10.append(dividend_pesos)
+            
+            # 15 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_15[0])
+            plazo_15.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_15.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_15.append(dividend_pesos)
+
+            # 20 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_20[0])
+            plazo_20.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_20.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_20.append(dividend_pesos)
+
+            # 25 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_25[0])
+            plazo_25.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_25.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_25.append(dividend_pesos)
+
+            # 30 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_30[0])
+            plazo_30.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_30.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_30.append(dividend_pesos)
+
         else:
             porcentaje_credito = 0
 
@@ -1070,9 +1192,10 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             email_value = emails[0].Value
         else:
             email_value = str()
+
         # Crear pdf oferta
         context_dict = {
-            'reserva': instance,
+            'Folio': folio,
             'corredores': constants.COMPANY_NAME[1],
             'cliente': cliente,
             'telefono': phone_value,
@@ -1080,6 +1203,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'proyecto': proyecto,
             'uf': valor_uf_actual(),
             'inmuebles_a_reservar': reserva_inmuebles,
+            'cuotas_data':cuotas_data,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
             'total_firma_escritura': instance.PaymentFirmaEscritura,
@@ -1098,11 +1222,14 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'total_pago': total,
             'conditions': conditions,
             'tamaño_letra': 100,
-            'gestion': constants.COMPANY_NAME[0]
+            'gestion': constants.COMPANY_NAME[0],
+            'DateFirmaPromesa': validated_data.get('DateFirmaPromesa'),
+            'VendedorID': current_user,
+            'Cotizador':cotizador
         }
 
         oferta_pdf = render_create_oferta_to_pdf(context_dict)
-        filename = "%s_OFE_%s.pdf" % (instance.Folio, cliente)
+        filename = "%s_OFE_%s.pdf" % (folio, cliente)
         oferta_pdf_generated = ContentFile(oferta_pdf)
         oferta_pdf_generated.name = filename
 
@@ -1110,7 +1237,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             # Crear pdf ficha
             totals = calculate_totals_patrimony(patrimony)
             context_dict = {
-                'reserva': instance,
+                'Folio': folio,
                 'cliente': cliente,
                 'correo': email_value,
                 'telefono': phone_value,
@@ -1166,7 +1293,6 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 values_30 = None
 
             context_dict = {
-                'reserva': instance,
                 'cliente': cliente,
                 'inmuebles_a_reservar': reserva_inmuebles,
                 'proyecto': proyecto,
@@ -1185,6 +1311,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                 'values_25': values_25,
                 'values_30': values_30,
                 'tamaño_letra': 100,
+                'VendedorID': current_user
             }
 
             simulador_pdf = render_create_simulador_to_pdf(context_dict)
@@ -1235,9 +1362,47 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             VentaLogTypeID=venta_log_type,
         )
         
-        cotizacion_pdf = download_pdf_views(cotizacion_id, 80)
-        filename = "%s_CDC_%s.pdf" % (instance.Folio, cliente)
-        cotizacion_pdf_generated = ContentFile(cotizacion_pdf['pdf'])
+        contacts = ProyectoContactInfo.objects.filter(
+            ProyectoID=proyecto)
+        context_dict = {
+            'Folio': folio,
+            'proyecto': proyecto,
+            'cliente': cliente,
+            'cuotas_data': cuotas_data,
+            'inmuebles_a_cotizar': reserva_inmuebles,
+            'uf': valor_uf_actual(),
+            'total': total_uf,
+            'total_pago': total,
+            'total_cuotas': total_cuotas_solas,
+            'total_firma_promesa': instance.PaymentFirmaPromesa,
+            'total_firma_escritura': instance.PaymentFirmaEscritura,
+            'total_subsidio': instance.Subsidio,
+            'total_libreta': instance.Libreta,
+            'total_credito': instance.PaymentInstitucionFinanciera,
+            'ahorro_plus': instance.AhorroPlus,
+            'date_firma_promesa': instance.DateFirmaPromesa,
+            'porcentaje_cuotas': porcentaje_cuotas,
+            'porcentaje_firma_promesa': porcentaje_firma_promesa,
+            'porcentaje_firma_escritura': porcentaje_firma_escritura,
+            'porcentaje_subsidio':porcentaje_subsidio,
+            'porcentaje_libreta':porcentaje_libreta,
+            'porcentaje_credito': porcentaje_credito,
+            'porcentaje_ahorro': porcentaje_ahorro_plus,
+            'porcentaje_tasa': tasa.Value,
+            'plazo_8': plazo_8,
+            'plazo_10': plazo_10,
+            'plazo_15': plazo_15,
+            'plazo_20': plazo_20,
+            'plazo_25': plazo_25,
+            'plazo_30': plazo_30,
+            'nombre_empresa': constants.COMPANY_NAME[0],
+            'contactos': contacts,
+            'tamaño_letra': 80
+        }
+        
+        cotizacion_pdf = render_create_cotizacion_to_pdf(context_dict)
+        filename = "%s_CDC_%s.pdf" % (folio, cliente)
+        cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
         cotizacion_pdf_generated.name = filename
 
         try:
@@ -1533,8 +1698,11 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                 ContactMethodTypeID=contact_method_type_id)
         else:
             contact_method_type = None
+
+        cotizador = None
         if cotizacion_id:
             cotizacion = Cotizacion.objects.get(CotizacionID=cotizacion_id)
+            cotizador = cotizacion.CotizadorID
         else:
             cotizacion = None
 
@@ -1637,7 +1805,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             co_empleador.Extra = extra_co_empleador
             co_empleador.save()
 
-#Co-Deudor Patrimonr
+        #Co-Deudor Patrimonr
         if codeudor is not False:
             copatrimony = get_or_none(Patrimony, ClienteID=codeudor)
         else:
@@ -1683,7 +1851,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                 )
         else:
             copatrimony = None
-#Co-Deudor Patrimonr
+        #Co-Deudor Patrimonr
 
         reserva_state = ReservaState.objects.get(
             Name=constants.RESERVA_STATE[0])
@@ -1948,7 +2116,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
 
         # Crear pdf oferta
         context_dict = {
-            'reserva': instance,
+            'Folio': instance.Folio,
             'corredores': constants.COMPANY_NAME[1],
             'cliente': cliente,
             'telefono': phone_value,
@@ -1956,6 +2124,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'proyecto': proyecto,
             'uf': valor_uf_actual(),
             'inmuebles_a_reservar': reserva_inmuebles,
+            'cuotas_data':cuotas_data,
             'total_uf': total_uf,
             'total_cuotas': total_cuotas_solas,
             'total_firma_escritura': instance.PaymentFirmaEscritura,
@@ -1974,7 +2143,10 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'total_pago': total,
             'conditions': conditions,
             'tamaño_letra': 100,
-            'gestion': constants.COMPANY_NAME[0]
+            'gestion': constants.COMPANY_NAME[0],
+            'DateFirmaPromesa': instance.DateFirmaPromesa,
+            'VendedorID': current_user,
+            'Cotizador':cotizador
         }
 
         oferta_pdf = render_create_oferta_to_pdf(context_dict)
@@ -1986,7 +2158,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             # Crear pdf ficha
             totals = calculate_totals_patrimony(patrimony)
             context_dict = {
-                'reserva': instance,
+                'Folio': instance.Folio,
                 'cliente': cliente,
                 'correo': email_value,
                 'telefono': phone_value,
@@ -2041,7 +2213,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                 values_30 = None
 
             context_dict = {
-                'reserva': instance,
                 'cliente': cliente,
                 'inmuebles_a_reservar': reserva_inmuebles,
                 'proyecto': proyecto,
@@ -2060,6 +2231,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                 'values_25': values_25,
                 'values_30': values_30,
                 'tamaño_letra': 100,
+                'VendedorID': current_user
             }
 
             simulador_pdf = render_create_simulador_to_pdf(context_dict)
@@ -2796,3 +2968,673 @@ class UserReservaActionSerializer(serializers.ModelSerializer):
             return obj.ReservaStateID.Name + " reserva"
         except AttributeError:
             return ""
+
+
+class DownloadPdfSerializer(serializers.ModelSerializer):
+    ProyectoID = serializers.UUIDField(
+        write_only=True
+    )
+    Condition = CreateConditionSerializer(
+        source='ConditionID',
+        many=True,
+        required=False
+    )
+    CotizacionID = serializers.UUIDField(
+        write_only=True,
+        required=False,
+        allow_null=True
+    )
+    ClienteID = serializers.UUIDField(
+        write_only=True,
+        required=False
+    )
+    Cliente = CreateClienteCotizacionSerializer(
+        required=False,
+        allow_null=True
+    )
+    PayType = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+    CodeudorID = serializers.UUIDField(
+        write_only=True,
+        allow_null=True,
+        required=False
+    )
+    Cuotas = CreateCuotaSerializer(
+        source='CuotaID',
+        many=True,
+        required=False
+    )
+    Inmuebles = CreateReservaInmuebleSerializer(
+        source='InmuebleID',
+        many=True,
+        required=False
+    )
+    ContactMethodTypeID = serializers.UUIDField(
+        write_only=True,
+        required=False
+    )
+    DateFirmaPromesa = serializers.DateTimeField(
+        write_only=True,
+        allow_null=True,
+        required=False
+    )
+    Empleador = CreateEmpleadorSerializer(
+        write_only=True,
+        allow_null=True,
+        required=False
+    )
+    PaymentFirmaPromesa = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        required=False
+    )
+    PaymentFirmaEscritura = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        required=False
+    )
+    PaymentInstitucionFinanciera = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    AhorroPlus = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Patrimony = PatrimonySerializer(
+        required=False,
+        allow_null=True
+    )
+    Date8 = serializers.BooleanField(
+        required=False,
+    )
+    Date10 = serializers.BooleanField(
+        required=False,
+    )
+    Date15 = serializers.BooleanField(
+        required=False,
+    )
+    Date20 = serializers.BooleanField(
+        required=False,
+    )
+    Date25 = serializers.BooleanField(
+        required=False,
+    )
+    Date30 = serializers.BooleanField(
+        required=False,
+    )
+    Folio = serializers.CharField(required=False)
+
+    class Meta:
+        model = Reserva
+        fields = (
+            'ProyectoID',
+            'ClienteID',
+            'Cliente',
+            'Condition',
+            'CotizacionID',
+            'PayType',
+            'CodeudorID',
+            'Cuotas',
+            'Inmuebles',
+            'Folio',
+            'DateFirmaPromesa',
+            'ContactMethodTypeID',
+            'PaymentFirmaPromesa',
+            'PaymentFirmaEscritura',
+            'PaymentInstitucionFinanciera',
+            'AhorroPlus',
+            'Empleador',
+            'Subsidio',
+            'Libreta',
+            'Patrimony',
+            'Date8',
+            'Date10',
+            'Date15',
+            'Date20',
+            'Date25',
+            'Date30')
+
+    def create(self, validated_data):
+        current_user = return_current_user(self)
+        
+        folio = validated_data['Folio']
+
+        # documents = DocumentVenta.objects.get_or_create(Folio=folio)  # noqa
+
+        proyecto_id = validated_data['ProyectoID']
+        cliente_id = validated_data.get('ClienteID', False)
+        # contact_method_type_id = validated_data.get('ContactMethodTypeID')
+
+        pay_type_name = validated_data.get('PayType')
+
+        inmuebles_data = validated_data.get('InmuebleID', [])
+        cuotas_data = validated_data.get('CuotaID')
+        conditions_data = validated_data.get('ConditionID')
+        patrimony_data = validated_data.get('Patrimony')
+
+        pay_type = get_or_none(PayType, Name=pay_type_name)
+
+        # Plazos a imprimir en simulador de credito
+        date_8 = validated_data.get('Date8')
+        date_10 = validated_data.get('Date10')
+        date_15 = validated_data.get('Date15')
+        date_20 = validated_data.get('Date20')
+        date_25 = validated_data.get('Date25')
+        date_30 = validated_data.get('Date30')
+
+        # Validaciones campos comunes entre ambos tipos de cliente
+        if pay_type_name and not pay_type:
+            raise CustomValidation(
+                "Debe ingresar tipo de pago",
+                status_code=status.HTTP_409_CONFLICT)
+
+        if cliente_id:
+            cliente = Cliente.objects.get(UserID=cliente_id)
+        else:
+            cliente = None
+
+        if 'Cliente' in validated_data:
+            cliente = save_cliente_return(validated_data['Cliente'], cliente, current_user)
+
+        proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
+
+        patrimony = get_or_none(Patrimony, ClienteID=cliente)
+
+        if patrimony_data:
+            default_ = {
+                "Pasivos": 0,
+                "PagosMensuales": 0,
+                "Saldo": 0
+            }
+            if patrimony:
+                patrimony.RealState = patrimony_data.get('RealState', 0)
+                patrimony.Vehicle = patrimony_data.get('Vehicle', 0)
+                patrimony.DownPayment = patrimony_data.get('DownPayment', 0)
+                patrimony.Other = patrimony_data.get('Other', 0)
+                patrimony.CreditCard = patrimony_data.get('CreditCard', default_)
+                patrimony.CreditoConsumo = patrimony_data.get('CreditoConsumo', default_)
+                patrimony.CreditoHipotecario = patrimony_data.get('CreditoHipotecario', default_)
+                patrimony.PrestamoEmpleador = patrimony_data.get('PrestamoEmpleador', default_)
+                patrimony.CreditoComercio = patrimony_data.get('CreditoComercio', default_)
+                patrimony.DeudaIndirecta = patrimony_data.get('DeudaIndirecta', default_)
+                patrimony.AnotherCredit = patrimony_data.get('AnotherCredit', default_)
+                patrimony.Deposits = patrimony_data.get('Deposits', 0)
+                patrimony.Rent = patrimony_data.get('Rent', 0)
+
+            else:
+                patrimony = Patrimony.objects.create(
+                    ClienteID=cliente,
+                    RealState=patrimony_data.get('RealState', 0),
+                    Vehicle=patrimony_data.get('Vehicle', 0),
+                    DownPayment=patrimony_data.get('DownPayment', 0),
+                    Other=patrimony_data.get('Other', 0),
+                    CreditCard=patrimony_data.get('CreditCard', default_),
+                    CreditoConsumo=patrimony_data.get('CreditoConsumo', default_),
+                    CreditoHipotecario=patrimony_data.get('CreditoHipotecario', default_),
+                    PrestamoEmpleador=patrimony_data.get('PrestamoEmpleador', default_),
+                    CreditoComercio=patrimony_data.get('CreditoComercio', default_),
+                    DeudaIndirecta=patrimony_data.get('DeudaIndirecta', default_),
+                    AnotherCredit=patrimony_data.get('AnotherCredit', default_),
+                    Deposits=patrimony_data.get('Deposits', 0)
+                )
+        else:
+            patrimony = None
+
+        reserva_inmuebles = list()
+        total = 0
+        total_uf = 0
+        total_cuotas = 0
+
+        for inmueble_data in inmuebles_data:
+            inmueble = Inmueble.objects.get(
+                InmuebleID=inmueble_data['InmuebleID']
+            )
+                      
+            price_discount = 0
+            discount = 0
+            if inmueble_data['Discount']:
+                discount = inmueble_data['Discount']
+                price_discount = round(
+                    inmueble.Price *
+                    discount /
+                    100,
+                    2)
+
+            price = inmueble.Price - price_discount
+            total_uf += price
+
+            reserva_inmuebles.append({
+                'InmuebleID':inmueble,
+                'Discount': discount
+            })
+
+        reserva_inmuebles.sort(key=lambda x: x['InmuebleID'].InmuebleTypeID.id)
+        
+        total_cuotas_solas = 0
+        porcentaje_cuotas = 0
+        
+        for cuota in cuotas_data:
+            total_cuotas += cuota['Amount']
+
+        total_cuotas_solas = total_cuotas
+        porcentaje_cuotas = (total_cuotas * 100) / total_uf
+        total += total_cuotas
+
+        paymentFirmaEscritura = validated_data.get('PaymentFirmaEscritura')
+        porcentaje_firma_escritura = 0
+        if paymentFirmaEscritura:
+            total += paymentFirmaEscritura
+            porcentaje_firma_escritura = (paymentFirmaEscritura * 100) / total_uf
+        
+        paymentFirmaPromesa = validated_data.get('PaymentFirmaPromesa')
+        porcentaje_firma_promesa = 0
+        if paymentFirmaPromesa:
+            total += paymentFirmaPromesa
+            porcentaje_firma_promesa = (paymentFirmaPromesa * 100) / total_uf
+        
+        subsidio = validated_data.get('Subsidio')
+        porcentaje_subsidio = 0
+        if subsidio:
+            total += subsidio
+            porcentaje_subsidio = (subsidio * 100) / total_uf
+        
+        libreta = validated_data.get('Libreta')
+        porcentaje_libreta = 0
+        if libreta:
+            total += libreta
+            porcentaje_libreta = (libreta * 100) / total_uf
+        
+        # Años para calcular dividendo
+        plazo_8 = [8]
+        plazo_10 = [10]
+        plazo_15 = [15]
+        plazo_20 = [20]
+        plazo_25 = [25]
+        plazo_30 = [30]
+
+        tasa = get_or_none(
+            ConstantNumeric,
+            Name__iexact=constants.SEARCH_NAME_CONSTANT_NUMERIC[0]
+        )
+            
+        paymentInstitucionFinanciera = validated_data.get('PaymentInstitucionFinanciera')
+        if paymentInstitucionFinanciera:
+            total += paymentInstitucionFinanciera
+            porcentaje_credito = (paymentInstitucionFinanciera * 100) / total_uf
+
+            # 8 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_8[0])
+            plazo_8.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_8.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_8.append(dividend_pesos)
+
+            # 10 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_10[0])
+            plazo_10.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_10.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_10.append(dividend_pesos)
+            
+            # 15 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_15[0])
+            plazo_15.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_15.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_15.append(dividend_pesos)
+
+            # 20 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_20[0])
+            plazo_20.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_20.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_20.append(dividend_pesos)
+
+            # 25 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_25[0])
+            plazo_25.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_25.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_25.append(dividend_pesos)
+
+            # 30 años
+            # UF
+            dividend = dividend_calculation(
+                total, porcentaje_credito, tasa.Value, plazo_30[0])
+            plazo_30.append(dividend)
+
+            # Pesos
+            multiply = round(dividend * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_30.append(dividend_pesos)
+
+            # Renta Pesos
+            rent = 4 * dividend
+            multiply = round(rent * valor_uf_actual(), 0)
+            dividend_pesos = "{:,}".format(multiply).replace(',', '.')
+            plazo_30.append(dividend_pesos)
+            
+        else:
+            porcentaje_credito = 0
+
+        if paymentFirmaEscritura and paymentFirmaPromesa:
+            total_contado = total_cuotas_solas + paymentFirmaEscritura + paymentFirmaPromesa
+            porcentaje_contado = (total_contado * 100) / total_uf
+        else:
+            total_contado = 0
+            porcentaje_contado = 0
+
+        ahorroPlus = validated_data.get('AhorroPlus')
+        if ahorroPlus:
+            total += ahorroPlus
+            porcentaje_ahorro_plus = (ahorroPlus * 100) / total_uf
+        else:
+            porcentaje_ahorro_plus = 0
+
+        phone = get_object_or_404(ContactInfoType, Name='Phone')
+        email = get_object_or_404(ContactInfoType, Name='Email')
+
+        phones = ClienteContactInfo.objects.filter(UserID=cliente, ContactInfoTypeID=phone)
+        emails = ClienteContactInfo.objects.filter(UserID=cliente, ContactInfoTypeID=email)
+
+        if phones.exists():
+            phone_value = phones[0].Value
+        else:
+            phone_value = str()
+        if emails.exists():
+            email_value = emails[0].Value
+        else:
+            email_value = str()
+        
+        # Crear pdf oferta
+        cotizador = None
+        if 'CotizacionID' in validated_data:
+            cotizacion = Cotizacion.objects.get(CotizacionID=validated_data.get('CotizacionID'))
+            cotizador = cotizacion.CotizadorID
+
+        context_dict = {
+            'Folio': folio,
+            'corredores': constants.COMPANY_NAME[1],
+            'cliente': cliente,
+            'telefono': phone_value,
+            'email': email_value,
+            'proyecto': proyecto,
+            'uf': valor_uf_actual(),
+            'inmuebles_a_reservar': reserva_inmuebles,
+            'cuotas_data':cuotas_data,
+            'total_uf': total_uf,
+            'total_cuotas': total_cuotas_solas,
+            'total_firma_escritura': paymentFirmaEscritura,
+            'total_firma_promesa': paymentFirmaPromesa,
+            'total_subsidio': subsidio,
+            'total_libreta': libreta,
+            'porcentaje_cuotas': porcentaje_cuotas,
+            'porcentaje_firma_escritura': porcentaje_firma_escritura,
+            'porcentaje_firma_promesa': porcentaje_firma_promesa,
+            'porcentaje_subsidio':porcentaje_subsidio,
+            'porcentaje_libreta':porcentaje_libreta,
+            'porcentaje_credito': porcentaje_credito,
+            'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
+            'ahorro_plus': ahorroPlus,
+            'total_credito': paymentInstitucionFinanciera,
+            'total_pago': total,
+            'conditions': conditions_data,
+            'tamaño_letra': 100,
+            'gestion': constants.COMPANY_NAME[0],
+            'DateFirmaPromesa': validated_data.get('DateFirmaPromesa'),
+            'VendedorID': current_user,
+            'Cotizador':cotizador
+        }
+
+        oferta_pdf = render_create_oferta_to_pdf(context_dict)
+        filename = "%s_OFE_%s.pdf" % (folio, cliente)
+        oferta_pdf_generated = ContentFile(oferta_pdf)
+        oferta_pdf_generated.name = filename
+
+        empleador_data = validated_data.get('Empleador')
+
+        if empleador_data:
+            empleador = Empleador.objects.filter(ClienteID=cliente)
+            if len(empleador) > 0:
+                empleador = empleador[0]
+            else:
+                empleador = Empleador()
+            empleador.RazonSocial = empleador_data['RazonSocial']
+            empleador.Rut = empleador_data['Rut']
+            empleador.ClienteID = cliente
+            empleador.Extra = empleador_data['Extra']
+        else:
+            empleador = None
+
+        if pay_type and pay_type.Name == constants.PAY_TYPE[1]:
+            # Crear pdf ficha
+            totals = calculate_totals_patrimony(patrimony)
+            context_dict = {
+                'Folio': folio,
+                'cliente': cliente,
+                'correo': email_value,
+                'telefono': phone_value,
+                'inmuebles_a_reservar': reserva_inmuebles,
+                'proyecto': proyecto,
+                'empleador': empleador,
+                'total_uf': total_uf,
+                'porcentaje_credito': porcentaje_credito,
+                'porcentaje_contado': porcentaje_contado,
+                'total_credito': paymentInstitucionFinanciera,
+                'total_contado': total_contado,
+                'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
+                'ahorro_plus': ahorroPlus,
+                'gestion': constants.COMPANY_NAME[0],
+                'patrimonio': patrimony,
+                'totals': totals,
+                'tamaño_letra': 100
+            }
+
+            ficha_pdf = render_create_ficha_to_pdf(context_dict)
+            filename = "%s_FPA_%s.pdf" % (folio, cliente)
+            ficha_pdf_generated = ContentFile(ficha_pdf)
+            ficha_pdf_generated.name = filename
+
+            # Crear pdf simulador
+            codeudor_id = validated_data.get('CodeudorID', False)
+            if codeudor_id:
+                codeudor = Cliente.objects.get(UserID=codeudor_id)
+            else:
+                codeudor = None
+
+            if 'Codeudor' in validated_data and codeudor:
+                codeudor = save_cliente_return(validated_data['Codeudor'], codeudor, current_user)
+
+            rate = ConstantNumeric.objects.get(Name__iexact=constants.SEARCH_NAME_CONSTANT_NUMERIC[0])
+            has_codeudor = True if codeudor else False
+
+            if date_8:
+                values_8 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 8, has_codeudor)
+            else:
+                values_8 = None
+            if date_10:
+                values_10 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 10, has_codeudor)
+            else:
+                values_10 = None
+            if date_15:
+                values_15 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 15, has_codeudor)
+            else:
+                values_15 = None
+            if date_20:
+                values_20 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 20, has_codeudor)
+            else:
+                values_20 = None
+            if date_25:
+                values_25 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 25, has_codeudor)
+            else:
+                values_25 = None
+            if date_30:
+                values_30 = calculate_simulate_values(total_uf, porcentaje_credito, rate.Value, 30, has_codeudor)
+            else:
+                values_30 = None
+
+            context_dict = {
+                'cliente': cliente,
+                'inmuebles_a_reservar': reserva_inmuebles,
+                'proyecto': proyecto,
+                'uf': valor_uf_actual(),
+                'gestion': constants.COMPANY_NAME[0],
+                'total_uf': total_uf,
+                'total_credito': paymentInstitucionFinanciera,
+                'porcentaje_credito': porcentaje_credito,
+                'porcentaje_ahorro_plus': porcentaje_ahorro_plus,
+                'ahorro_plus': ahorroPlus,
+                'rate': rate.Value,
+                'values_8': values_8,
+                'values_10': values_10,
+                'values_15': values_15,
+                'values_20': values_20,
+                'values_25': values_25,
+                'values_30': values_30,
+                'tamaño_letra': 100,
+                'VendedorID': current_user
+            }
+
+            simulador_pdf = render_create_simulador_to_pdf(context_dict)
+            filename = "%s_SDC_%s.pdf" % (folio, cliente)
+            simulador_pdf_generated = ContentFile(simulador_pdf)
+            simulador_pdf_generated.name = filename
+        else:
+            ficha_pdf_generated = None
+            simulador_pdf_generated = None
+
+        contacts = ProyectoContactInfo.objects.filter(
+            ProyectoID=proyecto)
+        context_dict = {
+            'Folio': folio,
+            'proyecto': proyecto,
+            'cliente': cliente,
+            'cuotas_data': cuotas_data,
+            'inmuebles_a_cotizar': reserva_inmuebles,
+            'uf': valor_uf_actual(),
+            'total': total_uf,
+            'total_pago': total,
+            'total_cuotas': total_cuotas_solas,
+            'total_firma_promesa': paymentFirmaPromesa,
+            'total_firma_escritura': paymentFirmaEscritura,
+            'total_subsidio': subsidio,
+            'total_libreta': libreta,
+            'total_credito': paymentInstitucionFinanciera,
+            'ahorro_plus': ahorroPlus,
+            'date_firma_promesa': validated_data.get('DateFirmaPromesa'),
+            'porcentaje_cuotas': porcentaje_cuotas,
+            'porcentaje_firma_promesa': porcentaje_firma_promesa,
+            'porcentaje_firma_escritura': porcentaje_firma_escritura,
+            'porcentaje_subsidio':porcentaje_subsidio,
+            'porcentaje_libreta':porcentaje_libreta,
+            'porcentaje_credito': porcentaje_credito,
+            'porcentaje_ahorro': porcentaje_ahorro_plus,
+            'porcentaje_tasa': tasa.Value,
+            'plazo_8': plazo_8,
+            'plazo_10': plazo_10,
+            'plazo_15': plazo_15,
+            'plazo_20': plazo_20,
+            'plazo_25': plazo_25,
+            'plazo_30': plazo_30,
+            'nombre_empresa': constants.COMPANY_NAME[0],
+            'contactos': contacts,
+            'tamaño_letra': 80
+        }
+        
+        cotizacion_pdf = render_create_cotizacion_to_pdf(context_dict)
+        filename = "%s_CDC_%s.pdf" % (folio, cliente)
+        cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
+        cotizacion_pdf_generated.name = filename
+
+        try:
+            documents = get_object_or_404(DocumentVenta, Folio=folio)
+            documents.DocumentOferta = oferta_pdf_generated
+            documents.DocumentFichaPreAprobacion = ficha_pdf_generated
+            documents.DocumentSimulador = simulador_pdf_generated
+            documents.DocumentCotizacion = cotizacion_pdf_generated
+            documents.save()
+        except:
+            DocumentVenta.objects.create(
+                Folio=folio,
+                DocumentOferta=oferta_pdf_generated,
+                DocumentFichaPreAprobacion=ficha_pdf_generated,
+                DocumentSimulador=simulador_pdf_generated,
+                DocumentCotizacion = cotizacion_pdf_generated,
+            )
+
+        return documents

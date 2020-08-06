@@ -314,10 +314,10 @@
                 Ahorro Tributario 1er Año
             </td>
             <td style="width:100px;font-weight: bold;font-size: {{ tamaño_letra }}%;padding-left: 8px;text-align: left">
-                12.75
+                {{ porcentaje_ahorro_plus }}
             </td>
             <td style="font-weight: bold;font-size: {{ tamaño_letra }}%;padding-left: 5px;text-align: left">
-                343.705
+                {{ ahorro_plus }}
             </td>
         </tr>
     </table>
@@ -326,8 +326,8 @@
             <td style=" padding-top:5px;font-size: {{ tamaño_letra }}%;text-align: center">
                 <strong>Proyecto:</strong> {{ proyecto.Name }} <br>
                 <strong>Direccion:</strong> {{ proyecto.Address }} <br>
-                <strong>Fono:</strong>: 44657796 <br>
-                <strong>Ejecutivo:</strong> {{ reserva.VendedorID }}
+                <strong>Fono:</strong> 44657796 <br>
+                <strong>Ejecutivo:</strong> {{ VendedorID }}
             </td>
         </tr>
     </table>
