@@ -84,9 +84,9 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         'get_DocumentCodeudorCarpetaTributaria_url')   
     DocumentCodeudorBalancesTimbrados = serializers.SerializerMethodField(
         'get_DocumentCodeudorBalancesTimbrados_url')   
-    Document6IVACodeudor = serializers.SerializerMethodField(
+    DocumentCodeudor6IVA = serializers.SerializerMethodField(
         'get_Document6IVACodeudor_url')   
-    Document2DAICodeudor = serializers.SerializerMethodField(
+    DocumentCodeudor2DAI = serializers.SerializerMethodField(
         'get_Document2DAICodeudor_url')   
     DocumentCodeudorTituloProfesional = serializers.SerializerMethodField(
         'get_DocumentCodeudorTituloProfesional_url')   
@@ -119,7 +119,7 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
                   'DocumentCodeudorCertificadoMatrimonio','DocumentCodeudorFirmadoSimulador',
                   'DocumentCodeudorConstitucionSociedad','DocumentCodeudorCertificadoSociedad',
                   'DocumentCodeudorCarpetaTributaria','DocumentCodeudorBalancesTimbrados',
-                  'Document6IVACodeudor','Document2DAICodeudor',
+                  'DocumentCodeudor6IVA','DocumentCodeudor2DAI',
                   'DocumentCodeudorTituloProfesional','DocumentCodeudorAcredittacionAhorros',
                   'DocumentCodeudorAcredittacionDeudas','DocumentCodeudorFotocopiaCarnet',
                   'DocumentCodeudorLiquidacion1','DocumentCodeudorLiquidacion2',
@@ -469,20 +469,20 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             return ""
 
     def get_Document6IVACodeudor_url(self, obj):
-        if obj.Document6IVACodeudor and hasattr(
-                obj.Document6IVACodeudor, 'url'):
+        if obj.DocumentCodeudor6IVA and hasattr(
+                obj.DocumentCodeudor6IVA, 'url'):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
-            return "%s%s" % (absolute_url, obj.Document6IVACodeudor.url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudor6IVA.url)
         else:
             return ""
 
     def get_Document2DAICodeudor_url(self, obj):
-        if obj.Document2DAICodeudor and hasattr(
-                obj.Document2DAICodeudor, 'url'):
+        if obj.DocumentCodeudor2DAI and hasattr(
+                obj.DocumentCodeudor2DAI, 'url'):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
-            return "%s%s" % (absolute_url, obj.Document2DAICodeudor.url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudor2DAI.url)
         else:
             return ""
 

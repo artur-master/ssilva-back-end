@@ -142,49 +142,56 @@
         </td>
       </tr>
       {% endfor %}
-      <tr style="height: 16px;">
-        <td>&nbsp;</td>
-        <td >&nbsp;</td>
-        <td style="font-weight:bold;">PRECIO DE LISTA</td>
-        <td style="text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">UF</td>
-        <td style="text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">
-          {{ total_uf | floatformat:2 }}
-        </td>
-        <td style="text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">$</td>
-        <td style="text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000; padding-right: 5px;">
-          {% with total_pesos=total_uf|multiply:uf %}
-            {{ total_pesos | numberformat }}
-          {% endwith %}
-        </td>
-      </tr>
-      <tr style="height: 16px;">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td style="font-weight:bold;">10,00% Dscto. sólo en Depto.</td>
-        <td style="text-align: center;font-weight:bold;">UF</td>
-        <td style="text-align: right;font-weight:bold;">
-          {{ total_uf | floatformat:2 }}
-        </td>
-        <td style="text-align: center;font-weight:bold;">$</td>
-        <td style="text-align: right;font-weight:bold; padding-right: 5px;">
-          {% with total_pesos=total_uf|multiply:uf %}
-            {{ total_pesos | numberformat }}
-          {% endwith %}
-        </td>
-      </tr>
-
+      {% if porcentaje_departments_discount %}
+        <tr style="height: 16px;">
+          <td>&nbsp;</td>
+          <td >&nbsp;</td>
+          <td style="font-weight:bold;">PRECIO DE LISTA</td>
+          <td style="text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">UF</td>
+          <td style="text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">
+            {{ total_uf | floatformat:2 }}
+          </td>
+          <td style="text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">$</td>
+          <td style="text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000; padding-right: 5px;">
+            {% with total_pesos=total_uf|multiply:uf %}
+              {{ total_pesos | numberformat }}
+            {% endwith %}
+          </td>
+        </tr>
+        <tr style="height: 16px;">
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td style="font-weight:bold;">
+            {{porcentaje_departments_discount}}% Dscto. sólo en Depto.
+          </td>
+          <td style="text-align: center;font-weight:bold;">UF</td>
+          <td style="text-align: right;font-weight:bold;">
+            {{ total_departments_discount | floatformat:2 }}
+          </td>
+          <td style="text-align: center;font-weight:bold;">$</td>
+          <td style="text-align: right;font-weight:bold; padding-right: 5px;">
+            {% with total_pesos=total_departments_discount|multiply:uf %}
+              {{ total_pesos | numberformat }}
+            {% endwith %}
+          </td>
+        </tr>
+      {% endif %}
       <tr style="height: 16px; width: 100%;">
         <td style="width: 25%">&nbsp;</td>
         <td style="width: 10%">&nbsp;</td>
         <td style="width: 32%;font-weight:bold;">PRECIO DE VENTA</td>
         <td style="width: 4%;text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">UF</td>
         <td style="width: 12%;text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">
-          {{ total_uf | floatformat:2 }}
+          {% with total_pesos=total_uf|subtract:total_departments_discount %}
+            {{ total_pesos | floatformat:2 }}
+          {% endwith %}
         </td>
         <td style="width: 4%;text-align: center;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000;">$</td>
         <td style="width: 13%;text-align: right;font-weight:bold; padding-top: 1px;border-top: 0.8px solid #000000; padding-right: 5px;">
-          {% with total_pesos=total_uf|multiply:uf %}
-            {{ total_pesos | numberformat }}
+          {% with val=total_uf|subtract:total_departments_discount %}
+            {% with total_pesos=val|multiply:uf %}
+              {{ total_pesos | numberformat }}
+            {% endwith %}
           {% endwith %}
         </td>
       </tr>
@@ -202,8 +209,8 @@
       {% if total_cuotas %}
       <tr>
         <td style="padding-left: 10px">En {{ cuotas_data|length }} cuota(s)</td>
-        <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }} %</td>
-        <td style="text-align: left;">Cuotas(s) de UF
+        <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }}% </td>
+        <td style="text-align: left;">Cuota(s) de UF
           {% with len=cuotas_data|length %}
             {% with div_val=total_cuotas|div:len %}
               {{ div_val | floatformat:2 }}
@@ -392,8 +399,19 @@
       </tr>
     </table>
 
+    {% if proyecto.ProjectClauses and proyecto.ProjectClauses != "" %}
     <table style="width: 100%; margin-top: 10px;">
-      {% if conditions %}      
+      <tr style="height:100px;">
+        <td style="width: 15px; vertical-align:top; padding-left: 1px;">  </td>
+        <td style="vertical-align: top;">
+          {{ proyecto.ProjectClauses }}
+        </td>
+      </tr>
+    </table>
+    {% endif %}
+
+    {% if conditions %}
+    <table style="width: 100%; margin-top: 10px;">
       <tr style="height:200px;">
         <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>8.</strong> </td>
         <td style="vertical-align: top;">
@@ -401,25 +419,6 @@
             {% for condition in conditions %}
               - {{ condition.Description }}
             {% endfor %}          
-        </td>
-      </tr>
-      {% else %}
-      <tr style="height:50px;">
-        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>8.</strong> </td>
-        <td style="vertical-align: top;">
-          <strong> <span style="text-decoration:underline">NOTAS</span></strong>          
-        </td>
-      </tr>
-      {% endif %}
-    </table>
-
-    {% if proyecto.ProjectClauses and proyecto.ProjectClauses != "" %}
-    <table style="width: 100%; margin-top: 10px;">
-      <tr style="height:100px;">
-        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>9.</strong> </td>
-        <td style="vertical-align: top;">
-          <strong> <span style="text-decoration:underline">Cláusulas del Proyecto</span></strong><br>
-          {{ proyecto.ProjectClauses }}
         </td>
       </tr>
     </table>

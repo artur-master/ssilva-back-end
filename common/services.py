@@ -257,6 +257,8 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
     total = 0
     total_uf = 0
     total_cuotas = 0
+    departments_discount = 0
+    total_without_discount = 0
 
     # Años para calcular dividendo
     plazo_8 = [8]
@@ -278,8 +280,14 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
                 cotizacion_inmueble.Discount /
                 100,
                 2)
+
+            total_without_discount += cotizacion_inmueble.InmuebleID.Price
+            
             price = cotizacion_inmueble.InmuebleID.Price - price_discount
             total_uf += price
+
+            if inmueble.InmuebleTypeID.Name=='Departamento':
+                departments_discount += price_discount
         else:
             total_uf += cotizacion_inmueble.InmuebleID.Price
 
@@ -450,6 +458,8 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
         'total_subsidio': cotizacion.Subsidio,
         'total_libreta': cotizacion.Libreta,
         'total_credito': cotizacion.PaymentInstitucionFinanciera,
+        'total_departments_discount': departments_discount,
+        'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
         'ahorro_plus': cotizacion.AhorroPlus,
         'date_firma_promesa': cotizacion.DateFirmaPromesa,
         'porcentaje_cuotas': porcentaje_cuotas,

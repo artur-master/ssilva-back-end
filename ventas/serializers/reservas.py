@@ -979,6 +979,8 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         total = 0
         total_uf = 0
         total_cuotas = 0
+        departments_discount = 0
+        total_without_discount = 0
 
         for inmueble_data in inmuebles_data:
             inmueble = Inmueble.objects.get(
@@ -996,7 +998,11 @@ class CreateReservaSerializer(serializers.ModelSerializer):
                     discount /
                     100,
                     2)
+                
+                if inmueble.InmuebleTypeID.Name=='Departamento':
+                    departments_discount += price_discount
 
+            total_without_discount += inmueble.Price
             price = inmueble.Price - price_discount
             total_uf += price
 
@@ -1210,6 +1216,8 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'total_firma_promesa': instance.PaymentFirmaPromesa,
             'total_subsidio': instance.Subsidio,
             'total_libreta': instance.Libreta,
+            'total_departments_discount': departments_discount,
+            'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
             'porcentaje_cuotas': porcentaje_cuotas,
             'porcentaje_firma_escritura': porcentaje_firma_escritura,
             'porcentaje_firma_promesa': porcentaje_firma_promesa,
@@ -1379,6 +1387,8 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'total_subsidio': instance.Subsidio,
             'total_libreta': instance.Libreta,
             'total_credito': instance.PaymentInstitucionFinanciera,
+            'total_departments_discount': departments_discount,
+            'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
             'ahorro_plus': instance.AhorroPlus,
             'date_firma_promesa': instance.DateFirmaPromesa,
             'porcentaje_cuotas': porcentaje_cuotas,
@@ -1953,7 +1963,9 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         total = 0
         total_uf = 0
         total_cuotas = 0
-
+        departments_discount = 0
+        total_without_discount = 0
+        
         for inmueble_data in inmuebles_data:
             inmueble = Inmueble.objects.get(
                 InmuebleID=inmueble_data['InmuebleID']
@@ -1972,8 +1984,13 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                     discount /
                     100,
                     2)
+
+                total_without_discount += inmueble.Price
                 price = inmueble.Price - price_discount
                 total_uf += price
+
+                if inmueble.InmuebleTypeID.Name=='Departamento':
+                    departments_discount += price_discount
             else:
                 discount = 0
                 total_uf += inmueble.Price
@@ -2131,6 +2148,8 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'total_firma_promesa': instance.PaymentFirmaPromesa,
             'total_subsidio': instance.Subsidio,
             'total_libreta': instance.Libreta,
+            'total_departments_discount': departments_discount,
+            'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
             'porcentaje_cuotas': porcentaje_cuotas,
             'porcentaje_firma_escritura': porcentaje_firma_escritura,
             'porcentaje_firma_promesa': porcentaje_firma_promesa,
@@ -2372,8 +2391,10 @@ class ControlReservaSerializer(serializers.ModelSerializer):
                                   instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
                                   instance.ContactMethodTypeID,
                                   instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
-                                  instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID,
-                                  instance.DateFirmaPromesa,
+                                  instance.PaymentInstitucionFinanciera, instance.AhorroPlus, 
+                                  instance.Subsidio, instance.SubsidioType, instance.SubsidioCertificado, 
+                                  instance.Libreta, instance.LibretaNumber, instance.InstitucionFinancieraID,
+                                  instance.PayTypeID, instance.DateFirmaPromesa,
                                   instance.ValueProductoFinanciero, current_user)
         else:
             if instance.ReservaStateID.Name == constants.RESERVA_STATE[2]:
@@ -2677,11 +2698,11 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
-    Document6IVACodeudor = serializers.FileField(
+    DocumentCodeudor6IVA = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
-    Document2DAICodeudor = serializers.FileField(
+    DocumentCodeudor2DAI = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
@@ -2752,8 +2773,8 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentCodeudorCertificadoSociedad',
             'DocumentCodeudorCarpetaTributaria',
             'DocumentCodeudorBalancesTimbrados',
-            'Document6IVACodeudor',
-            'Document2DAICodeudor',
+            'DocumentCodeudor6IVA',
+            'DocumentCodeudor2DAI',
             'DocumentCodeudorTituloProfesional',
             'DocumentCodeudorAcredittacionAhorros',
             'DocumentCodeudorAcredittacionDeudas',
@@ -2850,10 +2871,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentCodeudorCarpetaTributaria = validated_data['DocumentCodeudorCarpetaTributaria']
         if 'DocumentCodeudorBalancesTimbrados' in validated_data:
             documents.DocumentCodeudorBalancesTimbrados = validated_data['DocumentCodeudorBalancesTimbrados']
-        if 'Document6IVACodeudor' in validated_data:
-            documents.Document6IVACodeudor = validated_data['Document6IVACodeudor']
-        if 'Document2DAICodeudor' in validated_data:
-            documents.Document2DAICodeudor = validated_data['Document2DAICodeudor']
+        if 'DocumentCodeudor6IVA' in validated_data:
+            documents.DocumentCodeudor6IVA = validated_data['DocumentCodeudor6IVA']
+        if 'DocumentCodeudor2DAI' in validated_data:
+            documents.DocumentCodeudor2DAI = validated_data['DocumentCodeudor2DAI']
         if 'DocumentCodeudorTituloProfesional' in validated_data:
             documents.DocumentCodeudorTituloProfesional = validated_data['DocumentCodeudorTituloProfesional']
         if 'DocumentCodeudorAcredittacionAhorros' in validated_data:
@@ -3209,6 +3230,8 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
         total = 0
         total_uf = 0
         total_cuotas = 0
+        departments_discount = 0
+        total_without_discount = 0
 
         for inmueble_data in inmuebles_data:
             inmueble = Inmueble.objects.get(
@@ -3216,15 +3239,18 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
             )
                       
             price_discount = 0
-            discount = 0
+            discount = 0            
             if inmueble_data['Discount']:
                 discount = inmueble_data['Discount']
                 price_discount = round(
                     inmueble.Price *
-                    discount /
-                    100,
+                    discount / 100,
                     2)
+                
+                if inmueble.InmuebleTypeID.Name=='Departamento':
+                    departments_discount += price_discount
 
+            total_without_discount += inmueble.Price
             price = inmueble.Price - price_discount
             total_uf += price
 
@@ -3443,6 +3469,8 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
             'total_firma_promesa': paymentFirmaPromesa,
             'total_subsidio': subsidio,
             'total_libreta': libreta,
+            'total_departments_discount': departments_discount,
+            'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
             'porcentaje_cuotas': porcentaje_cuotas,
             'porcentaje_firma_escritura': porcentaje_firma_escritura,
             'porcentaje_firma_promesa': porcentaje_firma_promesa,
@@ -3567,7 +3595,7 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
                 'values_25': values_25,
                 'values_30': values_30,
                 'tamaño_letra': 100,
-                'VendedorID': current_user
+                'VendedorID': current_user,
             }
 
             simulador_pdf = render_create_simulador_to_pdf(context_dict)
@@ -3595,6 +3623,8 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
             'total_subsidio': subsidio,
             'total_libreta': libreta,
             'total_credito': paymentInstitucionFinanciera,
+            'total_departments_discount': departments_discount,
+            'porcentaje_departments_discount': round(departments_discount / total_without_discount * 100, 2),
             'ahorro_plus': ahorroPlus,
             'date_firma_promesa': validated_data.get('DateFirmaPromesa'),
             'porcentaje_cuotas': porcentaje_cuotas,
@@ -3621,10 +3651,9 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
         cotizacion_pdf_generated = ContentFile(cotizacion_pdf)
         cotizacion_pdf_generated.name = filename
 
-        # documents = get_object_or_404(DocumentVenta, Folio=folio)
-
         try:
             documents = DocumentVenta.objects.get(Folio=folio)
+            # documents = get_object_or_404(DocumentVenta, Folio=folio)
             documents.DocumentOferta = oferta_pdf_generated
             documents.DocumentFichaPreAprobacion = ficha_pdf_generated
             documents.DocumentSimulador = simulador_pdf_generated

@@ -63,12 +63,15 @@ from ventas.serializers.empresas_compradoras import (
     CreateEmpresaCompradoraSerializer)
 from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.promesas import create_promesa
+from ventas.serializers.ventas_logs import VentaLogSerializer
 from .cuotas import CreateCuotaSerializer
 from .reservas import CreateReservaInmuebleSerializer
 
 def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, folio, cotizacion_type,
                   contact_method_type, payment_firma_promesa, payment_firma_escritura,
-                  payment_institucion_financiera, ahorro_plus, paytype, date_firma_promesa,
+                  payment_institucion_financiera, ahorro_plus,
+                  subsidio, subsidio_type, subsidio_certificado, libreta, libreta_number, institucion_financiera,
+                  paytype, date_firma_promesa,
                   value_producto_financiero, current_user):
     if paytype.Name == constants.PAY_TYPE[0]:
         pre_aprobacion_credito_state = constants.PRE_APROBACION_CREDITO_STATE[0]
@@ -92,6 +95,12 @@ def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, fol
         PaymentFirmaEscritura=payment_firma_escritura,
         PaymentInstitucionFinanciera=payment_institucion_financiera,
         AhorroPlus=ahorro_plus,
+        Subsidio=subsidio,
+        SubsidioType=subsidio_type,
+        SubsidioCertificado=subsidio_certificado,
+        Libreta=libreta,
+        LibretaNumber=libreta_number,
+        InstitucionFinancieraID=institucion_financiera,
         PayTypeID=paytype,
         DateFirmaPromesa=date_firma_promesa,
         ValueProductoFinanciero=value_producto_financiero,
@@ -444,6 +453,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
     Graph = serializers.SerializerMethodField('get_graph')
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     Date = serializers.SerializerMethodField('get_date')
+    Logs = serializers.SerializerMethodField('get_logs')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -488,13 +498,20 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             'PaymentInstitucionFinanciera',
             'ValueProductoFinanciero',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'Condition',
             'Cuotas',
             'Inmuebles',
             'Documents',
             'IsFinished',
             'Graph',
-            'Patrimony'
+            'Patrimony',
+            'Logs'
         )
 
     def get_patrimony(self, obj):
@@ -563,6 +580,12 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
         except AttributeError:
             return ""
 
+    def get_logs(self, obj):
+        venta_log = VentaLog.objects.filter(
+            # VentaLogTypeID__in=VentaLogType.objects.filter(Name__in=constants.VENTA_LOG_TYPE),
+            Folio=obj.Folio).order_by('-id')
+        serializer = VentaLogSerializer(instance=venta_log, many=True)
+        return serializer.data
 
 class ListInmuebleOfertaSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.CharField(
@@ -1161,6 +1184,20 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         decimal_places=2,
         allow_null=True
     )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
     DateFirmaPromesa = serializers.DateTimeField(
         write_only=True,
         allow_null=True
@@ -1192,6 +1229,12 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'DateFirmaPromesa',
             'ValueProductoFinanciero',
             'Cuotas',
@@ -1261,7 +1304,20 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
         instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
         instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
-        instance.AhorroPlus = validated_data['AhorroPlus']
+        if 'AhorroPlus' in validated_data:
+            instance.AhorroPlus = validated_data['AhorroPlus']
+        if 'Subsidio' in validated_data:
+            instance.Subsidio = validated_data['Subsidio']
+        if 'SubsidioType' in validated_data:
+            instance.SubsidioType = validated_data['SubsidioType']
+        if 'SubsidioCertificado' in validated_data:
+            instance.SubsidioCertificado = validated_data['SubsidioCertificado']
+        if 'Libreta' in validated_data:
+            instance.Libreta = validated_data['Libreta']
+        if 'LibretaNumber' in validated_data:
+            instance.LibretaNumber = validated_data['LibretaNumber']
+        if 'InstitucionFinancieraID' in validated_data:
+            instance.InstitucionFinancieraID = validated_data['InstitucionFinancieraID']
         instance.PayTypeID = pay_type
         instance.DateFirmaPromesa = date_firma_promesa
         instance.ValueProductoFinanciero = value_producto_financiero
@@ -1472,7 +1528,22 @@ class ModifyOfertaSerializer(serializers.ModelSerializer):
         write_only=True,
         max_digits=10,
         decimal_places=2,
-        allow_null=True
+        allow_null=True,
+        required=False
+    )
+    Subsidio = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
+    )
+    Libreta = serializers.DecimalField(
+        write_only=True,
+        max_digits=10,
+        decimal_places=2,
+        allow_null=True,
+        required=False
     )
     DateFirmaPromesa = serializers.DateTimeField(
         write_only=True,
@@ -1495,6 +1566,12 @@ class ModifyOfertaSerializer(serializers.ModelSerializer):
             'PaymentFirmaEscritura',
             'PaymentInstitucionFinanciera',
             'AhorroPlus',
+            'Subsidio',
+            'SubsidioType',
+            'SubsidioCertificado',
+            'Libreta',
+            'LibretaNumber',
+            'InstitucionFinancieraID',
             'DateFirmaPromesa',
             'ValueProductoFinanciero',
         )
@@ -1561,7 +1638,20 @@ class ModifyOfertaSerializer(serializers.ModelSerializer):
         instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
         instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
         instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
-        instance.AhorroPlus = validated_data['AhorroPlus']
+        if 'AhorroPlus' in validated_data:
+            instance.AhorroPlus = validated_data['AhorroPlus']
+        if 'Subsidio' in validated_data:
+            instance.Subsidio = validated_data['Subsidio']
+        if 'SubsidioType' in validated_data:
+            instance.SubsidioType = validated_data['SubsidioType']
+        if 'SubsidioCertificado' in validated_data:
+            instance.SubsidioCertificado = validated_data['SubsidioCertificado']
+        if 'Libreta' in validated_data:
+            instance.Libreta = validated_data['Libreta']
+        if 'LibretaNumber' in validated_data:
+            instance.LibretaNumber = validated_data['LibretaNumber']
+        if 'InstitucionFinancieraID' in validated_data:
+            instance.InstitucionFinancieraID = validated_data['InstitucionFinancieraID']
         instance.PayTypeID = pay_type
         instance.DateFirmaPromesa = date_firma_promesa
         instance.ValueProductoFinanciero = value_producto_financiero

@@ -36,7 +36,7 @@ from ventas.serializers.clientes import (
 from .cuotas import (
     ListCuotaSerializer,
     CreateCuotaSerializer)
-from .empresas_compradoras import (EmpresaCompradoraSerializer)
+from .empresas_compradoras import EmpresaCompradoraSerializer
 from ventas.models.empresas_compradoras import EmpresaCompradora
 from sgi_web_back_project import settings
 

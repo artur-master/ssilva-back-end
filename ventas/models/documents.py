@@ -89,9 +89,9 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorBalancesTimbrados = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
-    Document6IVACodeudor = models.FileField(
+    DocumentCodeudor6IVA = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
-    Document2DAICodeudor = models.FileField(
+    DocumentCodeudor2DAI = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorTituloProfesional = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
