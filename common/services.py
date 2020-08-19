@@ -281,8 +281,6 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
                 100,
                 2)
 
-            total_without_discount += cotizacion_inmueble.InmuebleID.Price
-            
             price = cotizacion_inmueble.InmuebleID.Price - price_discount
             total_uf += price
 
@@ -290,6 +288,8 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
                 departments_discount += price_discount
         else:
             total_uf += cotizacion_inmueble.InmuebleID.Price
+
+        total_without_discount += cotizacion_inmueble.InmuebleID.Price
 
     if cotizacion.CuotaID.all():
         for cuota in cotizacion.CuotaID.all():

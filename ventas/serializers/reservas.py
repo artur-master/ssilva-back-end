@@ -1965,7 +1965,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         total_cuotas = 0
         departments_discount = 0
         total_without_discount = 0
-        
+
         for inmueble_data in inmuebles_data:
             inmueble = Inmueble.objects.get(
                 InmuebleID=inmueble_data['InmuebleID']
@@ -1985,7 +1985,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
                     100,
                     2)
 
-                total_without_discount += inmueble.Price
                 price = inmueble.Price - price_discount
                 total_uf += price
 
@@ -1994,6 +1993,8 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             else:
                 discount = 0
                 total_uf += inmueble.Price
+            
+            total_without_discount += inmueble.Price
 
             reserva_inmuebles_qs = ReservaInmueble.objects.filter(
                 ReservaID=instance)
