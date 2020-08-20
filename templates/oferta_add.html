@@ -210,7 +210,7 @@
       <tr>
         <td style="padding-left: 10px">En {{ cuotas_data|length }} cuota(s)</td>
         <td style="text-align: right;">{{ porcentaje_cuotas | floatformat:2 }}% </td>
-        <td style="text-align: left;">Cuota(s) de UF
+        <td style="text-align: left; padding-left: 5px"> Cuota(s) de UF
           {% with len=cuotas_data|length %}
             {% with div_val=total_cuotas|div:len %}
               {{ div_val | floatformat:2 }}
