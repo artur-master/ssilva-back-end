@@ -284,7 +284,7 @@ def download_pdf_views(cotizacion_id, letter_size, response=None):
             price = cotizacion_inmueble.InmuebleID.Price - price_discount
             total_uf += price
 
-            if inmueble.InmuebleTypeID.Name=='Departamento':
+            if cotizacion_inmueble.InmuebleID.InmuebleTypeID.Name=='Departamento':
                 departments_discount += price_discount
         else:
             total_uf += cotizacion_inmueble.InmuebleID.Price
