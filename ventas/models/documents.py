@@ -47,6 +47,10 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentCotizacionAFP = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
+    DocumentCotizacionLaboral = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentAcredittacionCuotas = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
         
     DocumentCertificadoSociedad = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
@@ -60,6 +64,10 @@ class DocumentVenta(models.Model):
     Document2DAI = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)     
     DocumentTituloProfesional = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentVehicle = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentPhotoEscritura = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
     DocumentAcredittacionAhorros = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)
@@ -95,6 +103,10 @@ class DocumentVenta(models.Model):
         upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorTituloProfesional = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
+    DocumentCodeudorVehicle = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)  
+    DocumentCodeudorPhotoEscritura = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorAcredittacionAhorros = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorAcredittacionDeudas = models.FileField(
@@ -106,7 +118,13 @@ class DocumentVenta(models.Model):
     DocumentCodeudorLiquidacion2 = models.FileField(
         upload_to="DocumentVentas", null=True, blank=True)  
     DocumentCodeudorLiquidacion3 = models.FileField(
-        upload_to="DocumentVentas", null=True, blank=True)  
+        upload_to="DocumentVentas", null=True, blank=True)
+    DocumentCodeudorCotizacionAFP = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True) 
+    DocumentCodeudorCotizacionLaboral = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True) 
+    DocumentCodeudorAcredittacionCuotas = models.FileField(
+        upload_to="DocumentVentas", null=True, blank=True) 
             
         
     def __str__(self):

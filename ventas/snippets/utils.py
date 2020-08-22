@@ -34,14 +34,18 @@ def calculate_totals_patrimony(patrimony):
 
 
 def calculate_simulate_values(total_amount, percentage, rate, date, codeudor):
-    if codeudor:
-        desgravamen_insurance = total_amount * (percentage / 100) * Decimal(0.00028) * 2
-    else:
-        desgravamen_insurance = total_amount * (percentage / 100) * Decimal(0.00028)
+    desgravamen_insurance = 0
+    dividend_uf = 0
+
+    if percentage:
+        if codeudor:
+            desgravamen_insurance = total_amount * (percentage / 100) * Decimal(0.00028) * 2
+        else:
+            desgravamen_insurance = total_amount * (percentage / 100) * Decimal(0.00028)
+        
+        dividend_uf = dividend_calculation(total_amount, percentage, rate, date)
 
     fire_quake_insurance = total_amount * Decimal(0.000245)
-
-    dividend_uf = dividend_calculation(total_amount, percentage, rate, date)
 
     dividend_insurances = round(dividend_uf + desgravamen_insurance + fire_quake_insurance, 2)
 

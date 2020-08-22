@@ -42,6 +42,10 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         'get_liquidacion_3_url')
     DocumentCotizacionAFP = serializers.SerializerMethodField(
         'get_cotizacion_afp_url')
+    DocumentCotizacionLaboral = serializers.SerializerMethodField(
+        'get_cotizacion_laboral_url')
+    DocumentAcredittacionCuotas = serializers.SerializerMethodField(
+        'get_acredittacion_cutoas_url')
         
     DocumentCertificadoSociedad = serializers.SerializerMethodField(
         'get_DocumentCertificadoSociedad_url')
@@ -56,6 +60,10 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         'get_Document2DAI_url')   
     DocumentTituloProfesional = serializers.SerializerMethodField(
         'get_DocumentTituloProfesional_url')
+    DocumentVehicle = serializers.SerializerMethodField(
+        'get_DocumentVehicle_url')
+    DocumentPhotoEscritura = serializers.SerializerMethodField(
+        'get_DocumentPhotoEscritura_url')
     DocumentAcredittacionAhorros = serializers.SerializerMethodField(
         'get_DocumentAcredittacionAhorros_url')
     DocumentAcredittacionDeudas = serializers.SerializerMethodField(
@@ -90,6 +98,10 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         'get_Document2DAICodeudor_url')   
     DocumentCodeudorTituloProfesional = serializers.SerializerMethodField(
         'get_DocumentCodeudorTituloProfesional_url')   
+    DocumentCodeudorPhotoEscritura = serializers.SerializerMethodField(
+        'get_DocumentCodeudorPhotoEscritura_url')   
+    DocumentCodeudorVehicle = serializers.SerializerMethodField(
+        'get_DocumentCodeudorVehicle_url')   
     DocumentCodeudorAcredittacionAhorros = serializers.SerializerMethodField(
         'get_DocumentCodeudorAcredittacionAhorros_url')   
     DocumentCodeudorAcredittacionDeudas = serializers.SerializerMethodField(
@@ -101,7 +113,13 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
     DocumentCodeudorLiquidacion2 = serializers.SerializerMethodField(
         'get_DocumentCodeudorLiquidacion2_url')   
     DocumentCodeudorLiquidacion3 = serializers.SerializerMethodField(
-        'get_DocumentCodeudorLiquidacion3_url')   
+        'get_DocumentCodeudorLiquidacion3_url')
+    DocumentCodeudorCotizacionAFP = serializers.SerializerMethodField(
+        'get_DocumentCodeudorCotizacionAFP_url')  
+    DocumentCodeudorCotizacionLaboral = serializers.SerializerMethodField(
+        'get_DocumentCodeudorCotizacionLaboral_url')  
+    DocumentCodeudorAcredittacionCuotas = serializers.SerializerMethodField(
+        'get_DocumentCodeudorAcredittacionCuotas_url')  
 
     class Meta:
         model = DocumentVenta
@@ -111,8 +129,10 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
                   'DocumentSimulador', 'DocumentCertificadoMatrimonio', 'DocumentConstitucionSociedad',
                   'DocumentPagoGarantia', 'DocumentFotocopiaCarnet', 'DocumentPreApprobation', 'DocumentLiquidacion1',
                   'DocumentLiquidacion2', 'DocumentLiquidacion3', 'DocumentCotizacionAFP',
+                  'DocumentCotizacionLaboral','DocumentAcredittacionCuotas',
                   'DocumentCertificadoSociedad', 'DocumentCarpetaTributaria', 'DocumentBalancesTimbrados',
-                  'Document6IVA', 'Document2DAI', 'DocumentTituloProfesional', 
+                  'Document6IVA', 'Document2DAI', 'DocumentTituloProfesional', 'DocumentVehicle',
+                  'DocumentPhotoEscritura',
                   'DocumentAcredittacionAhorros', 'DocumentAcredittacionDeudas','DocumentAcredittacionActivo',
                   'DocumentCodeudorFirmadoCheques','DocumentCodeudorFichaPreAprobacion',
                   'DocumentCodeudorSimulador','DocumentCodeudorCotizacion',
@@ -123,7 +143,9 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
                   'DocumentCodeudorTituloProfesional','DocumentCodeudorAcredittacionAhorros',
                   'DocumentCodeudorAcredittacionDeudas','DocumentCodeudorFotocopiaCarnet',
                   'DocumentCodeudorLiquidacion1','DocumentCodeudorLiquidacion2',
-                  'DocumentCodeudorLiquidacion3',)
+                  'DocumentCodeudorLiquidacion3','DocumentCodeudorCotizacionAFP',
+                  'DocumentCodeudorAcredittacionCuotas','DocumentCodeudorCotizacionLaboral',
+                  'DocumentCodeudorVehicle', 'DocumentCodeudorPhotoEscritura')
 
     def get_cotizacion_url(self, obj):
         if obj.DocumentCotizacion and hasattr(
@@ -296,6 +318,24 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
         else:
             return ""
 
+    def get_cotizacion_laboral_url(self, obj):
+        if obj.DocumentCotizacionLaboral and hasattr(
+                obj.DocumentCotizacionLaboral, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCotizacionLaboral.url)
+        else:
+            return ""
+
+    def get_acredittacion_cutoas_url(self, obj):
+        if obj.DocumentAcredittacionCuotas and hasattr(
+                obj.DocumentAcredittacionCuotas, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentAcredittacionCuotas.url)
+        else:
+            return ""
+
     def get_DocumentCertificadoSociedad_url(self, obj):
         if obj.DocumentCertificadoSociedad and hasattr(
                 obj.DocumentCertificadoSociedad, 'url'):
@@ -347,6 +387,24 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
             return "%s%s" % (absolute_url, obj.DocumentTituloProfesional.url)
+        else:
+            return "" 
+
+    def get_DocumentVehicle_url(self, obj):
+        if obj.DocumentVehicle and hasattr(
+                obj.DocumentVehicle, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentVehicle.url)
+        else:
+            return "" 
+
+    def get_DocumentPhotoEscritura_url(self, obj):
+        if obj.DocumentPhotoEscritura and hasattr(
+                obj.DocumentPhotoEscritura, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentPhotoEscritura.url)
         else:
             return ""     
 
@@ -494,6 +552,24 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             return "%s%s" % (absolute_url, obj.DocumentCodeudorTituloProfesional.url)
         else:
             return ""
+            
+    def get_DocumentCodeudorVehicle_url(self, obj):
+        if obj.DocumentCodeudorVehicle and hasattr(
+                obj.DocumentCodeudorVehicle, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudorVehicle.url)
+        else:
+            return ""
+            
+    def get_DocumentCodeudorPhotoEscritura_url(self, obj):
+        if obj.DocumentCodeudorPhotoEscritura and hasattr(
+                obj.DocumentCodeudorPhotoEscritura, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudorPhotoEscritura.url)
+        else:
+            return ""
 
     def get_DocumentCodeudorAcredittacionAhorros_url(self, obj):
         if obj.DocumentCodeudorAcredittacionAhorros and hasattr(
@@ -546,5 +622,32 @@ class DocumentVentaSerializer(serializers.ModelSerializer):
             url = self.context.get('url')
             absolute_url = get_full_path_x(url)
             return "%s%s" % (absolute_url, obj.DocumentCodeudorLiquidacion3.url)
+        else:
+            return ""
+    
+    def get_DocumentCodeudorCotizacionAFP_url(self, obj):
+        if obj.DocumentCodeudorCotizacionAFP and hasattr(
+                obj.DocumentCodeudorCotizacionAFP, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudorCotizacionAFP.url)
+        else:
+            return ""
+
+    def get_DocumentCodeudorCotizacionLaboral_url(self, obj):
+        if obj.DocumentCodeudorCotizacionLaboral and hasattr(
+                obj.DocumentCodeudorCotizacionLaboral, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudorCotizacionLaboral.url)
+        else:
+            return ""
+    
+    def get_DocumentCodeudorAcredittacionCuotas_url(self, obj):
+        if obj.DocumentCodeudorAcredittacionCuotas and hasattr(
+                obj.DocumentCodeudorAcredittacionCuotas, 'url'):
+            url = self.context.get('url')
+            absolute_url = get_full_path_x(url)
+            return "%s%s" % (absolute_url, obj.DocumentCodeudorAcredittacionCuotas.url)
         else:
             return ""

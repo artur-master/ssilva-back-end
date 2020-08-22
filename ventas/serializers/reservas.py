@@ -613,24 +613,6 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
-    Date8 = serializers.BooleanField(
-        required=False,
-    )
-    Date10 = serializers.BooleanField(
-        required=False,
-    )
-    Date15 = serializers.BooleanField(
-        required=False,
-    )
-    Date20 = serializers.BooleanField(
-        required=False,
-    )
-    Date25 = serializers.BooleanField(
-        required=False,
-    )
-    Date30 = serializers.BooleanField(
-        required=False,
-    )
     Folio = serializers.CharField(required=False)
 
     class Meta:
@@ -665,13 +647,7 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'CoEmpleador',
             'Patrimony',
             'CoPatrimony',
-            'ValueProductoFinanciero',
-            'Date8',
-            'Date10',
-            'Date15',
-            'Date20',
-            'Date25',
-            'Date30')
+            'ValueProductoFinanciero')
 
     def create(self, validated_data):
         current_user = return_current_user(self)
@@ -724,12 +700,12 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         pay_type = get_or_none(PayType, Name=pay_type_name)
 
         # Plazos a imprimir en simulador de credito
-        date_8 = validated_data.get('Date8')
-        date_10 = validated_data.get('Date10')
-        date_15 = validated_data.get('Date15')
-        date_20 = validated_data.get('Date20')
-        date_25 = validated_data.get('Date25')
-        date_30 = validated_data.get('Date30')
+        date_8 = 8
+        date_10 = 10
+        date_15 = 15
+        date_20 = 20
+        date_25 = 25
+        date_30 = 30
 
         # Validaciones campos comunes entre ambos tipos de cliente
         if pay_type_name and not pay_type:
@@ -1556,24 +1532,6 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
-    Date8 = serializers.BooleanField(
-        required=False,
-    )
-    Date10 = serializers.BooleanField(
-        required=False,
-    )
-    Date15 = serializers.BooleanField(
-        required=False,
-    )
-    Date20 = serializers.BooleanField(
-        required=False,
-    )
-    Date25 = serializers.BooleanField(
-        required=False,
-    )
-    Date30 = serializers.BooleanField(
-        required=False,
-    )
 
     class Meta:
         model = Reserva
@@ -1606,13 +1564,7 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'Empleador',
             'CoEmpleador',
             'ValueProductoFinanciero',
-            'Extra',
-            'Date8',
-            'Date10',
-            'Date15',
-            'Date20',
-            'Date25',
-            'Date30')
+            'Extra')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
@@ -1661,12 +1613,12 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             rut_co_empleador = razon_social_co_empleador = False
 
             # Plazos a imprimir en simulador de credito
-        date_8 = validated_data.get('Date8', False)
-        date_10 = validated_data.get('Date10', False)
-        date_15 = validated_data.get('Date15', False)
-        date_20 = validated_data.get('Date20', False)
-        date_25 = validated_data.get('Date25', False)
-        date_30 = validated_data.get('Date30', False)
+        date_8 = 8
+        date_10 = 10
+        date_15 = 15
+        date_20 = 20
+        date_25 = 25
+        date_30 = 30
 
         if pay_type_name is not False:
             pay_type = get_or_none(PayType, Name=pay_type_name)
@@ -2620,6 +2572,14 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentCotizacionLaboral = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentAcredittacionCuotas = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
 
     DocumentCertificadoSociedad = serializers.FileField(
         allow_empty_file=True,
@@ -2643,6 +2603,14 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         required=False
     )
     DocumentTituloProfesional = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentVehicle = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentPhotoEscritura = serializers.FileField(
         allow_empty_file=True,
         required=False
     )
@@ -2711,6 +2679,14 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentCodeudorVehicle = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorPhotoEscritura = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
     DocumentCodeudorAcredittacionAhorros = serializers.FileField(
         allow_empty_file=True,
         required=False
@@ -2735,6 +2711,18 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
         allow_empty_file=True,
         required=False
     )
+    DocumentCodeudorCotizacionAFP = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorCotizacionLaboral = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
+    DocumentCodeudorAcredittacionCuotas = serializers.FileField(
+        allow_empty_file=True,
+        required=False
+    )
 
     class Meta:
         model = Reserva
@@ -2755,12 +2743,16 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentLiquidacion2',
             'DocumentLiquidacion3',
             'DocumentCotizacionAFP',
+            'DocumentCotizacionLaboral',
+            'DocumentAcredittacionCuotas',
             'DocumentCertificadoSociedad',
             'DocumentCarpetaTributaria',
             'DocumentBalancesTimbrados',
             'Document6IVA',
             'Document2DAI',
             'DocumentTituloProfesional',
+            'DocumentVehicle',
+            'DocumentPhotoEscritura',
             'DocumentAcredittacionAhorros',
             'DocumentAcredittacionDeudas',
             'DocumentAcredittacionActivo',
@@ -2777,12 +2769,17 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             'DocumentCodeudor6IVA',
             'DocumentCodeudor2DAI',
             'DocumentCodeudorTituloProfesional',
+            'DocumentCodeudorPhotoEscritura',
+            'DocumentCodeudorVehicle',
             'DocumentCodeudorAcredittacionAhorros',
             'DocumentCodeudorAcredittacionDeudas',
             'DocumentCodeudorFotocopiaCarnet',
             'DocumentCodeudorLiquidacion1',
             'DocumentCodeudorLiquidacion2',
             'DocumentCodeudorLiquidacion3',
+            'DocumentCodeudorCotizacionAFP',
+            'DocumentCodeudorCotizacionLaboral',
+            'DocumentCodeudorAcredittacionCuotas'
             )
 
     def create(self, validated_data):
@@ -2831,6 +2828,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentLiquidacion3 = validated_data['DocumentLiquidacion3']
         if 'DocumentCotizacionAFP' in validated_data:
             documents.DocumentCotizacionAFP = validated_data['DocumentCotizacionAFP']
+        if 'DocumentCotizacionLaboral' in validated_data:
+            documents.DocumentCotizacionLaboral = validated_data['DocumentCotizacionLaboral']
+        if 'DocumentAcredittacionCuotas' in validated_data:
+            documents.DocumentAcredittacionCuotas = validated_data['DocumentAcredittacionCuotas']
 
         if 'DocumentCertificadoSociedad' in validated_data:
             documents.DocumentCertificadoSociedad = validated_data['DocumentCertificadoSociedad']
@@ -2844,6 +2845,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.Document2DAI = validated_data['Document2DAI']
         if 'DocumentTituloProfesional' in validated_data:
             documents.DocumentTituloProfesional = validated_data['DocumentTituloProfesional']
+        if 'DocumentVehicle' in validated_data:
+            documents.DocumentVehicle = validated_data['DocumentVehicle']
+        if 'DocumentPhotoEscritura' in validated_data:
+            documents.DocumentPhotoEscritura = validated_data['DocumentPhotoEscritura']
         if 'DocumentAcredittacionAhorros' in validated_data:
             documents.DocumentAcredittacionAhorros = validated_data['DocumentAcredittacionAhorros']
         if 'DocumentAcredittacionDeudas' in validated_data:
@@ -2878,6 +2883,10 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentCodeudor2DAI = validated_data['DocumentCodeudor2DAI']
         if 'DocumentCodeudorTituloProfesional' in validated_data:
             documents.DocumentCodeudorTituloProfesional = validated_data['DocumentCodeudorTituloProfesional']
+        if 'DocumentCodeudorVehicle' in validated_data:
+            documents.DocumentCodeudorVehicle = validated_data['DocumentCodeudorVehicle']
+        if 'DocumentCodeudorPhotoEscritura' in validated_data:
+            documents.DocumentCodeudorPhotoEscritura = validated_data['DocumentCodeudorPhotoEscritura']
         if 'DocumentCodeudorAcredittacionAhorros' in validated_data:
             documents.DocumentCodeudorAcredittacionAhorros = validated_data['DocumentCodeudorAcredittacionAhorros']
         if 'DocumentCodeudorAcredittacionDeudas' in validated_data:
@@ -2890,6 +2899,12 @@ class UploadDocumentsReservaSerializer(serializers.ModelSerializer):
             documents.DocumentCodeudorLiquidacion2 = validated_data['DocumentCodeudorLiquidacion2']
         if 'DocumentCodeudorLiquidacion3' in validated_data:
             documents.DocumentCodeudorLiquidacion3 = validated_data['DocumentCodeudorLiquidacion3']
+        if 'DocumentCodeudorCotizacionAFP' in validated_data:
+            documents.DocumentCodeudorCotizacionAFP = validated_data['DocumentCodeudorCotizacionAFP']
+        if 'DocumentCodeudorCotizacionLaboral' in validated_data:
+            documents.DocumentCodeudorCotizacionLaboral = validated_data['DocumentCodeudorCotizacionLaboral']
+        if 'DocumentCodeudorAcredittacionCuotas' in validated_data:
+            documents.DocumentCodeudorAcredittacionCuotas = validated_data['DocumentCodeudorAcredittacionCuotas']
                 
         documents.save()
 
@@ -3091,24 +3106,6 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
-    Date8 = serializers.BooleanField(
-        required=False,
-    )
-    Date10 = serializers.BooleanField(
-        required=False,
-    )
-    Date15 = serializers.BooleanField(
-        required=False,
-    )
-    Date20 = serializers.BooleanField(
-        required=False,
-    )
-    Date25 = serializers.BooleanField(
-        required=False,
-    )
-    Date30 = serializers.BooleanField(
-        required=False,
-    )
     Folio = serializers.CharField(required=False)
 
     class Meta:
@@ -3133,13 +3130,7 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
             'Empleador',
             'Subsidio',
             'Libreta',
-            'Patrimony',
-            'Date8',
-            'Date10',
-            'Date15',
-            'Date20',
-            'Date25',
-            'Date30')
+            'Patrimony')
 
     def create(self, validated_data):
         current_user = return_current_user(self)
@@ -3162,12 +3153,12 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
         pay_type = get_or_none(PayType, Name=pay_type_name)
 
         # Plazos a imprimir en simulador de credito
-        date_8 = validated_data.get('Date8')
-        date_10 = validated_data.get('Date10')
-        date_15 = validated_data.get('Date15')
-        date_20 = validated_data.get('Date20')
-        date_25 = validated_data.get('Date25')
-        date_30 = validated_data.get('Date30')
+        date_8 = 8
+        date_10 = 10
+        date_15 = 15
+        date_20 = 20
+        date_25 = 25
+        date_30 = 30
 
         # Validaciones campos comunes entre ambos tipos de cliente
         if pay_type_name and not pay_type:
