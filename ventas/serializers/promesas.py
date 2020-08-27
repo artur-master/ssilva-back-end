@@ -128,6 +128,8 @@ def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, coti
     crear_notificacion_promesa_creada(
         instance, proyecto, jefe_proyecto, vendedor,
         usuarios_confecciona_maquetas)
+    
+    return instance
 
 
 class CreatePaymentInstructionSerializer(serializers.ModelSerializer):

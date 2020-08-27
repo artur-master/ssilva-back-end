@@ -152,6 +152,8 @@ def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, fol
     crear_notificacion_oferta_creada(
         instance, proyecto, jefe_proyecto, vendedor,
         asistente_comercial, usuarios_recepciona_garantias)
+    
+    return instance
 
 
 class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
@@ -586,6 +588,7 @@ class RetrieveOfertaSerializer(serializers.ModelSerializer):
             Folio=obj.Folio).order_by('-id')
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data
+
 
 class ListInmuebleOfertaSerializer(serializers.ModelSerializer):
     InmuebleID = serializers.CharField(

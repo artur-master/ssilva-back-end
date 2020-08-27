@@ -9,7 +9,7 @@ from ventas.models.empresas_compradoras import EmpresaCompradora
 from ventas.models.finding_contact import ContactMethodType
 from ventas.models.payment_forms import Cuota, PayType
 from ventas.models.cotizaciones import CotizacionType
-
+from ventas.models.ofertas import Oferta
 
 
 class ReservaState(models.Model):
@@ -154,6 +154,12 @@ class Reserva(models.Model):
         null=True,
         blank=True)
     ValueProductoFinanciero = models.IntegerField(
+        null=True,
+        blank=True)
+    OfertaID = models.ForeignKey(
+        Oferta,
+        related_name='oferta_reserva',
+        on_delete=models.CASCADE,
         null=True,
         blank=True)
 

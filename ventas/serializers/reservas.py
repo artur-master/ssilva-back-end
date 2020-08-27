@@ -2335,20 +2335,35 @@ class ControlReservaSerializer(serializers.ModelSerializer):
 
             eliminar_notificacion_reserva_pendiente_control(instance)
 
-            try:
-                oferta = Oferta.objects.filter(Folio=instance.Folio)        
+            if(instance.OfertaID):
+                oferta = instance.OfertaID
                 oferta.OfertaState=constants.OFERTA_STATE[0]
                 oferta.save()
-            except:
-                ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
-                                  instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
-                                  instance.ContactMethodTypeID,
-                                  instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
-                                  instance.PaymentInstitucionFinanciera, instance.AhorroPlus, 
-                                  instance.Subsidio, instance.SubsidioType, instance.SubsidioCertificado, 
-                                  instance.Libreta, instance.LibretaNumber, instance.InstitucionFinancieraID,
-                                  instance.PayTypeID, instance.DateFirmaPromesa,
-                                  instance.ValueProductoFinanciero, current_user)
+            else:
+                instance.OfertaID = ofertas.create_oferta(
+                    instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
+                    instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
+                    instance.ContactMethodTypeID,
+                    instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
+                    instance.PaymentInstitucionFinanciera, instance.AhorroPlus, 
+                    instance.Subsidio, instance.SubsidioType, instance.SubsidioCertificado, 
+                    instance.Libreta, instance.LibretaNumber, instance.InstitucionFinancieraID,
+                    instance.PayTypeID, instance.DateFirmaPromesa,
+                    instance.ValueProductoFinanciero, current_user)
+            # try:
+            #     oferta = Oferta.objects.filter(Folio=instance.Folio)        
+            #     oferta.OfertaState=constants.OFERTA_STATE[0]
+            #     oferta.save()
+            # except:
+            #     ofertas.create_oferta(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
+            #                       instance.EmpresaCompradoraID, instance.Folio, instance.CotizacionTypeID,
+            #                       instance.ContactMethodTypeID,
+            #                       instance.PaymentFirmaPromesa, instance.PaymentFirmaEscritura,
+            #                       instance.PaymentInstitucionFinanciera, instance.AhorroPlus, 
+            #                       instance.Subsidio, instance.SubsidioType, instance.SubsidioCertificado, 
+            #                       instance.Libreta, instance.LibretaNumber, instance.InstitucionFinancieraID,
+            #                       instance.PayTypeID, instance.DateFirmaPromesa,
+            #                       instance.ValueProductoFinanciero, current_user)
         else:
             if instance.ReservaStateID.Name == constants.RESERVA_STATE[2]:
                 raise CustomValidation(
