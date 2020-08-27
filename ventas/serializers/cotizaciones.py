@@ -451,6 +451,7 @@ class CreateClienteCotizacionSerializer(serializers.ModelSerializer):
     ComunaID = serializers.CharField(
         write_only=True,
         allow_blank=True,
+        allow_null=True,
         required=False
     )
     BirthDate = serializers.DateField(
