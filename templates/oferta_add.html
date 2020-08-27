@@ -399,10 +399,21 @@
       </tr>
     </table>
 
+    {% if proyecto.ProjectClauses and proyecto.ProjectClauses != "" %}
+    <table style="width: 100%; margin-top: 10px;">
+      <tr style="height:100px;">
+        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>8.</strong> </td>
+        <td style="vertical-align: top;">
+          {{ proyecto.ProjectClauses }}
+        </td>
+      </tr>
+    </table>
+    {% endif %}
+
     {% if conditions %}
     <table style="width: 100%; margin-top: 10px;">
       <tr style="height:200px;">
-        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>8.</strong> </td>
+        <td style="width: 15px; vertical-align:top; padding-left: 1px;"> <strong>9.</strong> </td>
         <td style="vertical-align: top;">
           <strong> <span style="text-decoration:underline">NOTAS</span></strong><br>          
             {% for condition in conditions %}
@@ -413,17 +424,6 @@
     </table>
     {% endif %}
 
-    {% if proyecto.ProjectClauses and proyecto.ProjectClauses != "" %}
-    <table style="width: 100%; margin-top: 10px;">
-      <tr style="height:100px;">
-        <td style="width: 15px; vertical-align:top; padding-left: 1px;">  </td>
-        <td style="vertical-align: top;">
-          {{ proyecto.ProjectClauses }}
-        </td>
-      </tr>
-    </table>
-    {% endif %}
-    
     <div id="footer_content">
       <table>
         <tr style="height:60px;">
