@@ -190,6 +190,8 @@ class ListReservaSerializer(serializers.ModelSerializer):
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     Date = serializers.SerializerMethodField('get_date')
+    OfertaID = serializers.SerializerMethodField('get_oferta')
+    OfertaState = serializers.SerializerMethodField('get_oferta_state')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -201,7 +203,7 @@ class ListReservaSerializer(serializers.ModelSerializer):
         model = Reserva
         fields = ('ReservaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
                   'ClienteName', 'ClienteLastNames', 'ClienteRut', 'Folio',
-                  'ReservaState', 'Inmuebles')
+                  'ReservaState', 'Inmuebles', 'OfertaID', 'OfertaState')
 
     def get_inmuebles(self, obj):
         inmuebles_reserva = ReservaInmueble.objects.filter(ReservaID=obj).prefetch_related(
@@ -213,6 +215,18 @@ class ListReservaSerializer(serializers.ModelSerializer):
     def get_date(self, obj):
         try:
             return obj.Date.strftime("%Y-%m-%d %H:%M")
+        except AttributeError:
+            return ""
+
+    def get_oferta(self, obj):
+        try:
+            return obj.OfertaID.OfertaID
+        except AttributeError:
+            return None
+    
+    def get_oferta_state(self, obj):
+        try:
+            return obj.OfertaID.OfertaState
         except AttributeError:
             return ""
 
