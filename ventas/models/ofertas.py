@@ -8,6 +8,7 @@ from ventas.models.empresas_compradoras import EmpresaCompradora
 from ventas.models.finding_contact import ContactMethodType
 from ventas.models.payment_forms import PayType
 from ventas.models.cotizaciones import CotizacionType
+from ventas.models.promesas import Promesa
 
 class Oferta(models.Model):
     OfertaID = models.UUIDField(
@@ -111,6 +112,12 @@ class Oferta(models.Model):
         null=True,
         blank=True)
     IsApproveInmobiliaria = models.BooleanField(default=False)
+    PromesaID = models.ForeignKey(
+        Promesa,
+        related_name='promesa_oferta',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)
 
     def __str__(self):
         return '%s - %s' % (self.ProyectoID.Name, self.OfertaState)

@@ -53,9 +53,9 @@ class OfertaViewSet(viewsets.ModelViewSet):
     def list(self, request):
         proyecto_id = self.request.query_params.get('q', None)
         proyecto = Proyecto.objects.get(ProyectoID=proyecto_id)
-        queryset = Oferta.objects.filter(ProyectoID=proyecto).exclude(OfertaState__in=[constants.OFERTA_STATE[3],constants.OFERTA_STATE[5]])
-        queryset = RetrieveOfertaSerializer.setup_eager_loading(queryset)
-        serializer = RetrieveOfertaSerializer(queryset, many=True, context={'request': request})
+        queryset = Oferta.objects.filter(ProyectoID=proyecto).exclude(OfertaState__in=[constants.OFERTA_STATE[5]])
+        queryset = ListOfertaSerializer.setup_eager_loading(queryset)
+        serializer = ListOfertaSerializer(queryset, many=True, context={'request': request})
 
         return Response(serializer.data)
 

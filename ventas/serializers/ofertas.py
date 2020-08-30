@@ -626,6 +626,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
         source='ClienteID.Rut'
     )
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
+    PromesaID = serializers.SerializerMethodField('get_promesa_id')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -637,7 +638,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
         model = Oferta
         fields = ('OfertaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
                   'ClienteName', 'ClienteLastNames', 'ClienteRut', 'Folio',
-                  'OfertaState', 'Inmuebles', 'AprobacionInmobiliaria')
+                  'OfertaState', 'Inmuebles', 'AprobacionInmobiliaria', 'AprobacionInmobiliariaState', 'PromesaID')
 
     def get_inmuebles(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
@@ -646,6 +647,12 @@ class ListOfertaSerializer(serializers.ModelSerializer):
         serializer = ListInmuebleOfertaSerializer(
             instance=inmuebles_reserva, many=True)
         return serializer.data
+    
+    def get_promesa_id(self, obj):
+        try:
+            return obj.PromesaID.PromesaID
+        except AttributeError:
+            return None
 
 
 class RegisterReceptionGuaranteeSerializer(serializers.ModelSerializer):
@@ -947,7 +954,7 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
             reserva = Reserva.objects.get(Folio=instance.Folio)
             inmuebles = ReservaInmueble.objects.filter(ReservaID=reserva)
 
-            create_promesa(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
+            instance.PromesaID = create_promesa(instance.ProyectoID, instance.ClienteID, instance.VendedorID, instance.CodeudorID,
                            inmuebles, instance.Folio, instance.CotizacionTypeID, instance.PaymentFirmaPromesa,
                            instance.PaymentFirmaEscritura,
                            instance.PaymentInstitucionFinanciera, instance.AhorroPlus, instance.PayTypeID, current_user)
@@ -957,6 +964,11 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
                     "Confeccion de promesa ya ha sido aprobada, no se puede rechazar",
                     status_code=status.HTTP_409_CONFLICT)
             instance.OfertaState = constants.OFERTA_STATE[2]
+
+            if instance.PromesaID:
+                instance.PromesaID.delete()            
+            instance.PromesaID = None
+
             # reset oferta
             if instance.PayTypeID.Name == constants.PAY_TYPE[0]:
                 instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[0]
