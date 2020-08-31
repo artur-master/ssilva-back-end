@@ -613,6 +613,11 @@ class ListOfertaSerializer(serializers.ModelSerializer):
     Proyecto = serializers.CharField(
         source='ProyectoID.Name'
     )
+    Cliente = ClienteSerializer(
+        source='ClienteID',
+        allow_null=True
+    )
+    '''
     ClienteID = serializers.UUIDField(
         source='ClienteID.UserID'
     )
@@ -625,6 +630,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
     ClienteRut = serializers.CharField(
         source='ClienteID.Rut'
     )
+    '''
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     PromesaID = serializers.SerializerMethodField('get_promesa_id')
 
@@ -636,9 +642,10 @@ class ListOfertaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Oferta
-        fields = ('OfertaID', 'ProyectoID', 'Proyecto', 'ClienteID', 'Date',
-                  'ClienteName', 'ClienteLastNames', 'ClienteRut', 'Folio',
-                  'OfertaState', 'Inmuebles', 'AprobacionInmobiliaria', 'AprobacionInmobiliariaState', 'PromesaID')
+        fields = ('OfertaID', 'ProyectoID', 'Proyecto', 'Date', 'Folio', 'Cliente',
+                  #'ClienteID', 'ClienteName', 'ClienteLastNames', 'ClienteRut', 
+                  'AprobacionInmobiliaria', 'AprobacionInmobiliariaState',
+                  'OfertaState', 'Inmuebles', 'PromesaID')
 
     def get_inmuebles(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
