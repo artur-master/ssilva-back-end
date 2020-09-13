@@ -67,6 +67,36 @@ from ventas.serializers.ventas_logs import VentaLogSerializer
 from .cuotas import CreateCuotaSerializer
 from .reservas import CreateReservaInmuebleSerializer
 
+def get_initAprobacionInmobiliaria(proyecto):
+    aprobacionInmobiliaria = {}
+
+    aprobadors = UserProyecto.objects.filter(UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'), ProyectoID=proyecto)
+    if aprobadors.exists():
+        aprobador_users = {}
+        for aprobador in aprobadors:
+            aprobador_users[str(aprobador.UserID.UserID)] = None
+
+        aprobacionInmobiliaria['Aprobador'] = aprobador_users
+
+    autorizadors = UserProyecto.objects.filter(UserProyectoTypeID=UserProyectoType.objects.get(Name='Autorizador'), ProyectoID=proyecto)
+    if autorizadors.exists():
+        autorizador_users = {}
+        for autorizador in autorizadors:
+            autorizador_users[str(autorizador.UserID.UserID)] = None
+            
+        aprobacionInmobiliaria['Autorizador'] = autorizador_users
+    
+    representantes = UserProyecto.objects.filter(UserProyectoTypeID=UserProyectoType.objects.get(Name='Representante'), ProyectoID=proyecto)
+    if representantes.exists():
+        representante_users = {}
+        for representante in representantes:
+            representante_users[str(representante.UserID.UserID)] = None
+            
+        aprobacionInmobiliaria['Representante'] = representante_users
+    
+    return aprobacionInmobiliaria
+
+
 def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, folio, cotizacion_type,
                   contact_method_type, payment_firma_promesa, payment_firma_escritura,
                   payment_institucion_financiera, ahorro_plus,
@@ -87,6 +117,7 @@ def create_oferta(proyecto, cliente, vendedor, codeudor, empresa_compradora, fol
         EmpresaCompradoraID=empresa_compradora,
         Folio=folio,
         OfertaState=constants.OFERTA_STATE[0],
+        AprobacionInmobiliaria=get_initAprobacionInmobiliaria(proyecto),
         AprobacionInmobiliariaState=constants.APROBACION_INMOBILIARIA_STATE[0],
         PreAprobacionCreditoState=pre_aprobacion_credito_state,
         RecepcionGarantiaState=constants.RECEPCION_GARANTIA_STATE[0],
@@ -198,6 +229,7 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
                 reserva.ConditionID.add(condition)
 
         instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[1]
+
         instance.save()
 
         venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[7])
@@ -275,6 +307,7 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
+        role = self.context['request'].data['Role']
 
         resolution = validated_data.pop('Resolution')
         conditions_data = validated_data.pop('Conditions')
@@ -304,29 +337,29 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                     "Oferta ya esta aprobada",
                     status_code=status.HTTP_409_CONFLICT)
 
-            if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[current_user.UserID]:
+            if role in aprobacion_inmobiliaria and aprobacion_inmobiliaria[role][str(current_user.UserID)]:
                 raise CustomValidation(
                     "Aprobada",
                     status_code=status.HTTP_409_CONFLICT)
 
-            aprobacion_inmobiliaria[str(current_user.UserID)] = True
+            aprobacion_inmobiliaria[role][str(current_user.UserID)] = True
             instance.AprobacionInmobiliaria = aprobacion_inmobiliaria
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[8])
-
-            if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
-                    UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
-                    ProyectoID=instance.ProyectoID).count()):
-                VentaLog.objects.create(
-                    VentaID=instance.OfertaID,
-                    Folio=instance.Folio,
-                    UserID=current_user,
-                    ClienteID=instance.ClienteID,
-                    ProyectoID=instance.ProyectoID,
-                    VentaLogTypeID=venta_log_type,
-                    Comment='',
-                )
-                instance.save()
-                return instance
+            
+            # if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
+            #         UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
+            #         ProyectoID=instance.ProyectoID).count()):
+            #     VentaLog.objects.create(
+            #         VentaID=instance.OfertaID,
+            #         Folio=instance.Folio,
+            #         UserID=current_user,
+            #         ClienteID=instance.ClienteID,
+            #         ProyectoID=instance.ProyectoID,
+            #         VentaLogTypeID=venta_log_type,
+            #         Comment='',
+            #     )
+            #     instance.save()
+            #     return instance
 
             for condition_data in conditions_data:
                 condition = Condition.objects.get(
@@ -339,13 +372,23 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                     condition.IsApprove = True
                     condition.save()
 
-            instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[2]
-            instance.IsApproveInmobiliaria = True
+            if role == 'Autorizador':
+                instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[5]
+            else:
+                isApprova = True
+                for user_role in aprobacion_inmobiliaria.keys():
+                    for value in aprobacion_inmobiliaria[user_role].values():
+                        if value == None:
+                            isApprova = False
+                if isApprova:
+                    instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[2]
+                    instance.IsApproveInmobiliaria = True
 
             crear_notificacion_oferta_aprobada(instance, jefe_proyecto, vendedor)
         else:
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[3]
-            instance.AprobacionInmobiliaria = {}
+            aprobacion_inmobiliaria[role][str(current_user.UserID)] = False
+            instance.AprobacionInmobiliaria = aprobacion_inmobiliaria
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[9])
 
             crear_notificacion_oferta_rechazada(instance, jefe_proyecto, vendedor)
