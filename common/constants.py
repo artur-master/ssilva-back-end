@@ -277,10 +277,19 @@ OFERTA_STATE = [
 ]
 
 APROBACION_INMOBILIARIA_STATE = [
-    "Pendiente jefe de proyecto",
-    "Pendiente aprobador inmobiliario",
-    "Aprobada",
-    "Rechazada",
+    'Pendiente jefe de proyecto',
+    'Pendiente aprobacion inmobiliaria',
+    'Aprobada',
+    'Rechazada',
+    'Pendiente autorizador inmobiliario',
+    'Aprobada autorizador',
+    'Rechazada autorizador',
+    'Pendiente representante inmobiliario',
+    'Aprobada representante',
+    'Rechazada representante',
+    'Pendiente aprobador inmobiliario',
+    'Aprobada aprobador',
+    'Rechazada aprobador',
 ]
 
 PRE_APROBACION_CREDITO_STATE = [

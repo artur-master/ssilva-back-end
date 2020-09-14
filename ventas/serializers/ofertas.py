@@ -228,7 +228,10 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
                 )
                 reserva.ConditionID.add(condition)
 
-        instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[1]
+        if "Autorizador" in instance.AprobacionInmobiliaria:
+            instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[4]
+        else:
+            instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[1]
 
         instance.save()
 
