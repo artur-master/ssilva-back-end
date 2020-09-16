@@ -86,14 +86,6 @@ def get_initAprobacionInmobiliaria(proyecto):
             
         aprobacionInmobiliaria['Autorizador'] = autorizador_users
     
-    representantes = UserProyecto.objects.filter(UserProyectoTypeID=UserProyectoType.objects.get(Name='Representante'), ProyectoID=proyecto)
-    if representantes.exists():
-        representante_users = {}
-        for representante in representantes:
-            representante_users[str(representante.UserID.UserID)] = None
-            
-        aprobacionInmobiliaria['Representante'] = representante_users
-    
     return aprobacionInmobiliaria
 
 
@@ -376,7 +368,7 @@ class ApproveInmobiliariaSerializer(serializers.ModelSerializer):
                     condition.save()
 
             if role == 'Autorizador':
-                instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[5]
+                instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[6]
             else:
                 isApprova = True
                 for user_role in aprobacion_inmobiliaria.keys():

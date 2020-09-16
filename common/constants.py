@@ -282,13 +282,8 @@ APROBACION_INMOBILIARIA_STATE = [
     'Aprobada',
     'Rechazada',
     'Pendiente autorizador inmobiliario',
-    'Aprobada autorizador',
     'Rechazada autorizador',
-    'Pendiente representante inmobiliario',
-    'Aprobada representante',
-    'Rechazada representante',
     'Pendiente aprobador inmobiliario',
-    'Aprobada aprobador',
     'Rechazada aprobador',
 ]
 
