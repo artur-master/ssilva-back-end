@@ -216,7 +216,7 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
             for condition_data in conditions_data:
                 condition = Condition.objects.create(
                     Description=condition_data['Description'],
-                    IsImportant=condition_data['IsImportant']
+                    IsImportant=condition_data.get('IsImportant', False)
                 )
                 reserva.ConditionID.add(condition)
 

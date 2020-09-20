@@ -628,6 +628,11 @@ class CreateReservaSerializer(serializers.ModelSerializer):
         required=False
     )
     Folio = serializers.CharField(required=False)
+    Comment = serializers.CharField(
+        write_only=True,
+        allow_blank=True,
+        required=False
+    )
 
     class Meta:
         model = Reserva
@@ -661,7 +666,8 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             'CoEmpleador',
             'Patrimony',
             'CoPatrimony',
-            'ValueProductoFinanciero')
+            'ValueProductoFinanciero',
+            'Comment')
 
     def create(self, validated_data):
         current_user = return_current_user(self)
@@ -1338,6 +1344,22 @@ class CreateReservaSerializer(serializers.ModelSerializer):
             crear_notificacion_reserva_pendiente_control(
                 instance, jefe_proyecto, asistente_comercial)
         
+        comment = validated_data.get('Comment')
+        if comment:
+            venta_log_type = VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[2])
+
+            VentaLog.objects.create(
+                VentaID=instance.ReservaID,
+                Folio=instance.Folio,
+                UserID=current_user,
+                ClienteID=instance.ClienteID,
+                ProyectoID=instance.ProyectoID,
+                VentaLogTypeID=venta_log_type,
+                Comment=comment,
+                CommentBySystem=False
+            )
+
         # send email to AC
         
         # send_mail(message="To Asistente Comercial",
@@ -1546,6 +1568,11 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    Comment = serializers.CharField(
+        write_only=True,
+        allow_blank=True,
+        required=False
+    )
 
     class Meta:
         model = Reserva
@@ -1578,7 +1605,8 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
             'Empleador',
             'CoEmpleador',
             'ValueProductoFinanciero',
-            'Extra')
+            'Extra',
+            'Comment')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
@@ -2084,6 +2112,22 @@ class UpdateReservaSerializer(serializers.ModelSerializer):
 
             crear_notificacion_reserva_modificada_pendiente_control(
                 instance, jefe_proyecto, vendedor, asistente_comercial)
+        
+        comment = validated_data.get('Comment')
+        if comment:
+            venta_log_type = VentaLogType.objects.get(
+                Name=constants.VENTA_LOG_TYPE[2])
+
+            VentaLog.objects.create(
+                VentaID=instance.ReservaID,
+                Folio=instance.Folio,
+                UserID=current_user,
+                ClienteID=instance.ClienteID,
+                ProyectoID=instance.ProyectoID,
+                VentaLogTypeID=venta_log_type,
+                Comment=comment,
+                CommentBySystem=False
+            )
 
         # Registro Bitacora de Ventas
         venta_log_type = VentaLogType.objects.get(
