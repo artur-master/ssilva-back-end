@@ -1391,7 +1391,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
 
         reserva = Reserva.objects.get(Folio=instance.Folio)
 
-        reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[0])
+        reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[1])
         reserva.ReservaStateID = reserva_state
         # reserva datas has to be changed. Artur 
         reserva.save()
