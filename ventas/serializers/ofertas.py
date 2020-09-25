@@ -671,6 +671,9 @@ class ListOfertaSerializer(serializers.ModelSerializer):
     '''
     Inmuebles = serializers.SerializerMethodField('get_inmuebles')
     PromesaID = serializers.SerializerMethodField('get_promesa_id')
+    PayType = serializers.CharField(
+        source='PayTypeID.Name'
+    )
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -682,7 +685,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
         model = Oferta
         fields = ('OfertaID', 'ProyectoID', 'Proyecto', 'Date', 'Folio', 'Cliente',
                   #'ClienteID', 'ClienteName', 'ClienteLastNames', 'ClienteRut', 
-                  'AprobacionInmobiliaria', 'AprobacionInmobiliariaState',
+                  'AprobacionInmobiliaria', 'AprobacionInmobiliariaState','PayType',
                   'OfertaState', 'Inmuebles', 'PromesaID')
 
     def get_inmuebles(self, obj):
