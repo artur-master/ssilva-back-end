@@ -2396,6 +2396,7 @@ class ControlReservaSerializer(serializers.ModelSerializer):
             if(instance.OfertaID):
                 oferta = instance.OfertaID
                 oferta.OfertaState=constants.OFERTA_STATE[0]
+                oferta.AprobacionInmobiliaria=ofertas.get_initAprobacionInmobiliaria(instance.ProyectoID)
                 oferta.save()
             else:
                 instance.OfertaID = ofertas.create_oferta(

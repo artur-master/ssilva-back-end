@@ -669,7 +669,7 @@ class RetrieveProyectoSerializer(serializers.ModelSerializer):
         quotation_count = Cotizacion.objects.filter(ProyectoID=obj).count()
         reservation_count = Reserva.objects.filter(ProyectoID=obj).count()
         promesa_count = Promesa.objects.filter(ProyectoID=obj).count()
-        offer_count = Oferta.objects.filter(ProyectoID=obj).count()
+        offer_count = Oferta.objects.filter(ProyectoID=obj).exclude(OfertaState=constants.OFERTA_STATE[5]).count()
         escritura_count = Escritura.objects.filter(ProyectoID=obj).count()
         counter = dict(Quotation=quotation_count,
                        Reservation=reservation_count,
