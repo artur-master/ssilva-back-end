@@ -1278,6 +1278,10 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         many=True,
         required=False
     )
+    Comment = serializers.CharField(
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = Oferta
@@ -1302,6 +1306,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             'ValueProductoFinanciero',
             'Cuotas',
             'Inmuebles',
+            'Comment',
         )
 
     def update(self, instance, validated_data):
@@ -1468,6 +1473,8 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             ClienteID=cliente,
             ProyectoID=proyecto,
             VentaLogTypeID=venta_log_type,
+            Comment=validated_data['Comment'],
+            CommentBySystem=False
         )
 
         instance.save()

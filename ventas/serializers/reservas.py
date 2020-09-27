@@ -417,6 +417,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             'Graph',
             'Patrimony',
             'CoPatrimony',
+            'OfertaID',
             'Logs')
 
     def get_patrimony(self, obj):
