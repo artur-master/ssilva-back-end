@@ -686,7 +686,7 @@ class ListOfertaSerializer(serializers.ModelSerializer):
         fields = ('OfertaID', 'ProyectoID', 'Proyecto', 'Date', 'Folio', 'Cliente',
                   #'ClienteID', 'ClienteName', 'ClienteLastNames', 'ClienteRut', 
                   'AprobacionInmobiliaria', 'AprobacionInmobiliariaState','PayType',
-                  'OfertaState', 'Inmuebles', 'PromesaID')
+                  'OfertaState', 'RecepcionGarantiaState', 'Inmuebles', 'PromesaID')
 
     def get_inmuebles(self, obj):
         reserva = Reserva.objects.filter(Folio=obj.Folio).first()
@@ -986,7 +986,7 @@ class ApproveConfeccionPromesaSerializer(serializers.ModelSerializer):
         vendedor = UserProyecto.objects.filter(
             ProyectoID=instance.ProyectoID,
             UserProyectoTypeID=vendedor_type)
-
+        
         if resolution:
             if instance.OfertaState == constants.OFERTA_STATE[3]:
                 raise CustomValidation(

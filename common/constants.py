@@ -306,7 +306,7 @@ RESULT = [
 ]
 
 PROMESA_STATE = [
-    "Rechazada",  # 0 -> 9
+    "Pendiente Confección",  # 0 -> 9
     "Pendiente firma comprador",  # 1 -> 20 or 13
     "Pendiente envío a inmobiliaria",  # 2 -> 3
     "Pendiente factura",  # 3 -> 4
@@ -327,6 +327,7 @@ PROMESA_STATE = [
     "Resolución",  # 18 -> PROMESA_RESOLUCION_STATE + PROMESA_REFUND_STATE
     "Modificación",  # 19 -> PROMESA_MODIFICACION_STATE + PROMESA_REFUND_STATE
     "Envío a cliente",  # 20 -> 12
+    "Rechazada"
 ]
 
 PROMESA_DESISTIMIENTO_STATE = [
