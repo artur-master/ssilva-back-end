@@ -32,7 +32,7 @@ from empresas_and_proyectos.models.proyectos import (
     UserProyectoType,
     UserProyecto,
     Proyecto)
-from users.models import User, Permission
+from users.models import User, Permission, Role
 from users.serializers.users import UserProfileSerializer
 from ventas.models.clientes import Cliente
 from ventas.models.conditions import Condition
@@ -1399,7 +1399,13 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
 
         reserva = Reserva.objects.get(Folio=instance.Folio)
 
-        reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[1])
+        roles = current_user.RoleID.all()
+        vn_role = Role.objects.get(Name=constants.USER_PROYECTO_TYPE[2])
+        
+        if vn_role in roles: # Modificacion Oferta By VN
+            reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
+        else: # Modificacion Oferta By JP
+            reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])
         reserva.ReservaStateID = reserva_state
         # reserva datas has to be changed. Artur 
         reserva.save()

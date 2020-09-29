@@ -8,7 +8,8 @@ from common.permissions import (
     CheckAdminOrVendedorOrMoniOrConsProyectosPermission,
     CheckVendedorPermission,
     CheckAdminOrVendedorOrMoniProyectosPermission,
-    CheckAsistenteComercialPermission)
+    CheckAsistenteComercialPermission,
+    CheckApproveUpdateOfertaPermission)
 from common.services import download_pre_approbation_views
 from ventas.models.reservas import Reserva
 from ventas.serializers.reservas import (
@@ -18,6 +19,7 @@ from ventas.serializers.reservas import (
     UpdateReservaSerializer,
     SendControlReservaSerializer,
     ControlReservaSerializer,
+    ModificationOfertaSerializer,
     CancelReservaSerializer,
     UploadDocumentsReservaSerializer,
     DownloadPreApprobationSerializer,
@@ -151,6 +153,28 @@ class ApproveControlReservaViewSet(viewsets.ModelViewSet):
                 return Response({"reserva": serializer.data,
                                  "detail": "Rechazo realizado con éxito"},
                                 status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+class ApproveModificationOfertaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, CheckApproveUpdateOfertaPermission)
+    serializer_class = ModificationOfertaSerializer
+    queryset = Reserva.objects.all()
+    lookup_field = 'ReservaID'
+
+    def partial_update(self, request, ReservaID):
+        serializer = ModificationOfertaSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({"reserva": RetrieveReservaSerializer(instance, context={'request': request}).data,
+                             "detail": "Aprobación realizada con éxito"},
+                            status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)

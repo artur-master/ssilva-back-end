@@ -3736,3 +3736,44 @@ class DownloadPdfSerializer(serializers.ModelSerializer):
             )                       
 
         return documents
+
+
+class ModificationOfertaSerializer(serializers.ModelSerializer):
+    ReservaState = serializers.CharField(
+        source='ReservaStateID.Name',
+        read_only=True
+    )
+    # Comment = serializers.CharField(
+    #     write_only=True,
+    #     allow_blank=True
+    # )
+
+    class Meta:
+        model = Reserva
+        fields = ('ReservaID', 'ReservaState')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        # comment = validated_data.get('Comment', "")
+
+        reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[1])
+        # venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[2])
+
+        # VentaLog.objects.create(
+        #     VentaID=instance.ReservaID,
+        #     Folio=instance.Folio,
+        #     UserID=current_user,
+        #     ClienteID=instance.ClienteID,
+        #     ProyectoID=instance.ProyectoID,
+        #     VentaLogTypeID=venta_log_type,
+        #     Comment=comment,
+        #     CommentBySystem=False
+        # )
+
+        # eliminar_notificacion_reserva_pendiente_control(instance)
+
+        instance.ReservaStateID = reserva_state
+        instance.save()
+
+        return instance

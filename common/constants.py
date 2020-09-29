@@ -188,6 +188,7 @@ COTIZATION_STATE = [
 RESERVA_STATE = [
     "Pendiente información", "Pendiente control",
     "Oferta", "Rechazada", "Cancelada",
+    "Modificación Oferta By JP", "Modificación Oferta By VN",
 ]
 
 CONTACT_METHOD_TYPE = [

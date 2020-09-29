@@ -22,7 +22,10 @@ from ventas.views.facturas import (
     FacturaInmuebleViewSet,
     FacturaViewSet,
     DownloadFacturaViewSet,
-    DownloadNotaCreditoViewSet, RegisterSendFacturaViewSet, RegisterDatePagoFacturaViewSet, RegisterNoteCreditViewSet)
+    DownloadNotaCreditoViewSet, 
+    RegisterSendFacturaViewSet, 
+    RegisterDatePagoFacturaViewSet, 
+    RegisterNoteCreditViewSet)
 from ventas.views.finding_contact import (
     FindingTypeViewSet,
     ContactMethodTypeViewSet)
@@ -50,11 +53,13 @@ from ventas.views.promesas import (
     SendCopiesViewSet,
     NegociacionPromesaViewSet,
     SendNegociacionPromesaViewSet,
-    ControlNegociacionPromesaViewSet, SendPromesaToClientViewSet)
+    ControlNegociacionPromesaViewSet,
+    SendPromesaToClientViewSet)
 from ventas.views.reservas import (
     ReservaViewSet,
     CancelReservaViewSet,
     SendControlReservaViewSet,
+    ApproveModificationOfertaViewSet,
     ApproveControlReservaViewSet,
     UploadDocumentsReservaViewSet,
     DownloadPreApprobationViewSet,
@@ -105,6 +110,9 @@ router.register(
 router.register(
     'reservas-approve-control',
     ApproveControlReservaViewSet)
+router.register(
+    'reservas-approve-moficiation-oferta',
+    ApproveModificationOfertaViewSet)
 router.register('pre-approbation-download', DownloadPreApprobationViewSet)
 router.register('generate-pdf-files', DownloadPdfViewSet)
 

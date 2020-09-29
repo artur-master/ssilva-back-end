@@ -1,7 +1,7 @@
 from users.serializers.users import UserProfileSerializer
 from users.serializers.roles import RoleNameIDSerializer, RoleIDSerializer
 from ventas.models.ventas_logs import VentaLog
-from users.models import User, Role
+from users.models import User
 from rest_framework import serializers
 
 from ventas.serializers.clientes import ClienteSerializer
