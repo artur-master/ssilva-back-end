@@ -1404,10 +1404,6 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         # reserva_state = None
         if vn_role.exists(): # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
-            
-            file = open("log.txt", "a")
-            file.write(reserva_state.Name)
-            file.close()
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])                   
 
