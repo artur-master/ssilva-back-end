@@ -1401,15 +1401,15 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
 
         vn_role = current_user.RoleID.filter(Name=constants.USER_PROYECTO_TYPE[2])
 
-        reserva_state = None
+        # reserva_state = None
         if vn_role.exists(): # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
+            
+            file = open("log.txt", "a")
+            file.write(reserva_state.Name)
+            file.close()
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])                   
-        
-        file = open("log.txt", "a")
-        file.write(reserva_state.Name)
-        file.close()
 
         reserva.ReservaStateID = reserva_state       
 
