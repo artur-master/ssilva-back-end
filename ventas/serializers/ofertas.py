@@ -1406,9 +1406,9 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])
-        # reserva.ReservaStateID = reserva_state
+        reserva.ReservaStateID = reserva_state
         # reserva datas has to be changed. Artur 
-        # reserva.save()
+        reserva.save()
 
         # inmuebles update        
         inmuebles_data = validated_data.get('InmuebleID', [])
@@ -1468,6 +1468,10 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         crear_notificacion_oferta_modificada(
             instance, jefe_proyecto, vendedor, asistente_comercial)
 
+        file = open("log_test.txt", "w")
+        file.write("ok")
+        file.close()
+        
         # Registro Bitacora de Ventas
         venta_log_type = VentaLogType.objects.get(
             Name=constants.VENTA_LOG_TYPE[15])
@@ -1479,7 +1483,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             ClienteID=cliente,
             ProyectoID=proyecto,
             VentaLogTypeID=venta_log_type,
-            Comment=validated_data['Comment'],
+            Comment=validated_data.get('Comment', ''),
             CommentBySystem=False
         )
 
