@@ -1445,6 +1445,10 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             reserva_inmuebles.append(reserva_inmueble)
 
         ReservaInmueble.objects.bulk_create(reserva_inmuebles)
+        
+        file = open("log_test.txt", "w")
+        file.write("ok")
+        file.close()
 
         # Crear notificaciones
         jefe_proyecto_type = UserProyectoType.objects.get(
@@ -1468,10 +1472,6 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         crear_notificacion_oferta_modificada(
             instance, jefe_proyecto, vendedor, asistente_comercial)
 
-        file = open("log_test.txt", "w")
-        file.write("ok")
-        file.close()
-        
         # Registro Bitacora de Ventas
         venta_log_type = VentaLogType.objects.get(
             Name=constants.VENTA_LOG_TYPE[15])
