@@ -1399,11 +1399,10 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
 
         reserva = Reserva.objects.get(Folio=instance.Folio)
 
-        roles = current_user.RoleID.all()
-        vn_role = Role.objects.get(Name=constants.USER_PROYECTO_TYPE[2])
+        vn_role = current_user.RoleID.filter(Name=constants.USER_PROYECTO_TYPE[2])
         
         reserva_state = None
-        if vn_role in roles: # Modificacion Oferta By VN
+        if vn_role.exists(): # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])
