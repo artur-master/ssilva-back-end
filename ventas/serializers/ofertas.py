@@ -1402,6 +1402,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         roles = current_user.RoleID.all()
         vn_role = Role.objects.get(Name=constants.USER_PROYECTO_TYPE[2])
         
+        reserva_state = None
         if vn_role in roles: # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
         else: # Modificacion Oferta By JP
