@@ -1399,8 +1399,13 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
 
         reserva = Reserva.objects.get(Folio=instance.Folio)
 
+        file = open("log.txt", "a")
+
         vn_role = current_user.RoleID.filter(Name=constants.USER_PROYECTO_TYPE[2])
         
+        file.write("Yes" if vn_role.exists() else "No")
+        file.close()
+
         reserva_state = None
         if vn_role.exists(): # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
