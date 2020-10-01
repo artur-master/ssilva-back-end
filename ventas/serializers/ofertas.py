@@ -1406,11 +1406,13 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])
-        reserva.ReservaStateID = reserva_state
         
         file = open("log_test.txt", "w")
-        file.write("ok")
+        file.write(reserva_state.Name)
         file.close()
+
+        reserva.ReservaStateID = reserva_state
+        
 
         # reserva datas has to be changed. Artur 
         reserva.save()
