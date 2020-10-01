@@ -1407,6 +1407,11 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])
         reserva.ReservaStateID = reserva_state
+        
+        file = open("log_test.txt", "w")
+        file.write("ok")
+        file.close()
+
         # reserva datas has to be changed. Artur 
         reserva.save()
 
@@ -1445,10 +1450,6 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
             reserva_inmuebles.append(reserva_inmueble)
 
         ReservaInmueble.objects.bulk_create(reserva_inmuebles)
-        
-        file = open("log_test.txt", "w")
-        file.write("ok")
-        file.close()
 
         # Crear notificaciones
         jefe_proyecto_type = UserProyectoType.objects.get(
