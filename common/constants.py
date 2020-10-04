@@ -128,6 +128,7 @@ VENTA_LOG_TYPE = [
     "Register Desistimiento",  # 37
     "Aprobacion Desistimiento",  # 38
     "Envío promesa a cliente",  # 39
+    "Oferta Desistimiento", #40
 ]
 
 VENTA_LOG_TYPE_PROMESA = [
@@ -274,7 +275,8 @@ OFERTA_STATE = [
     "Rechazada por legal",
     "Promesa",
     "Cancelada",
-    "Modificado"
+    "Modificado",
+    "Desistimiento"
 ]
 
 APROBACION_INMOBILIARIA_STATE = [

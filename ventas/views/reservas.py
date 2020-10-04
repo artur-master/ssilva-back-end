@@ -157,6 +157,7 @@ class ApproveControlReservaViewSet(viewsets.ModelViewSet):
             return Response({"detail": serializer.errors},
                             status=status.HTTP_409_CONFLICT)
 
+
 class ApproveModificationOfertaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated, CheckApproveUpdateOfertaPermission)

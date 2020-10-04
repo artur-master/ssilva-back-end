@@ -211,8 +211,12 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
         if conditions.exists():
             conditions.delete()
 
+        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[7])
+        comment = "Oferta {0} proyecto {1} enviada a aprobacion".format(instance.Folio, instance.ProyectoID)
+
         reserva.ConditionID.clear()
         if conditions_data:
+            comment += "\n Observacions:"
             for condition_data in conditions_data:
                 condition = Condition.objects.create(
                     Description=condition_data['Description'],
@@ -220,15 +224,14 @@ class SendApproveInmobiliariaSerializer(serializers.ModelSerializer):
                 )
                 reserva.ConditionID.add(condition)
 
+                comment += "\n - "+condition_data['Description']
+
         if "Autorizador" in instance.AprobacionInmobiliaria:
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[4]
         else:
             instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[1]
 
         instance.save()
-
-        venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[7])
-        comment = "Oferta {0} proyecto {1} enviada a aprobacion".format(instance.Folio, instance.ProyectoID)
 
         VentaLog.objects.create(
             VentaID=instance.OfertaID,
@@ -1108,10 +1111,14 @@ class CancelOfertaSerializer(serializers.ModelSerializer):
     OfertaState = serializers.CharField(
         read_only=True
     )
+    Comment = serializers.CharField(
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = Reserva
-        fields = ('OfertaState',)
+        fields = ('OfertaState','Comment')
 
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
@@ -1136,7 +1143,9 @@ class CancelOfertaSerializer(serializers.ModelSerializer):
             UserID=current_user,
             ClienteID=instance.ClienteID,
             ProyectoID=instance.ProyectoID,
-            VentaLogTypeID=venta_log_type
+            VentaLogTypeID=venta_log_type,
+            Comment=validated_data.get('Comment', ''),
+            CommentBySystem=False
         )
 
         # Volver inmuebles asociados a estado disponible
@@ -1563,3 +1572,107 @@ class UserOfertaActionSerializer(serializers.ModelSerializer):
             return obj.OfertaState + " oferta"
         except AttributeError:
             return ""
+
+
+class WithdrawOfertaSerializer(serializers.ModelSerializer):
+    OfertaState = serializers.CharField(
+        read_only=True
+    )
+    Comment = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+
+    class Meta:
+        model = Reserva
+        fields = ('OfertaState','Comment')
+
+    def update(self, instance, validated_data):
+        current_user = return_current_user(self)
+
+        # if instance.OfertaState == constants.OFERTA_STATE[4]:
+        #     raise CustomValidation(
+        #         "Oferta ya está cancelada",
+        #         status_code=status.HTTP_409_CONFLICT)
+
+        # if instance.OfertaState == constants.OFERTA_STATE[3]:
+        #     raise CustomValidation(
+        #         "Oferta en estado promesa no se puede cancelar",
+        #         status_code=status.HTTP_409_CONFLICT)
+
+        # Registro en historial de ventas
+        venta_log_type = VentaLogType.objects.get(
+            Name=constants.VENTA_LOG_TYPE[40])
+
+        VentaLog.objects.create(
+            VentaID=instance.OfertaID,
+            Folio=instance.Folio,
+            UserID=current_user,
+            ClienteID=instance.ClienteID,
+            ProyectoID=instance.ProyectoID,
+            VentaLogTypeID=venta_log_type,
+            Comment=validated_data.get('Comment', '')
+        )
+
+        # # Volver inmuebles asociados a estado disponible
+        # reserva = Reserva.objects.get(Folio=instance.Folio)
+        # reserva_inmuebles = ReservaInmueble.objects.filter(ReservaID=reserva)
+        # inmueble_state = InmuebleState.objects.get(
+        #     Name=constants.INMUEBLE_STATE[0])
+
+        # for reserva_inmueble in reserva_inmuebles:
+        #     inmueble = reserva_inmueble.InmuebleID
+        #     inmueble.InmuebleStateID = inmueble_state
+        #     inmueble.save()
+
+        # # Crear/Eliminar notificaciones
+        # # Tipos de Usuarios
+        # vendedor_type = UserProyectoType.objects.get(
+        #     Name=constants.USER_PROYECTO_TYPE[2])
+
+        # jefe_proyecto_type = UserProyectoType.objects.get(
+        #     Name=constants.USER_PROYECTO_TYPE[1])
+
+        # asistente_comercial_type = UserProyectoType.objects.get(
+        #     Name=constants.USER_PROYECTO_TYPE[3])
+
+        # representante_type = UserProyectoType.objects.get(
+        #     Name=constants.USER_PROYECTO_TYPE[0])
+
+        # aprobador_type = UserProyectoType.objects.get(
+        #     Name=constants.USER_PROYECTO_TYPE[4])
+
+        # # Usuarios
+        # jefe_proyecto = UserProyecto.objects.filter(
+        #     ProyectoID=instance.ProyectoID,
+        #     UserProyectoTypeID=jefe_proyecto_type)
+
+        # vendedor = UserProyecto.objects.filter(
+        #     ProyectoID=instance.ProyectoID, UserProyectoTypeID=vendedor_type)
+
+        # asistente_comercial = UserProyecto.objects.filter(
+        #     ProyectoID=instance.ProyectoID,
+        #     UserProyectoTypeID=asistente_comercial_type)
+
+        # representantes = UserProyecto.objects.filter(
+        #     ProyectoID=instance.ProyectoID,
+        #     UserProyectoTypeID=representante_type)
+
+        # aprobadores = UserProyecto.objects.filter(
+        #     ProyectoID=instance.ProyectoID,
+        #     UserProyectoTypeID=aprobador_type)
+
+        # eliminar_notificaciones_oferta(instance)
+
+        # if (instance.AprobacionInmobiliariaState == constants.APROBACION_INMOBILIARIA_STATE[0] or
+        #         instance.AprobacionInmobiliariaState == constants.APROBACION_INMOBILIARIA_STATE[1]):
+        #     crear_notificacion_oferta_cancelada(
+        #         instance, jefe_proyecto, vendedor, asistente_comercial, representantes, aprobadores)
+        # else:
+        #     crear_notificacion_oferta_cancelada(
+        #         instance, jefe_proyecto, vendedor, asistente_comercial, representantes, aprobadores)
+
+        instance.OfertaState = constants.OFERTA_STATE[6]
+        instance.save()
+
+        return instance

@@ -39,6 +39,7 @@ from ventas.views.ofertas import (
     RegisterResultPreAprobacionViewSet,
     ApproveConfeccionPromesaViewSet,
     ApproveUpdateOfertaViewSet,
+    WithdrawOfertaViewSet,
     CancelOfertaViewSet)
 from ventas.views.promesas import (
     PromesaViewSet,
@@ -142,6 +143,8 @@ router.register('ofertas-cancel', CancelOfertaViewSet)
 router.register(
     'ofertas-approve-modificar',
     ApproveUpdateOfertaViewSet)
+router.register(
+    'ofertas-withdraw', WithdrawOfertaViewSet)
 
 router.register('logs',
                 VentaLogViewSet,

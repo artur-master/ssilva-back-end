@@ -28,7 +28,8 @@ from ventas.serializers.ofertas import (
     RegisterResultPreAprobacionSerializer,
     ApproveConfeccionPromesaSerializer,
     ApproveUpdateOfertaSerializer,
-    CancelOfertaSerializer)
+    CancelOfertaSerializer,
+    WithdrawOfertaSerializer)
 
 
 class OfertaViewSet(viewsets.ModelViewSet):
@@ -298,6 +299,29 @@ class CancelOfertaViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response({"oferta": serializer.data,
                              "detail": "Oferta cancelada con éxito"},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": serializer.errors},
+                            status=status.HTTP_409_CONFLICT)
+
+
+class WithdrawOfertaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, CheckAdminMoniProyectosPermission)
+    serializer_class = WithdrawOfertaSerializer
+    queryset = Oferta.objects.all()
+    lookup_field = 'OfertaID'
+
+    def partial_update(self, request, OfertaID):
+        serializer = WithdrawOfertaSerializer(
+            self.get_object(), data=request.data,
+            partial=True, context={'request': request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"oferta": serializer.data,
+                             "detail": "Oferta desistimien con éxito"},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
