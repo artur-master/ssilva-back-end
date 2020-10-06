@@ -174,9 +174,9 @@ class RegisterInstitucionFinancieraViewSet(viewsets.ModelViewSet):
         serializer = RegisterInstitucionFinancieraSerializer(
             data=data, many=many)
         if serializer.is_valid():
-            serializer.save()
+            instance = serializer.save()
             return Response({"detail": "Instituciones Financieras agregadas con éxito",
-                             "InstitucionFinancieras": serializer.data},
+                             "InstitucionFinancieras": ListPreAprobacionCreditoSerializer(instance=instance, many=many, context={'request': request}).data},
                             status=status.HTTP_200_OK)
         else:
             return Response({"detail": serializer.errors},
