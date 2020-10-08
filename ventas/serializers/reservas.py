@@ -361,6 +361,7 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
     Patrimony = serializers.SerializerMethodField('get_patrimony')
     CoPatrimony = serializers.SerializerMethodField('get_copatrimony')
     Logs = serializers.SerializerMethodField('get_logs')
+    OfertaID = serializers.SerializerMethodField('get_oferta')
 
     @staticmethod
     def setup_eager_loading(queryset):
@@ -468,6 +469,12 @@ class RetrieveReservaSerializer(serializers.ModelSerializer):
             Folio=obj.Folio).order_by('-id')
         serializer = VentaLogSerializer(instance=venta_log, many=True)
         return serializer.data
+    
+    def get_oferta(self, obj):
+        try:
+            return obj.OfertaID.OfertaID
+        except AttributeError:
+            return None
 
 
 class CreateReservaInmuebleSerializer(serializers.ModelSerializer):

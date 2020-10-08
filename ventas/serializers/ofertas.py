@@ -43,7 +43,8 @@ from ventas.models.ofertas import Oferta
 from ventas.models.patrimonies import Patrimony
 from ventas.models.payment_forms import (
     PreAprobacionCredito,
-    PayType)
+    PayType,
+    Cuota)
 from ventas.models.reservas import (
     Reserva,
     ReservaState,
@@ -1374,30 +1375,36 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.ContactMethodTypeID = contact_method_type
         instance.EmpresaCompradoraID = empresa_compradora
 
+        reserva = Reserva.objects.get(Folio=instance.Folio)
+
         # Modificado state
         instance.OfertaState = constants.OFERTA_STATE[5]
         instance.AprobacionInmobiliariaState = constants.APROBACION_INMOBILIARIA_STATE[0]
         instance.RecepcionGarantiaState = constants.RECEPCION_GARANTIA_STATE[0]
-        instance.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']
-        instance.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
-        instance.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
+
+        if 'PaymentFirmaPromesa' in validated_data:
+            instance.PaymentFirmaPromesa = reserva.PaymentFirmaPromesa = validated_data['PaymentFirmaPromesa']        
+        if 'PaymentFirmaEscritura' in validated_data:
+            instance.PaymentFirmaEscritura = reserva.PaymentFirmaEscritura = validated_data['PaymentFirmaEscritura']
+        if 'PaymentInstitucionFinanciera' in validated_data:
+            instance.PaymentInstitucionFinanciera = reserva.PaymentInstitucionFinanciera = validated_data['PaymentInstitucionFinanciera']
         if 'AhorroPlus' in validated_data:
-            instance.AhorroPlus = validated_data['AhorroPlus']
+            instance.AhorroPlus = reserva.AhorroPlus = validated_data['AhorroPlus']
         if 'Subsidio' in validated_data:
-            instance.Subsidio = validated_data['Subsidio']
+            instance.Subsidio = reserva.Subsidio = validated_data['Subsidio']
         if 'SubsidioType' in validated_data:
-            instance.SubsidioType = validated_data['SubsidioType']
+            instance.SubsidioType = reserva.SubsidioType = validated_data['SubsidioType']
         if 'SubsidioCertificado' in validated_data:
-            instance.SubsidioCertificado = validated_data['SubsidioCertificado']
+            instance.SubsidioCertificado = reserva.SubsidioCertificado = validated_data['SubsidioCertificado']
         if 'Libreta' in validated_data:
-            instance.Libreta = validated_data['Libreta']
+            instance.Libreta = reserva.Libreta = validated_data['Libreta']
         if 'LibretaNumber' in validated_data:
-            instance.LibretaNumber = validated_data['LibretaNumber']
+            instance.LibretaNumber = reserva.LibretaNumber = validated_data['LibretaNumber']
         if 'InstitucionFinancieraID' in validated_data:
-            instance.InstitucionFinancieraID = validated_data['InstitucionFinancieraID']
-        instance.PayTypeID = pay_type
-        instance.DateFirmaPromesa = date_firma_promesa
-        instance.ValueProductoFinanciero = value_producto_financiero
+            instance.InstitucionFinancieraID = reserva.InstitucionFinancieraID = validated_data['InstitucionFinancieraID']
+        instance.PayTypeID = reserva.PayTypeID = pay_type
+        instance.DateFirmaPromesa = reserva.DateFirmaPromesa = date_firma_promesa
+        instance.ValueProductoFinanciero = reserva.ValueProductoFinanciero = value_producto_financiero
         instance.IsApproveInmobiliaria = False
         instance.AprobacionInmobiliaria = {}
         # if pay_type.Name == constants.PAY_TYPE[0] or empresa_compradora:
@@ -1406,22 +1413,33 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         else:
             instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[1]
 
-        reserva = Reserva.objects.get(Folio=instance.Folio)
-
         vn_role = current_user.RoleID.filter(Name=constants.USER_PROYECTO_TYPE[2])
 
-        # reserva_state = None
         if vn_role.exists(): # Modificacion Oferta By VN
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[6])
         else: # Modificacion Oferta By JP
             reserva_state = ReservaState.objects.get(Name=constants.RESERVA_STATE[5])                   
 
-        reserva.ReservaStateID = reserva_state       
+        reserva.ReservaStateID = reserva_state
 
-        # reserva datas has to be changed. Artur 
         reserva.save()
 
-        # inmuebles update        
+        #Cuotas update
+        reserva.CuotaID.clear()
+        cuota_datas = validated_data.get('CuotaID', [])
+        for cuota_data in cuota_datas:
+            cuota = Cuota.objects.create(
+                Amount=cuota_data['Amount'],
+                Date=cuota_data['Date'],
+                Observacion=cuota_data['Observacion']
+            )
+            reserva.CuotaID.add(cuota)
+
+        # inmuebles update
+        reserva_inmuebles_qs = ReservaInmueble.objects.filter(ReservaID=reserva)
+        if reserva_inmuebles_qs.exists():
+            reserva_inmuebles_qs.delete()
+
         inmuebles_data = validated_data.get('InmuebleID', [])
         
         reserva_inmuebles = list()
@@ -1441,12 +1459,6 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
                 discount = inmueble_data['Discount']
             else:
                 discount = 0
-
-            reserva_inmuebles_qs = ReservaInmueble.objects.filter(
-                ReservaID=reserva)
-
-            if reserva_inmuebles_qs.exists():
-                reserva_inmuebles_qs.delete()
 
             reserva_inmueble = ReservaInmueble()
             reserva_inmueble.ReservaID = reserva
