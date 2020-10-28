@@ -1785,9 +1785,7 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         date = validated_data.pop('DateEnvioPromesaToCliente')
-        
-        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
-        
+                
         day = datetime.strftime(date, '%d')
         month = datetime.strftime(date, '%B')
         year = datetime.strftime(date, '%Y')
@@ -1799,7 +1797,7 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
         packet = io.BytesIO()
         can = canvas.Canvas(packet, pagesize=page.mediaBox)
         can.drawString(210, 585, day)
-        can.drawString(290, 585, month)
+        can.drawString(290, 585, constants.MONTH_SPANISH[month])
         can.drawString(410, 585, year)
         can.save()
         packet.seek(0)

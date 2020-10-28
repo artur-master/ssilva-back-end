@@ -450,3 +450,18 @@ class UserRole(Constant):
 
 
 FILE_NON_EXISTED = 'no_existed'
+
+MONTH_SPANISH = {
+    "January": "enero",
+    "February": "febrero",
+    "March": "marzo",
+    "April": "abril",
+    "May": "mayo",
+    "June": "junio",
+    "July": "julio",
+    "August": "agosto",
+    "September": "septiembre",
+    "October": "octubre",
+    "November": "noviembre",
+    "December": "diciembre",
+}
