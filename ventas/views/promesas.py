@@ -86,8 +86,8 @@ class PromesaViewSet(viewsets.ModelViewSet):
 
                 message = "Rechazada por LG, dirijase a modificar Oferta {folio} para continuar el " \
                           "flujo".format(folio=promesa.Folio)
-                promesa.delete()
                 oferta = Oferta.objects.get(Folio=instance.Folio)
+                # promesa.delete()
                 return Response({"OfertaID":oferta.OfertaID, "detail": message},
                             status=status.HTTP_200_OK)
 
@@ -97,7 +97,7 @@ class PromesaViewSet(viewsets.ModelViewSet):
 
                 message = "Modificación realizada con éxito, dirijase a modificar Oferta {folio} para continuar el " \
                           "flujo".format(folio=promesa.Folio)
-                promesa.delete()
+                # promesa.delete()
             else:
                 message = "Modificación realizada con éxito, en espera de aprobación ".format(folio=promesa.Folio)
             return Response({"promesa": RetrievePromesaSerializer(instance, context={'request': request}).data,

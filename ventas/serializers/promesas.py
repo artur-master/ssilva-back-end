@@ -5,6 +5,7 @@ from rest_framework import serializers, status
 from datetime import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
+import locale
 
 from reportlab.pdfgen import canvas
 from django.core.files import File
@@ -1223,7 +1224,10 @@ class UpdatePromesaSerializer(serializers.ModelSerializer):
 
             comment = "Rechazar promesa {folio} proyecto {nombre} antes de la firma comprador".format(
                 folio=instance.Folio,
-                nombre=instance.ProyectoID.Name)                
+                nombre=instance.ProyectoID.Name)
+
+            instance.PromesaState =  constants.PROMESA_STATE[21]
+            instance.save()
         elif (instance.PromesaState == constants.PROMESA_STATE[0] or
                 instance.PromesaState == constants.PROMESA_STATE[1] or
                 instance.PromesaState == constants.PROMESA_STATE[9] or
@@ -1781,6 +1785,8 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
         date = validated_data.pop('DateEnvioPromesaToCliente')
+        
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
         
         day = datetime.strftime(date, '%d')
         month = datetime.strftime(date, '%B')
