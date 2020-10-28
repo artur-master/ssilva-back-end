@@ -1786,7 +1786,7 @@ class SendPromesaToClientSerializer(serializers.ModelSerializer):
         current_user = return_current_user(self)
         date = validated_data.pop('DateEnvioPromesaToCliente')
         
-        # locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
         
         day = datetime.strftime(date, '%d')
         month = datetime.strftime(date, '%B')
