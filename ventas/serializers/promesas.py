@@ -51,6 +51,7 @@ from ventas.serializers.patrimonies import PatrimonySerializer
 from ventas.serializers.reservas import CreateReservaInmuebleSerializer, ListReservaInmuebleSerializer
 from ventas.serializers.ventas_logs import VentaLogSerializer
 from ventas.serializers.escrituras import create_escritura
+from ventas.serializers import ofertas
 
 def create_promesa(proyecto, cliente, vendedor, codeudor, inmuebles, folio, cotizacion_type, payment_firma_promesa,
                    payment_firma_escritura, payment_firma_institucion_financiera, ahorro_plus, paytype, current_user):
@@ -1484,6 +1485,7 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
         )
 
         instance.PromesaState = constants.PROMESA_STATE[13]
+        instance.AprobacionInmobiliaria = ofertas.get_initAprobacionInmobiliaria(instance.ProyectoID)
         instance.save()
 
         return instance
@@ -1601,7 +1603,18 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
         resolution = validated_data.pop('Resolution')
         conditions_data = validated_data.pop('Condition')
         comment = validated_data.pop('Comment')
+
         aprobacion_inmobiliaria = instance.AprobacionInmobiliaria
+        
+        if str(current_user.UserID) in aprobacion_inmobiliaria["Autorizador"]:
+            role = "Autorizador"
+        elif str(current_user.UserID) in aprobacion_inmobiliaria["Aprobador"]:
+            role = "Aprobador"
+        else:
+            raise CustomValidation(
+                    "Permission Error",
+                    status_code=status.HTTP_409_CONFLICT)
+        
         # Tipos de Usuarios
         vendedor_type = UserProyectoType.objects.get(
             Name=constants.USER_PROYECTO_TYPE[2])
@@ -1620,19 +1633,19 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
 
         if resolution:
             if instance.PromesaState != constants.PROMESA_STATE[13]:
-                if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[current_user.UserID]:
+                if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[str(current_user.UserID)]:
                     raise CustomValidation(
                         "Aprobada",
                         status_code=status.HTTP_409_CONFLICT)
 
-                aprobacion_inmobiliaria[str(current_user.UserID)] = True;
-                instance.AprobacionInmobiliaria = aprobacion_inmobiliaria;
+                aprobacion_inmobiliaria[str(current_user.UserID)] = True
+                instance.AprobacionInmobiliaria = aprobacion_inmobiliaria
 
-                if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
-                        UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
-                        ProyectoID=instance.ProyectoID).count()):
-                    instance.save()
-                    return instance
+                # if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
+                #         UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
+                #         ProyectoID=instance.ProyectoID).count()):
+                #     instance.save()
+                #     return instance
 
             for condition_data in conditions_data:
                 condition = Condition.objects.get(
@@ -1650,7 +1663,7 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
             crear_notificacion_promesa_aprobada_negociacion(instance, jefe_proyecto, vendedor)
         else:
             instance.PromesaState = constants.PROMESA_STATE[15]
-            instance.AprobacionInmobiliaria = {};
+            instance.AprobacionInmobiliaria = ofertas.get_initAprobacionInmobiliaria(instance.ProyectoID)
             venta_log_type = VentaLogType.objects.get(Name=constants.VENTA_LOG_TYPE[36])
             crear_notificacion_promesa_rechazada_negociacion(instance, jefe_proyecto, vendedor)
 

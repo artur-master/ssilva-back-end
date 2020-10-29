@@ -1406,7 +1406,7 @@ class UpdateOfertaSerializer(serializers.ModelSerializer):
         instance.DateFirmaPromesa = reserva.DateFirmaPromesa = date_firma_promesa
         instance.ValueProductoFinanciero = reserva.ValueProductoFinanciero = value_producto_financiero
         instance.IsApproveInmobiliaria = False
-        instance.AprobacionInmobiliaria = {}
+        instance.AprobacionInmobiliaria = get_initAprobacionInmobiliaria(proyecto)
         # if pay_type.Name == constants.PAY_TYPE[0] or empresa_compradora:
         if pay_type.Name == constants.PAY_TYPE[0]:
             instance.PreAprobacionCreditoState = constants.PRE_APROBACION_CREDITO_STATE[0]
