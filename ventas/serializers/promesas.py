@@ -691,18 +691,15 @@ class ControlPromesaSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
         read_only=True
     )
-
     Comment = serializers.CharField(
         write_only=True,
         allow_blank=True
     )
-
     Condition = CreateConditionSerializer(
         source='ConditionID',
         many=True,
         required=False
     )
-
     Resolution = serializers.BooleanField(
         write_only=True
     )
@@ -1424,7 +1421,6 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
     PromesaState = serializers.CharField(
         read_only=True
     )
-
     Condition = ConditionSerializer(
         required=False,
         many=True,
@@ -1481,7 +1477,8 @@ class SendNegociacionJPSerializer(serializers.ModelSerializer):
             ProyectoID=instance.ProyectoID,
             VentaLogTypeID=VentaLogType.objects.get(
                 Name=constants.VENTA_LOG_TYPE[33]),
-            Comment=va_comment
+            Comment=va_comment,
+            CommentBySystem=False
         )
 
         instance.PromesaState = constants.PROMESA_STATE[13]
@@ -1596,24 +1593,19 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
         model = Oferta
         fields = ('Condition', 'PromesaState',
                   'Resolution', 'Comment')
-
+    
     def update(self, instance, validated_data):
         current_user = return_current_user(self)
+        try:
+            role = self.context['request'].data['Role']
+        except:
+            role = "JP"
 
         resolution = validated_data.pop('Resolution')
         conditions_data = validated_data.pop('Condition')
         comment = validated_data.pop('Comment')
 
         aprobacion_inmobiliaria = instance.AprobacionInmobiliaria
-        
-        if str(current_user.UserID) in aprobacion_inmobiliaria["Autorizador"]:
-            role = "Autorizador"
-        elif str(current_user.UserID) in aprobacion_inmobiliaria["Aprobador"]:
-            role = "Aprobador"
-        else:
-            raise CustomValidation(
-                    "Permission Error",
-                    status_code=status.HTTP_409_CONFLICT)
         
         # Tipos de Usuarios
         vendedor_type = UserProyectoType.objects.get(
@@ -1633,19 +1625,18 @@ class ControlNegociacionSerializer(serializers.ModelSerializer):
 
         if resolution:
             if instance.PromesaState != constants.PROMESA_STATE[13]:
-                if str(current_user.UserID) in aprobacion_inmobiliaria and aprobacion_inmobiliaria[str(current_user.UserID)]:
+                userId = str(current_user.UserID)
+                if role in aprobacion_inmobiliaria and aprobacion_inmobiliaria[role][userId]:
                     raise CustomValidation(
                         "Aprobada",
                         status_code=status.HTTP_409_CONFLICT)
 
-                aprobacion_inmobiliaria[str(current_user.UserID)] = True
+                aprobacion_inmobiliaria[role][userId] = True
                 instance.AprobacionInmobiliaria = aprobacion_inmobiliaria
 
-                # if (len(aprobacion_inmobiliaria) < UserProyecto.objects.filter(
-                #         UserProyectoTypeID=UserProyectoType.objects.get(Name='Aprobador'),
-                #         ProyectoID=instance.ProyectoID).count()):
-                #     instance.save()
-                #     return instance
+                if None in aprobacion_inmobiliaria["Aprobador"].values() or None in aprobacion_inmobiliaria["Autorizador"].values():
+                    instance.save()
+                    return instance
 
             for condition_data in conditions_data:
                 condition = Condition.objects.get(
